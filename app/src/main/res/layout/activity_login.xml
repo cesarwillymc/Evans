@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    tools:context=".Activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/al_user_imagen_perfil"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:layout_marginTop="40dp"
+            app:srcCompat="@drawable/iconevans" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:text="USUARIO"
+            android:textSize="25dp" />
+
+        <EditText
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:id="@+id/login_edit_text_usuario"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="ejemplo@gmail.com"
+            android:inputType="textEmailAddress" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled = "true">
+            <EditText
+                android:fontFamily="@font/roboto"
+                android:textStyle="bold"
+                android:id="@+id/login_edit_text_contraseña"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="Contraseña"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/login_button_logeo"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#000000"
+            android:text="Iniciar Sesión"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+        <!--android:onClick="login"-->
+        <Button
+            android:id="@+id/login_button_registrar"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorSecond"
+            android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:text="REGISTRARSE" />
+
+        <TextView
+            android:id="@+id/al_txt_olvidaste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="7dp"
+            android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:text="¿olvidaste tu contraseña?" />
+    </LinearLayout>
+    <include
+        android:id="@+id/login_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        layout="@layout/progressbar_login"
+        android:visibility="gone"/>
+
+
+
+</FrameLayout>

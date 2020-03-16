@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:background="@drawable/border_layout"
+    android:paddingBottom="10dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:src="@drawable/scroll"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8.5"
+            android:weightSum="10"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                >
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="8.5"
+
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/dodpm_edtxt_origin"
+                        android:focusable="false"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/border_search"
+                        android:hint="@string/donde_estas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <ImageButton
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/dodpm_imgbtn_status_origin"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+
+                    android:layout_gravity="center"
+                    android:src="@drawable/image_btn_src"
+                    android:padding="12dp"
+                    android:background="@null"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                >
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="8.5"
+
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/dodpm_edtxt_dest"
+                        android:focusable="false"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/border_search"
+                        android:hint="@string/a_donde_vas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <ImageButton
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/dodpm_imgbtn_status_dest"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_gravity="center"
+                    android:src="@drawable/image_btn_src"
+                    android:padding="12dp"
+                    android:background="@null"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/mi_imgbtn_next_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:enabled="false"
+        android:background="@color/plomo"
+        android:textColor="@color/white"
+        android:layout_marginHorizontal="10dp"
+        android:text="CONSULTAR PRECIO EVANS"
+        android:visibility="visible"/>
+
+
+
+</LinearLayout>

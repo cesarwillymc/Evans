@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.cupon.PagosActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            <!-- <ImageView
+                 android:id="@+id/menu_evans"
+                 android:layout_width="45dp"
+                 android:layout_height="45dp"
+                 android:layout_gravity="left"
+                 app:srcCompat="@drawable/ic_menu_black_24dp"/>-->
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="17dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/evanswhite"/>
+            <ImageButton
+                android:id="@+id/ap_imagebutton_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#000"
+                android:layout_gravity="start"
+                android:visibility="visible"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+   <androidx.core.widget.NestedScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           >
+
+           <TextView
+               android:id="@+id/textView4"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="16dp"
+               android:text="Métodos de pago"
+               android:textStyle="bold"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/ap_rv_metodos_pay"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="16dp"
+               android:layout_marginEnd="24dp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+           <TextView
+               android:textStyle="bold"
+               android:textColor="@color/blue"
+               android:id="@+id/ap_txt_add_pagos"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="24dp"
+               android:layout_marginEnd="24dp"
+               android:text="Agregar método de pago"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/ap_rv_metodos_pay" />
+
+           <View
+               android:id="@+id/view6"
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               android:layout_marginVertical="8dp"
+               android:background="@color/plomo"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/ap_txt_add_pagos" />
+
+           <View
+               android:id="@+id/view7"
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:layout_marginVertical="8dp"
+               android:layout_marginTop="16dp"
+               android:background="@color/plomo"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.1"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/ap_txt_add_promo" />
+
+           <TextView
+               android:id="@+id/textView9"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="8dp"
+               android:layout_marginEnd="24dp"
+               android:text="Promociones"
+               android:textStyle="bold"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+           <TextView
+               android:id="@+id/ap_txt_add_promo"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="24dp"
+               android:layout_marginEnd="24dp"
+               android:textStyle="bold"
+               android:textColor="@color/blue"
+               android:text="Agrega un código promocional"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+           <TextView
+               android:id="@+id/textView13"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginTop="24dp"
+               android:layout_marginEnd="24dp"
+               android:text="Cupones"
+               android:textStyle="bold"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/view7" />
+
+           <LinearLayout
+               android:id="@+id/ap_ll_cupones"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="24dp"
+               android:layout_marginEnd="24dp"
+               android:orientation="horizontal"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@+id/textView13">
+
+               <ImageView
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:layout_marginHorizontal="24dp"
+                   android:src="@drawable/sale" />
+
+               <TextView
+                   android:textColor="@color/black"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center"
+                   android:text="Cupones" />
+           </LinearLayout>
+
+       </androidx.constraintlayout.widget.ConstraintLayout>
+   </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

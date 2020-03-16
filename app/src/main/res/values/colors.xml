@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#0f0f0f</color>
+    <color name="colorAccent">#212121</color>
+    <color name="colorWhite">#EBEBE3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorSecond">#3CB8A1</color>
+    <color name="colorTransparent">#43000000</color>
+    <color name="notification">#FCF9F9</color>
+    <color name="amarillo">#FFC107</color>
+    <color name="plomo">#ACABAB</color>
+    <color name="plomoDark">#555555</color>
+    <color name="coloramarillo">#FFC107</color>
+    <color name="azulclaro">#689ED6</color>
+    <color name="rojo">#FF0000</color>
+    <color name="verde">#00FF0A</color>
+    <color name="black">#000000</color>
+    <color name="blue">#4381EC</color>
+</resources>
+

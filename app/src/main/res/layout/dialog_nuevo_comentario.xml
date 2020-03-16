@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/colorWhite"
+    android:background="@drawable/border_search"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Califica al conductor"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+
+        android:id="@+id/crear_comentario_rating"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:progressTint="@color/coloramarillo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="10dp"
+        android:orientation="vertical"
+        android:imeOptions="actionDone"
+        tools:targetApi="o">
+
+        <EditText
+            android:id="@+id/crear_comentario_comentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="5dp"
+            android:singleLine="true"
+            android:inputType="text"
+            android:background="@drawable/border_search"
+            android:hint="Danos tu opinión"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="30dp"
+            android:textColor="#6B6060"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/crear_comentario_publicar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/border_search"
+            android:backgroundTint="@color/coloramarillo"
+            android:text="Publicar"
+            android:textColor="@color/colorWhite"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+</LinearLayout>

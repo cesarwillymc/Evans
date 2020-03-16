@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    >
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:background="#292626"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <TextView
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POPULAR"/>
+
+            <TextView
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:alpha="0.5"
+                android:text="Viajes económicos todos los dias con:"/>
+
+
+
+            <TextView
+                android:id="@+id/dialog_precio_text_view_tipo"
+                android:layout_width="match_parent"
+                android:text="Eco Evans"
+                android:textStyle="bold"
+                android:alpha="0.8"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/dialog_precio_text_view_precio"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textSize="18sp"
+                android:alpha="0.7"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+
+                android:gravity="center"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:layout_width="0dp"
+                    android:id="@+id/dialog_precio_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8.5"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:src="@drawable/ic_person_outline_black_24dp"
+                    />
+                <TextView
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="1-5"/>
+            </LinearLayout>
+            <Button
+
+               android:layout_marginHorizontal="10dp"
+                android:id="@+id/dialog_precio_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="Pedir Eco Evans"
+                android:textSize="18dp"
+                android:textColor="@color/colorWhite"
+                android:background="@color/colorPrimary"
+
+                android:layout_marginBottom="10sp"/>
+        </LinearLayout>
+        <ImageButton
+            android:id="@+id/dialog_precio_img_btn_atras"
+            android:layout_width="50dp"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="5dp"
+            android:layout_height="50dp"
+            android:background="@drawable/fechanegraatras"/>
+
+    </FrameLayout>
+
+
+</androidx.cardview.widget.CardView>

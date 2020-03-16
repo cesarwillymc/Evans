@@ -1,0 +1,59 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Evans</string>
+
+    <string name="navigation_drawer_open" tools:ignore="ExtraTranslation">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Evans Usuario</string>
+    <string name="nav_header_star">5.00</string>
+    <string name="nav_header_subtitle">www.proevans.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="fundir">Costo Del Viaje</string>
+    <string name="te_fundo">Origen:Huancane 451,Puno,Peru Destino:0000000000000000000 Costo:s/3.50</string>
+    <string name="funde">Aceptar</string>
+    <string name="msg_travel">¡Selecciona tu movilidad!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="tus_viajes_fragment">historialt</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="tus_viajes_gratis_fragment">viajes gratis</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="ayuda_fragment">ayuda</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="configuracion_fragment">configuracion</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="pago_fragment">este metodo todavia no esta implementado</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+
+
+    <string-array name="select_city">
+        <item>Selecciona Tu Ciudad</item>
+        <item>Puno</item>
+        <item>Tacna</item>
+        <item>Ica</item>
+        <item>Moquegua</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_guidance_day" translatable="false">mapbox://styles/mapbox/navigation-guidance-day-v4</string>
+    <string name="navigation_guidance_night" translatable="false">mapbox://styles/mapbox/navigation-guidance-night-v4</string>
+    <string name="navigation_running" translatable="false">navigation_running</string>
+    <string name="navigation_view_instance_state" translatable="false">navigation_view_instance_state</string>
+    <string name="access_token">pk.eyJ1Ijoic3VwcG9ydGV2YW5zIiwiYSI6ImNrNGRudXIyYjA0dm4zZXBnemNnbHNlbWMifQ.pcl8JjzD92nEufGv8zQG9w</string>
+    <string name="evans_name">Somos Evans</string>
+    <string name="evans_descripcion">Tu servicio de calidad y seguridad</string>
+    <string name="default_notification_channel_id">notificacion_chats</string>
+    <string name="donde_estas">¿Dónde estas?</string>
+    <string name="a_donde_vas">¿A dónde vas?</string>
+    <string name="text_introduce_codigo">Por motivos de seguridad es necesario introducir el código de verificación. Puedes encontrar tu código de verificación en el correo anteriormente introducido.</string>
+    <string name="text_introduce_correo">Por motivos de seguridad es necesario introducir su correo de acceso para comprobar su identidad y luego enviar un código de verificación y validación para el correcto cambio de contraseña</string>
+    <string name="text_introduce_password">Por la seguridad de tu cuenta, recomendamos cambiar tu contraseña con una que te sea fácil de recordar y que sea seguro tambien se cuidadoso con tu cuenta.</string>
+</resources>
