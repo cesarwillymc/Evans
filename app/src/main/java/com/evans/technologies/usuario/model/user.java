@@ -4,10 +4,16 @@ public class user {
 
     private String id;
     String token,message,viajeId;
-    Boolean success,imgUpdate,imgActivation,accountActivate;
+    Boolean success,imgUpdate,imgActivation,accountActivate,isReferred;
     private String name, surname, email, city, cellphone, numDocument, imageProfile,user,darMensaje,price,pricediscount;
 
+    public Boolean getIsReferred() {
+        return isReferred;
+    }
 
+    public void setIsReferred(Boolean referred) {
+        isReferred = referred;
+    }
     public String getPrice() {
         return price;
     }

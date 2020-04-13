@@ -64,5 +64,15 @@
         <!-- Expression styling -->
         <item name="roundedLineCap">true</item>
     </style>
+    <style name="fullScreenDialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
 
+
+        <item name="android:windowNoTitle" >true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
 </resources>

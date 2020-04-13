@@ -217,7 +217,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                                 saveOnPreferences(id,token,Firebasetoken,
                                                     data.email?:"Desconocido",data.accountActivate?:false,data.name?:"Non",
                                                     data.surname?:"Desc", data.city?:"Puno",
-                                                    data.celphone?:"999999999", data.numDocument)
+                                                    data.celphone?:"999999999", data.numDocument,data.isReferred)
                                                 var data_prueba= File("/storage/emulated/0/evans/evans"+ getUserId_Prefs(prefs) +".jpg")
                                                 if (data_prueba.exists()){
                                                     setRutaImagen(prefs,data_prueba.path)
@@ -326,7 +326,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             })
 
     }
-    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String){
+    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String,referred:Boolean){
         val editor = prefs.edit()
         editor.putString("id",id)
         editor.putString("token",token)
@@ -339,6 +339,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         editor.putString("cellphone",cellphone)
         editor.putString("dni",dni)
         editor.putString("password", login_edit_text_contraseña.text.toString())
+        editor.putBoolean("isreferred", referred)
         editor.apply()
     }
 

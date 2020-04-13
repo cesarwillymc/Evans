@@ -37,6 +37,7 @@ import com.evans.technologies.usuario.Utils.timeCallback.ComunicateFrag
 import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotifications
 import com.evans.technologies.usuario.fragments.Fragment_chat
 import com.evans.technologies.usuario.fragments.Fragment_perfil_user
+import com.evans.technologies.usuario.fragments.ReferidosDialogFragment
 import com.evans.technologies.usuario.fragments.mapaInicio
 import com.evans.technologies.usuario.model.config
 import com.evans.technologies.usuario.model.infoDriver
@@ -150,7 +151,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         menu.findItem(R.id.nav_ingresos).isEnabled = false
         //menu.findItem(R.id.nav_banca).setEnabled(false)
         menu.findItem(R.id.nav_ingresos).isEnabled = false
-        menu.findItem(R.id.nav_share).isEnabled = false
+        //menu.findItem(R.id.nav_share).isEnabled = false
         menu.findItem(R.id.nav_help).isEnabled = false
         if (!isXiaomi()){
             var menu=main_nav_view_inicio.menu
@@ -383,8 +384,8 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
                  fragmentSeleccionado = true*/
             }
             R.id.nav_share -> {
-                /*mifragment = chat(id)
-                fragmentSeleccionado = true*/
+                 val dialog= ReferidosDialogFragment()
+                 dialog.show(getSupportFragmentManager(),"")
             }
             R.id.nav_logout->{
                 var editor = datadriver.edit()

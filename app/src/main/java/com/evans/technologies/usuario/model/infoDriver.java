@@ -6,6 +6,15 @@ public class infoDriver {
     String message;
     Double latitude,longitude;
     String version;
+    private Referido referido;
+
+    public Referido getReferido() {
+        return referido;
+    }
+
+    public void setReferido(Referido referido) {
+        this.referido = referido;
+    }
 
 
 

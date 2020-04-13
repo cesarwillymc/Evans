@@ -37,7 +37,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.RoundingMode
 import java.text.DecimalFormat
-
+fun getIsReferred(prefs: SharedPreferences): Boolean? {
+    return prefs.getBoolean("isreferred", false)
+}
+fun setReferido(prefs: SharedPreferences,refirio:Boolean){
+    val editor = prefs.edit()
+    editor.putBoolean("isreferred",refirio)
+    editor.apply()
+}
 fun settokenrecuperar(navFragment: SharedPreferences, id:String){
     val editor = navFragment.edit()
     editor.putString("settokenrecuperar",id)

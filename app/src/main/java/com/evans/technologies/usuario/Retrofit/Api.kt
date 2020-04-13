@@ -12,7 +12,16 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface Api {
-
+    @FormUrlEncoded
+    @PUT("user/userPutReferido/{id}")
+    fun putReferido(
+        @Path("id") id:String,
+        @Field("key") key:String
+    ): Call<String>
+    @GET("user/getCodigoReferido/{driverId} ")
+    fun getCodeReferido(
+        @Path("driverId") driverId:String
+    ): Call<infoDriver>
     @FormUrlEncoded
     @POST("user/forgot")
     fun sendCorreo_recuperar(
