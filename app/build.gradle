@@ -10,8 +10,8 @@ android {
         applicationId "com.evans.technologies.usuario"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "0.000.01"
+        versionCode 2
+        versionName "0.000.02"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -96,7 +96,8 @@ dependencies {
     //chat view
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation "android.arch.lifecycle:extensions:1.1.1"
-
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
     //New Android X dependency is this -
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-rc02"
 }

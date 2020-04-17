@@ -38,6 +38,7 @@ import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotificat
 import com.evans.technologies.usuario.fragments.Fragment_chat
 import com.evans.technologies.usuario.fragments.Fragment_perfil_user
 import com.evans.technologies.usuario.fragments.ReferidosDialogFragment
+import com.evans.technologies.usuario.fragments.auth.LoginFragment
 import com.evans.technologies.usuario.fragments.mapaInicio
 import com.evans.technologies.usuario.model.config
 import com.evans.technologies.usuario.model.infoDriver
@@ -443,7 +444,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
     }
 
     private fun logOut(){
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, LoginFragment::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

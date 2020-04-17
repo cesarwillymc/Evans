@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Utils.getUserEmail
 import com.evans.technologies.usuario.Utils.getUserPassword
+import com.evans.technologies.usuario.fragments.auth.LoginFragment
 
 class SplashScreen : AppCompatActivity() {
 
@@ -53,7 +54,7 @@ class SplashScreen : AppCompatActivity() {
             Log.d("MainActivity22",valor )
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
 
-        val intentLogin = Intent(this@SplashScreen, LoginActivity::class.java)
+        val intentLogin = Intent(this@SplashScreen, InicioActivity::class.java)
         val intentMain = Intent(this@SplashScreen, MainActivity::class.java)
         Log.e("data", getUserEmail(prefs) + "  y " + getUserPassword(prefs))
         if(!TextUtils.isEmpty(getUserEmail(prefs)) &&

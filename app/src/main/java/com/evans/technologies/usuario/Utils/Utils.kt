@@ -27,7 +27,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
-import com.evans.technologies.usuario.Activities.MainActivity
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.fragments.change_password.changepassword
 import com.evans.technologies.usuario.fragments.change_password.correo
@@ -43,6 +42,14 @@ fun getIsReferred(prefs: SharedPreferences): Boolean? {
 fun setReferido(prefs: SharedPreferences,refirio:Boolean){
     val editor = prefs.edit()
     editor.putBoolean("isreferred",refirio)
+    editor.apply()
+}
+fun getCorreoNavFragment(prefs: SharedPreferences): String? {
+    return prefs.getString("setCorreoNavFragment", "")
+}
+fun setCorreoNavFragment(prefs: SharedPreferences,refirio:String){
+    val editor = prefs.edit()
+    editor.putString("setCorreoNavFragment",refirio)
     editor.apply()
 }
 fun settokenrecuperar(navFragment: SharedPreferences, id:String){

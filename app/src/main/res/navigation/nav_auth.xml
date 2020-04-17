@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_auth"
+    app:startDestination="@id/inicioFragment">
+
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.evans.technologies.usuario.fragments.auth.inicioFragment"
+        android:label="fragment_inicio"
+        tools:layout="@layout/fragment_inicio" >
+        <action
+            android:id="@+id/action_inicioFragment_to_correo"
+            app:destination="@id/correo" />
+        <action
+            android:id="@+id/action_inicioFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/correo"
+        android:name="com.evans.technologies.usuario.fragments.change_password.correo"
+        android:label="fragment_correo"
+        tools:layout="@layout/fragment_correo" >
+        <action
+            android:id="@+id/action_correo_to_set_codigo"
+            app:destination="@id/set_codigo" />
+    </fragment>
+    <fragment
+        android:id="@+id/set_codigo"
+        android:name="com.evans.technologies.usuario.fragments.change_password.set_codigo"
+        android:label="fragment_set_codigo"
+        tools:layout="@layout/fragment_set_codigo" >
+        <action
+            android:id="@+id/action_set_codigo_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_set_codigo_to_changepassword"
+            app:destination="@id/changepassword" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.evans.technologies.usuario.fragments.auth.LoginFragment"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_correo"
+            app:destination="@id/correo" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.evans.technologies.usuario.fragments.auth.RegisterFragment"
+        android:label="activity_register"
+        tools:layout="@layout/activity_register" />
+    <fragment
+        android:id="@+id/changepassword"
+        android:name="com.evans.technologies.usuario.fragments.change_password.changepassword"
+        android:label="fragment_changepassword"
+        tools:layout="@layout/fragment_changepassword" >
+        <action
+            android:id="@+id/action_changepassword_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+</navigation>

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.evans.technologies.usuario.R;
+import com.evans.technologies.usuario.fragments.auth.LoginFragment;
 import com.evans.technologies.usuario.fragments.change_password.correo;
 
 import java.util.Objects;
@@ -52,7 +53,7 @@ public class recuperar_contra extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (getBeforeNavFragment(navFragment)==null){
-                Intent intent = new Intent(this,LoginActivity.class);
+                Intent intent = new Intent(this, LoginFragment.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

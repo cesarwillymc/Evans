@@ -3,9 +3,26 @@ package com.evans.technologies.usuario.model;
 public class user {
 
     private String id;
-    String token,message,viajeId;
+    String token,message,viajeId,mensaje;
     Boolean success,imgUpdate,imgActivation,accountActivate,isReferred;
     private String name, surname, email, city, cellphone, numDocument, imageProfile,user,darMensaje,price,pricediscount;
+
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public Boolean getReferred() {
+        return isReferred;
+    }
+
+    public void setReferred(Boolean referred) {
+        isReferred = referred;
+    }
 
     public Boolean getIsReferred() {
         return isReferred;

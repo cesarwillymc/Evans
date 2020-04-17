@@ -18,10 +18,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- aqui se llama a splas_back.xml para poder insertar el logo evans-->
-        <item name="android:windowBackground">@drawable/splash_back</item>
-    </style>
+
 
     <style name="switch_theme" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->

@@ -12,6 +12,19 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface Api {
+
+
+    @FormUrlEncoded
+    @POST("sendEmail")
+    fun sendEmail(
+        @Field("email") email: String
+    ): Call<user>
+    @FormUrlEncoded
+    @POST("validateEmail")
+    fun validateEmail(
+        @Field("email") email: String,
+        @Field("code") code: String
+    ): Call<user>
     @FormUrlEncoded
     @PUT("user/userPutReferido/{id}")
     fun putReferido(
