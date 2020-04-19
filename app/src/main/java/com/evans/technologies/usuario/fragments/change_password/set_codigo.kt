@@ -49,16 +49,16 @@ class set_codigo(var validar: Boolean=false,var actividad: Boolean=false) :
             )
         }
         if (validar!! && actividad!!) {
-            fsc_validar_tarde!!.visibility = View.VISIBLE
+//            fsc_validar_tarde!!.visibility = View.VISIBLE
             id = getIDrecuperar(navFragment)!!
         } else {
             id = getUserId_Prefs(prefs)!!
         }
-        fsc_validar_tarde!!.setOnClickListener(View.OnClickListener {
-            if (actividad!!) {
-                activity!!.finish()
-            }
-        })
+//        fsc_validar_tarde!!.setOnClickListener(View.OnClickListener {
+//            if (actividad!!) {
+//                activity!!.finish()
+//            }
+//        })
         fsc_btn_next!!.setOnClickListener{
                 code = fsc_edtxt_codigo!!.text.toString().trim()
                 if (comprobarcampos()) {

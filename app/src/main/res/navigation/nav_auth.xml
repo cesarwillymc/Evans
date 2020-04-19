@@ -51,7 +51,11 @@
         android:id="@+id/registerFragment"
         android:name="com.evans.technologies.usuario.fragments.auth.RegisterFragment"
         android:label="activity_register"
-        tools:layout="@layout/activity_register" />
+        tools:layout="@layout/activity_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_inicioFragment"
+            app:destination="@id/inicioFragment" />
+    </fragment>
     <fragment
         android:id="@+id/changepassword"
         android:name="com.evans.technologies.usuario.fragments.change_password.changepassword"

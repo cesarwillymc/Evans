@@ -12,22 +12,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
-import com.evans.technologies.usuario.Utils.getCorreoNavFragment
-import com.evans.technologies.usuario.Utils.setIDrecuperar
-import com.evans.technologies.usuario.Utils.toastLong
+import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
 import com.evans.technologies.usuario.model.ResponsesApi.RegisterResponse
 import com.evans.technologies.usuario.model.user
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.referidos_dialog_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterFragment : Fragment(), View.OnClickListener {
     private lateinit var navFragment: SharedPreferences
+    private lateinit var idnav:String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,7 +65,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         val city = register_edit_text_ciudad.text.toString().trim()
         val password = register_edit_text_contraseña.text.toString().trim()
         val passwordconfirm = register_edit_text_verificar_contraseña.text.toString().trim()
-
+        val code= register_code_referencial.text.toString().trim()
         if (name.isEmpty())
         {
             register_edit_text_nombre.error = "Es necesario ingresar tu nombre."
@@ -135,9 +137,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 when(response.code()){
                     200->{
 
-                        setIDrecuperar(navFragment,response.body()!!.user?:"a123")
+                        idnav=response.body()!!.user
                         Log.e("idrecuperado",response.body()!!.user?:"no recibe nada"+"")
-                        actions()
+                        registrarCode(code)
 
                         activity!!.toastLong("Se registro exitosamente")
                     }
@@ -221,7 +223,29 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             Log.e("error",E.message)
         }
     }
+    private fun registrarCode(code:String) {
+        if (code.isEmpty()){
+            findNavController().navigate(R.id.action_registerFragment_to_inicioFragment)
+        }else{
+            RetrofitClient.getInstance().api.putReferido(idnav,code).enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if ( response.isSuccessful){
+                        findNavController().navigate(R.id.action_registerFragment_to_inicioFragment)
+                        rdf_cons.visibility=View.GONE
+                        Toast.makeText(context,"Refirio correctamente..", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",
+                            Toast.LENGTH_LONG).show()
+                    }
 
+                }
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Toast.makeText(context,"No se pudo referir, revise su conexion", Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
+    }
     private fun actions(){
         frame.visibility= View.VISIBLE
         var llamr: Call<user> = RetrofitClient.getInstance().api.enviarCorreo_validate(register_edit_text_correo.text.toString().trim())

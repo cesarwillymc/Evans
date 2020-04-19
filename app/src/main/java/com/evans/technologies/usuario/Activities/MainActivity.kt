@@ -38,7 +38,6 @@ import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotificat
 import com.evans.technologies.usuario.fragments.Fragment_chat
 import com.evans.technologies.usuario.fragments.Fragment_perfil_user
 import com.evans.technologies.usuario.fragments.ReferidosDialogFragment
-import com.evans.technologies.usuario.fragments.auth.LoginFragment
 import com.evans.technologies.usuario.fragments.mapaInicio
 import com.evans.technologies.usuario.model.config
 import com.evans.technologies.usuario.model.infoDriver
@@ -149,14 +148,14 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         //comprobar_data_getintent()
         main_nav_view_inicio.setNavigationItemSelectedListener(this)
         var menu=main_nav_view_inicio.menu
-        menu.findItem(R.id.nav_ingresos).isEnabled = false
+        menu.findItem(R.id.nav_wallet).isEnabled = false
         //menu.findItem(R.id.nav_banca).setEnabled(false)
-        menu.findItem(R.id.nav_ingresos).isEnabled = false
+        menu.findItem(R.id.nav_wallet).isEnabled = false
         //menu.findItem(R.id.nav_share).isEnabled = false
-        menu.findItem(R.id.nav_help).isEnabled = false
+        menu.findItem(R.id.nav_oferts).isEnabled = false
         if (!isXiaomi()){
             var menu=main_nav_view_inicio.menu
-            menu.findItem(R.id.nav_settings).setVisible(false)
+            menu.findItem(R.id.nav_trips_free).setVisible(false)
         }
         setInfoUser(headerView)//Función para mostrar datos personales
         headerView.nav_header_image_view_profile.setOnClickListener(this)
@@ -307,24 +306,24 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         }
     }
 
-    override fun onDestroy() {
-        // stopService(Intent(this@MainActivity, service_mqtt::class.java))
-
-        super.onDestroy()
-    }
-    override fun onStart() {
-       // Log.e("entro", " onStart" + isMyServiceRunning(service_mqtt::class.java) + "")
-        /*  try {
-              if (!isMyServiceRunning(service_mqtt::class.java)) {
-                  startService(Intent(this, service_mqtt::class.java))
-              }
-              <service android:name="org.eclipse.paho.android.service.MqttService" />
-          <service android:name=".Utils.Services.service_mqtt" />
-          } catch (e: java.lang.Exception) {
-              Log.e("LifecycleObserver", e.message)
-          }*/
-        super.onStart()
-    }
+//    override fun onDestroy() {
+//        // stopService(Intent(this@MainActivity, service_mqtt::class.java))
+//
+//        super.onDestroy()
+//    }
+//    override fun onStart() {
+//       // Log.e("entro", " onStart" + isMyServiceRunning(service_mqtt::class.java) + "")
+//        /*  try {
+//              if (!isMyServiceRunning(service_mqtt::class.java)) {
+//                  startService(Intent(this, service_mqtt::class.java))
+//              }
+//              <service android:name="org.eclipse.paho.android.service.MqttService" />
+//          <service android:name=".Utils.Services.service_mqtt" />
+//          } catch (e: java.lang.Exception) {
+//              Log.e("LifecycleObserver", e.message)
+//          }*/
+//        super.onStart()
+//    }
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager =
             getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -357,7 +356,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
                 mifragment = mapaInicio(id, token)
                 fragmentSeleccionado = true
             }
-            R.id.nav_ingresos -> {
+            R.id.nav_wallet -> {
                 /*mifragment = TusViajesGratisFragment()
                 fragmentSeleccionado = true*/
             }
@@ -365,12 +364,12 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
                 mifragment = Fragment_perfil_user()
                 fragmentSeleccionado = true
             }
-            R.id.nav_banca -> {
+            R.id.nav_trips -> {
                 startActivity(Intent(this@MainActivity, PagosActivity::class.java))
                 /*  mifragment = PagoFragment()
                   fragmentSeleccionado = true*/
             }
-            R.id.nav_settings -> {
+            R.id.nav_trips_free -> {
                 if (!canDrawOverlayViews() && isXiaomi()) {
                     //permission not granted
                     Log.e("canDrawOverlayViews", "-No-");
@@ -380,7 +379,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
 
                 }
             }
-            R.id.nav_help -> {
+            R.id.nav_oferts -> {
                 /* mifragment = AyudaFragment()
                  fragmentSeleccionado = true*/
             }
@@ -444,7 +443,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
     }
 
     private fun logOut(){
-        val intent = Intent(this, LoginFragment::class.java)
+        val intent = Intent(this, InicioActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

@@ -96,7 +96,7 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
         var cupones=vista.findViewById<TextView>(R.id.ftvg_user_txt_cupones)
         var celular=vista.findViewById<TextView>(R.id.ftvg_user_text_phone)
         var nombrePerfil=vista.findViewById<TextView>(R.id.ftvg_txt_nombre_user)
-        var validarbtn=vista.findViewById<Button>(R.id.ftvg_user_button_validar_account)
+//        var validarbtn=vista.findViewById<Button>(R.id.ftvg_user_button_validar_account)
 
         //Dar valores a la imagenes
 
@@ -107,38 +107,38 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
         cupones.text= "0"
         celular.text= getcellphoneUser(prefs!!)
         // Log.e("status",""+getAccountActivate(prefs!!)?:false)
-        try{
-            if (getAccountActivate(prefs!!)){
-                validarbtn.visibility=View.GONE
-            }else{
-                validarbtn.visibility=View.VISIBLE
-            }
-        }catch ( e:Exception){
+//        try{
+//            if (getAccountActivate(prefs!!)){
+//                validarbtn.visibility=View.GONE
+//            }else{
+//                validarbtn.visibility=View.VISIBLE
+//            }
+//        }catch ( e:Exception){
+//
+//        }
 
-        }
-
-        validarbtn.setOnClickListener {
-            var enviarCode: Call<user> = RetrofitClient.getInstance().api.enviarCorreo_validate(
-                getUserEmail(prefs!!)!!)
-            enviarCode.enqueue(object : Callback<user> {
-                override fun onFailure(call: Call<user>, t: Throwable) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onResponse(call: Call<user>, response: Response<user>) {
-                    if( response.isSuccessful){
-                        activity!!.toastLong("Se envio un mensaje a tu correo")
-
-                        val manager = activity!!.supportFragmentManager
-                        manager.beginTransaction().replace(
-                            R.id.main_layout_change_fragment,
-                            set_codigo(true, false)
-                        ).commit()
-                    }
-                }
-            })
-
-        }
+//        validarbtn.setOnClickListener {
+//            var enviarCode: Call<user> = RetrofitClient.getInstance().api.enviarCorreo_validate(
+//                getUserEmail(prefs!!)!!)
+//            enviarCode.enqueue(object : Callback<user> {
+//                override fun onFailure(call: Call<user>, t: Throwable) {
+//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//                }
+//
+//                override fun onResponse(call: Call<user>, response: Response<user>) {
+//                    if( response.isSuccessful){
+//                        activity!!.toastLong("Se envio un mensaje a tu correo")
+//
+//                        val manager = activity!!.supportFragmentManager
+//                        manager.beginTransaction().replace(
+//                            R.id.main_layout_change_fragment,
+//                            set_codigo(true, false)
+//                        ).commit()
+//                    }
+//                }
+//            })
+//
+//        }
 
     }
 

@@ -88,6 +88,7 @@ dependencies {
     //Chat
     //mapbox
     implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.1'
+    implementation "com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0"
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     //Butternife

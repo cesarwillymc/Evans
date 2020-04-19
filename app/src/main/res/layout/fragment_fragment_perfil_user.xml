@@ -257,6 +257,7 @@
             app:layout_constraintStart_toEndOf="@+id/textView12"
             android:layout_marginLeft="8dp" />
 
+        <!--
         <Button
             android:id="@+id/ftvg_user_button_validar_account"
             android:layout_width="wrap_content"
@@ -274,23 +275,23 @@
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/textView12"
             app:layout_constraintVertical_bias="0.110000014" />
-
+-->
         <Button
             android:id="@+id/ftvg_user_button_guardar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="Guardar cambios"
+            android:layout_marginTop="16dp"
             android:background="@color/blue"
-            android:textSize="20dp"
-            android:textColor="@color/white"
-
-            android:paddingRight="15dp"
             android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+
+            android:text="Guardar cambios"
+            android:textColor="@color/white"
+            android:textSize="20dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/ftvg_user_button_validar_account" />
+            app:layout_constraintTop_toBottomOf="@+id/ftvg_user_txt_correo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

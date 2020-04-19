@@ -2,7 +2,45 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+<!--
 
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+
+ ///<item
+        android:id="@+id/nav_travel"
+
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="!Buscar evans¡"
+        android:icon="@drawable/perfil"
+         android:icon="@drawable/ingresos"
+           android:icon="@drawable/iconbanca"
+            android:icon="@drawable/ic_menu_manage"
+             android:icon="@drawable/iconayuda"/>
+    /////
+    <item
+        android:id="@+id/nav_cuenta"
+
+        android:title="Mi cuenta" />
+    <item
+        android:id="@+id/nav_wallet"
+
+        android:title="eWallet" />
+    <item
+        android:id="@+id/nav_trips"
+
+        android:title="Mis viajes" />
+    <item
+        android:id="@+id/nav_trips_free"
+
+        android:title="Viaja Gratis" />
+    <item
+        android:id="@+id/nav_oferts"
+        android:title="Promociones"
+
+        />
+</group>-->
     <group
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
@@ -15,22 +53,22 @@
         <item
             android:id="@+id/nav_cuenta"
             android:icon="@drawable/perfil"
-            android:title="Mi perfil" />
+            android:title="Mi cuenta" />
         <item
-            android:id="@+id/nav_ingresos"
+            android:id="@+id/nav_wallet"
             android:icon="@drawable/ingresos"
+            android:title="eWallet" />
+        <item
+            android:id="@+id/nav_trips"
+            android:icon="@drawable/iconbanca"
             android:title="Mis viajes" />
         <item
-            android:id="@+id/nav_banca"
-            android:icon="@drawable/iconbanca"
-            android:title="Pagos" />
-        <item
-            android:id="@+id/nav_settings"
+            android:id="@+id/nav_trips_free"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Configuración obligatoria" />
+            android:title="Viaja Gratis" />
         <item
-            android:id="@+id/nav_help"
-            android:title="Ayuda"
+            android:id="@+id/nav_oferts"
+            android:title="Promociones"
             android:icon="@drawable/iconayuda"
             />
     </group>
