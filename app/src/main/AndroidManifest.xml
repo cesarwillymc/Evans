@@ -24,7 +24,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activities.InicioActivity"></activity>
+
+        <activity android:name=".Activities.InicioActivity" />
 
         <service
             android:name=".Utils.firebase.MyFirebaseMessagingService"

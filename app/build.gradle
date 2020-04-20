@@ -30,6 +30,13 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+// To inline the bytecode built with JVM target 1.8 into
+// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
+
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 ext {
     anko_version = '0.10.8'
@@ -76,6 +83,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
     //Material edit text

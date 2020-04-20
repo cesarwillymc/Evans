@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Activities.cupon.Cupones">
 
+   <!--
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -17,30 +18,30 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
-            <!-- <ImageView
+            <ImageView
                  android:id="@+id/menu_evans"
                  android:layout_width="45dp"
                  android:layout_height="45dp"
                  android:layout_gravity="left"
-                 app:srcCompat="@drawable/ic_menu_black_24dp"/>-->
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="17dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/evanswhite"/>
-            <ImageButton
-                android:id="@+id/ac_imagebutton_back"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="#000"
-                android:layout_gravity="start"
-                android:visibility="visible"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                />
-        </androidx.appcompat.widget.Toolbar>
+                 app:srcCompat="@drawable/ic_menu_black_24dp"/>
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/evanswhite"/>
+    <ImageButton
+        android:id="@+id/ac_imagebutton_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#000"
+        android:layout_gravity="start"
+        android:visibility="visible"
+        android:src="@drawable/ic_arrow_back_black_24dp"
+        />
+</androidx.appcompat.widget.Toolbar>
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

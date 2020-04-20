@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
 import com.evans.technologies.usuario.Utils.getIsReferred
@@ -23,16 +24,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 
-class ReferidosDialogFragment:DialogFragment() {
+class ReferidosDialogFragment:Fragment() {
     val facebook="com.facebook.katana"
     val twitter="com.twitter.android"
     val instagram="com.instagram.android"
     val whatsapp="com.whatsapp"
     lateinit var referido: Referido
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL,R.style.fullScreenDialog)
-    }
+
     private lateinit var prefs: SharedPreferences
     //open dialog
     //val dialog= ReferidosDialogFragment()
@@ -42,6 +40,8 @@ class ReferidosDialogFragment:DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //activity!!.setStyle(DialogFragment.STYLE_NORMAL,R.style.fullScreenDialog)
         prefs = context!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         val view= inflater.inflate(R.layout.referidos_dialog_fragment,container,false)
 
@@ -84,9 +84,9 @@ class ReferidosDialogFragment:DialogFragment() {
             val mensaje= rdf_txt_codigo.text.toString()
             copyText(mensaje)
         }
-        rdf_imgbtn_close.setOnClickListener {
-            this.dismiss()
-        }
+//        rdf_imgbtn_close.setOnClickListener {
+//            this.dismiss()
+//        }
         rdf_imgbtn_facebook.setOnClickListener {
             sharingtoSocialMedia(facebook)
         }

@@ -3,50 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/mapaInicio">
+    app:startDestination="@id/nav_travel">
 
     <fragment
-        android:id="@+id/mapaInicio"
+        android:id="@+id/nav_travel"
         android:name="com.evans.technologies.usuario.fragments.mapaInicio"
-        android:label="mapaInicio" >
+        android:label="nav_travel">
         <action
             android:id="@+id/action_mapaInicio_to_fragment_perfil_user"
-            app:destination="@id/fragment_perfil_user" />
-        <action
-            android:id="@+id/action_mapaInicio_to_pagosActivity"
-            app:destination="@id/pagosActivity" />
+            app:destination="@id/nav_cuenta" />
         <action
             android:id="@+id/action_mapaInicio_to_referidosDialogFragment"
-            app:destination="@id/referidosDialogFragment" />
+            app:destination="@id/nav_trips_free" />
         <action
-            android:id="@+id/action_mapaInicio_to_addCodePromocional"
-            app:destination="@id/addCodePromocional" />
+            android:id="@+id/action_nav_travel_to_pagosActivity"
+            app:destination="@id/nav_wallet" />
         <action
-            android:id="@+id/action_mapaInicio_to_rv_viajes"
-            app:destination="@id/rv_viajes" />
+            android:id="@+id/action_nav_travel_to_addCodePromocional"
+            app:destination="@id/nav_oferts" />
+        <action
+            android:id="@+id/nav_trips"
+            app:destination="@id/rv_viajes2" />
+        <action
+            android:id="@+id/action_nav_travel_to_referidosDialogFragment"
+            app:destination="@id/nav_trips_free" />
     </fragment>
     <fragment
-        android:id="@+id/fragment_perfil_user"
+        android:id="@+id/nav_cuenta"
         android:name="com.evans.technologies.usuario.fragments.Fragment_perfil_user"
         android:label="fragment_perfil_user"
         tools:layout="@layout/fragment_perfil_user" />
-    <activity
-        android:id="@+id/pagosActivity"
+    <fragment
+        android:id="@+id/nav_wallet"
         android:name="com.evans.technologies.usuario.Activities.cupon.PagosActivity"
         android:label="activity_pagos"
         tools:layout="@layout/activity_pagos" />
     <fragment
-        android:id="@+id/referidosDialogFragment"
-        android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
-        android:label="ReferidosDialogFragment" />
-    <activity
-        android:id="@+id/addCodePromocional"
-        android:name="com.evans.technologies.usuario.Activities.cupon.AddCodePromocional"
-        android:label="activity_add_code_promocional"
-        tools:layout="@layout/activity_add_code_promocional" />
-    <activity
-        android:id="@+id/rv_viajes"
+        android:id="@+id/rv_viajes2"
         android:name="com.evans.technologies.usuario.Activities.viajes.rv_viajes"
         android:label="activity_rv_viajes"
         tools:layout="@layout/activity_rv_viajes" />
+    <fragment
+        android:id="@+id/nav_oferts"
+        android:name="com.evans.technologies.usuario.Activities.cupon.AddCodePromocional"
+        android:label="activity_add_code_promocional"
+        tools:layout="@layout/activity_add_code_promocional" />
+    <fragment
+        android:id="@+id/nav_trips_free"
+        android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
+        android:label="ReferidosDialogFragment" />
 </navigation>

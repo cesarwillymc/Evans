@@ -24,6 +24,10 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.evans.technologies.evansuser.Utils.settingsDevice.canDrawOverlayViews
@@ -51,7 +55,7 @@ import retrofit2.Response
 import java.io.File
 
 
-class MainActivity : AppCompatActivity(), com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : AppCompatActivity(),
     CompoundButton.OnCheckedChangeListener , View.OnClickListener, updateListenerNotifications {
 
 
@@ -103,6 +107,38 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
 
 
         setSupportActionBar(toolbar)
+        //
+        val navController = findNavController(R.id.main_layout_change_fragment)
+        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+
+        val appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_travel,
+            R.id.nav_cuenta,
+            R.id.nav_wallet
+        ),drawer_layout)
+        val toggle = ActionBarDrawerToggle(
+            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        main_nav_view_inicio.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            when(destination.id){
+                R.id.nav_travel->{
+                    main_nav_view_inicio.visibility=View.VISIBLE
+                    acv_imagebutton_back.visibility=View.GONE
+                    toggle.isDrawerIndicatorEnabled=true
+                }
+                else->{
+                    main_nav_view_inicio.visibility=View.GONE
+                    acv_imagebutton_back.visibility=View.VISIBLE
+                    toggle.isDrawerIndicatorEnabled=false
+                   // toolbar.navigationIcon = null
+                }
+            }
+        }
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         datadriver = getSharedPreferences("datadriver", Context.MODE_PRIVATE);
@@ -126,10 +162,10 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         token= getToken(prefs)!!
         id= getUserId_Prefs(prefs)!!
         //comprobarStatusTrip()
-        Sfragmentdefault()
-
+//        Sfragmentdefault()
+//
         //INFORMACIÓN DEL USUARIO EN EL MENU DE NAVEGACIÓN
-        val headerView = main_nav_view_inicio.getHeaderView(0)
+//        val headerView = main_nav_view_inicio.getHeaderView(0)
         acv_imagebutton_back.setOnClickListener (this)
         /*setSupportActionBar(toolbar)
         menu_evans.setOnClickListener {
@@ -141,24 +177,24 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         // actionBar?.setCustomView(R.layout.switch_layout)
         actionBar?.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP or ActionBar.DISPLAY_SHOW_CUSTOM)
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+//        val toggle = ActionBarDrawerToggle(
+//            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+//        drawer_layout.addDrawerListener(toggle)
+//        toggle.syncState()
         //comprobar_data_getintent()
-        main_nav_view_inicio.setNavigationItemSelectedListener(this)
-        var menu=main_nav_view_inicio.menu
-        menu.findItem(R.id.nav_wallet).isEnabled = false
-        //menu.findItem(R.id.nav_banca).setEnabled(false)
-        menu.findItem(R.id.nav_wallet).isEnabled = false
-        //menu.findItem(R.id.nav_share).isEnabled = false
-        menu.findItem(R.id.nav_oferts).isEnabled = false
-        if (!isXiaomi()){
-            var menu=main_nav_view_inicio.menu
-            menu.findItem(R.id.nav_trips_free).setVisible(false)
-        }
-        setInfoUser(headerView)//Función para mostrar datos personales
-        headerView.nav_header_image_view_profile.setOnClickListener(this)
+       // main_nav_view_inicio.setNavigationItemSelectedListener(this)
+//        var menu=main_nav_view_inicio.menu
+//        menu.findItem(R.id.nav_wallet).isEnabled = false
+//        //menu.findItem(R.id.nav_banca).setEnabled(false)
+//        menu.findItem(R.id.nav_wallet).isEnabled = false
+//        //menu.findItem(R.id.nav_share).isEnabled = false
+//        menu.findItem(R.id.nav_oferts).isEnabled = false
+//        if (!isXiaomi()){
+//            var menu=main_nav_view_inicio.menu
+//            menu.findItem(R.id.nav_trips_free).setVisible(false)
+//        }
+//        setInfoUser(headerView)//Función para mostrar datos personales
+//        headerView.nav_header_image_view_profile.setOnClickListener(this)
         /*(applicationContext as mapaInicio).updateApi(object :  updateListenerNotifications{
             override fun updateNotificatones(check: Boolean?) {
                 if (check!!){
@@ -172,6 +208,15 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
         })*/
         if (!(getDriverId(datadriver).equals(""))){
             Inicializarchat()
+        }
+        acv_imagebutton_back.setOnClickListener {
+            try {
+                findNavController(R.id.main_layout_change_fragment).navigateUp()
+            }catch (e:Exception){
+                findNavController(R.id.main_layout_change_fragment).navigate(R.id.nav_travel)
+
+            }
+
         }
 
     }
@@ -251,7 +296,7 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
                         try{
                             val dato= p0.getValue(infoDriver::class.java)
                             setApiWebVersion(prefs,dato!!.version+"")
-                            if (!(dato!!.version.equals(getVersionApp()))){
+                            if ((dato.version.toInt()>(getVersionApp().toInt()))){
                                 if (getEstadoView(datadriver)!! <4){
                                     getViewUpdateVersion(this@MainActivity)
                                 }
@@ -291,17 +336,17 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
             R.id.acv_imagebutton_back -> {
                 if (acv_imagebutton_back.visibility== View.VISIBLE){
                     acv_imagebutton_back.visibility= View.GONE
-                    Sfragmentdefault()
+                 //   Sfragmentdefault()
                 }
             }
-            R.id.nav_header_image_view_profile->{
-                var menu=main_nav_view_inicio.menu
-                drawer_layout.closeDrawer(GravityCompat.START)
-                menu.findItem(R.id.nav_travel).setChecked(true)
-                val manager = supportFragmentManager
-                manager.beginTransaction().replace(R.id.main_layout_change_fragment, Fragment_perfil_user()).commit()
-
-            }
+//            R.id.nav_header_image_view_profile->{
+//                var menu=main_nav_view_inicio.menu
+//                drawer_layout.closeDrawer(GravityCompat.START)
+//                menu.findItem(R.id.nav_travel).setChecked(true)
+//                val manager = supportFragmentManager
+//                manager.beginTransaction().replace(R.id.main_layout_change_fragment, Fragment_perfil_user()).commit()
+//
+//            }
 
         }
     }
@@ -344,84 +389,84 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
     //////////////////////Fragmentos del menu de navegación//////////////
     /////////////////////////////////////////////////////////////////////
 
-    @SuppressLint("WrongConstant")
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-
-        var mifragment: Fragment? = null
-        var fragmentSeleccionado = false
-
-        when (item.itemId) {
-            R.id.nav_travel -> {
-                mifragment = mapaInicio(id, token)
-                fragmentSeleccionado = true
-            }
-            R.id.nav_wallet -> {
-                /*mifragment = TusViajesGratisFragment()
-                fragmentSeleccionado = true*/
-            }
-            R.id.nav_cuenta -> {
-                mifragment = Fragment_perfil_user()
-                fragmentSeleccionado = true
-            }
-            R.id.nav_trips -> {
-                startActivity(Intent(this@MainActivity, PagosActivity::class.java))
-                /*  mifragment = PagoFragment()
-                  fragmentSeleccionado = true*/
-            }
-            R.id.nav_trips_free -> {
-                if (!canDrawOverlayViews() && isXiaomi()) {
-                    //permission not granted
-                    Log.e("canDrawOverlayViews", "-No-");
-                    dialogEmergente("ACTIVAR: !!Mostrar ventanas emergentes mientras se ejecuta en segundo plano")
-                    //write above answered permission code for MIUI here
-                }else {
-
-                }
-            }
-            R.id.nav_oferts -> {
-                /* mifragment = AyudaFragment()
-                 fragmentSeleccionado = true*/
-            }
-            R.id.nav_share -> {
-                 val dialog= ReferidosDialogFragment()
-                 dialog.show(getSupportFragmentManager(),"")
-            }
-            R.id.nav_logout->{
-                var editor = datadriver.edit()
-                editor.clear()
-                editor.apply()
-                setEstadoViews(datadriver,1)
-                removerData()
-                removeSharedPreferences()
-                logOut()
-               // stopService(Intent(this@MainActivity, service_mqtt::class.java))
-                //stopService( Intent(this, cronometro.class))
-            }
-            R.id.nav_exit -> {
-                var editor = datadriver.edit()
-                editor.clear()
-                editor.apply()
-                removerData()
-                setEstadoViews(datadriver,1)
-                Log.e("datos enviados","Saliendo ")
-                finish()
-
-
-            }
-        }
-
-        //// ESTA CONDICION DIBUJA EN EL FRAGMENTO EL ITEM SELECCIONADO
-        if (fragmentSeleccionado) {
-            val manager = supportFragmentManager
-            if (mifragment != null) {
-                manager.beginTransaction().replace(R.id.main_layout_change_fragment, mifragment).commit()
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
+//    @SuppressLint("WrongConstant")
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        // Handle navigation view item clicks here.
+//
+//        var mifragment: Fragment? = null
+//        var fragmentSeleccionado = false
+//
+//        when (item.itemId) {
+//            R.id.nav_travel -> {
+//                mifragment = mapaInicio(id, token)
+//                fragmentSeleccionado = true
+//            }
+//            R.id.nav_wallet -> {
+//                /*mifragment = TusViajesGratisFragment()
+//                fragmentSeleccionado = true*/
+//            }
+//            R.id.nav_cuenta -> {
+//                mifragment = Fragment_perfil_user()
+//                fragmentSeleccionado = true
+//            }
+//            R.id.nav_trips -> {
+//                startActivity(Intent(this@MainActivity, PagosActivity::class.java))
+//                /*  mifragment = PagoFragment()
+//                  fragmentSeleccionado = true*/
+//            }
+//            R.id.nav_trips_free -> {
+//                if (!canDrawOverlayViews() && isXiaomi()) {
+//                    //permission not granted
+//                    Log.e("canDrawOverlayViews", "-No-");
+//                    dialogEmergente("ACTIVAR: !!Mostrar ventanas emergentes mientras se ejecuta en segundo plano")
+//                    //write above answered permission code for MIUI here
+//                }else {
+//
+//                }
+//            }
+//            R.id.nav_oferts -> {
+//                /* mifragment = AyudaFragment()
+//                 fragmentSeleccionado = true*/
+//            }
+//            R.id.nav_share -> {
+//                 val dialog= ReferidosDialogFragment()
+//                 dialog.show(getSupportFragmentManager(),"")
+//            }
+//            R.id.nav_logout->{
+//                var editor = datadriver.edit()
+//                editor.clear()
+//                editor.apply()
+//                setEstadoViews(datadriver,1)
+//                removerData()
+//                removeSharedPreferences()
+//                logOut()
+//               // stopService(Intent(this@MainActivity, service_mqtt::class.java))
+//                //stopService( Intent(this, cronometro.class))
+//            }
+//            R.id.nav_exit -> {
+//                var editor = datadriver.edit()
+//                editor.clear()
+//                editor.apply()
+//                removerData()
+//                setEstadoViews(datadriver,1)
+//                Log.e("datos enviados","Saliendo ")
+//                finish()
+//
+//
+//            }
+//        }
+//
+//        //// ESTA CONDICION DIBUJA EN EL FRAGMENTO EL ITEM SELECCIONADO
+//        if (fragmentSeleccionado) {
+//            val manager = supportFragmentManager
+//            if (mifragment != null) {
+//                manager.beginTransaction().replace(R.id.main_layout_change_fragment, mifragment).commit()
+//            }
+//        }
+//
+//        drawer_layout.closeDrawer(GravityCompat.START)
+//        return true
+//    }
     private fun removerData(){
         val editor2 = datadriver.edit()
         editor2.clear()
@@ -430,17 +475,17 @@ class MainActivity : AppCompatActivity(), com.google.android.material.navigation
 
     }
 
-    fun Sfragmentdefault() {
-        try{
-
-            val manager = supportFragmentManager
-            manager.beginTransaction().replace(R.id.main_layout_change_fragment, mapaInicio(
-                getUserId_Prefs(prefs), getToken(prefs)
-            )).commit()
-        }catch (E:Exception){
-            Log.e("error",E.message)
-        }
-    }
+//    fun Sfragmentdefault() {
+//        try{
+//
+//            val manager = supportFragmentManager
+//            manager.beginTransaction().replace(R.id.main_layout_change_fragment, mapaInicio(
+//                getUserId_Prefs(prefs), getToken(prefs)
+//            )).commit()
+//        }catch (E:Exception){
+//            Log.e("error",E.message)
+//        }
+//    }
 
     private fun logOut(){
         val intent = Intent(this, InicioActivity::class.java)
