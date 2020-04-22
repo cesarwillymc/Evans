@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.evans.technologies.usuario.Activities.InicioActivity
 
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
@@ -45,21 +46,23 @@ import java.io.File
 /**
  * A simple [Fragment] subclass.
  */
-class Fragment_perfil_user : Fragment(),View.OnClickListener {
+class Fragment_perfil_user : Fragment() {
     private var  file: File? = null
     private var doc: Uri? = null
     private var capturePath: String? = null
     private var prefs: SharedPreferences? = null
-    lateinit var vista:View
-    lateinit var imagen: ImageView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        vista=inflater.inflate(R.layout.fragment_fragment_perfil_user, container, false)
-        prefs = context!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        return inflater.inflate(R.layout.fragment_fragment_perfil_user, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         setClaseActual(prefs!!, Fragment_perfil_user().toString())
-        imagen=vista.findViewById<ImageView>(R.id.ftvg_user_imagen_perfil)
-        imagen.setOnClickListener(this)
+
+
 
         if (!(getRutaImagen(prefs!!).equals("nulo"))){
             var file: File = File(getRutaImagen(prefs!!))
@@ -67,156 +70,103 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
             if (file.exists()) {
                 try{
                     val myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath())
-                    Glide.with(context!!).asBitmap().load(getImageRotate(getRutaImagen(prefs!!)!!,myBitmap))
+                    Glide.with(requireContext()).asBitmap().load(getImageRotate(getRutaImagen(prefs!!)!!,myBitmap))
                         .apply(RequestOptions.circleCropTransform())
-                        .into(imagen)
-                    imagen.isEnabled=false
+                        .into(ffpu_img_profile)
                 }catch (e:Exception){
 
                 }
-
-
             }
+        }
+        ffpu_txt_name.text=getUserName(prefs!!)
+        ffpu_txt_lastname.text=getUserSurname(prefs!!)
+        ffpu_txt_email.text=getUserEmail(prefs!!)
+        ffpu_txt_dni.text= getNumberDocument(prefs!!)
+        ffpu_txt_phone.text=getcellphoneUser(prefs!!)
+        ffpu_btn_logout.setOnClickListener {
+            var editor2 = requireContext().getSharedPreferences("datadriver", Context.MODE_PRIVATE).edit()
+            editor2.clear()
+            editor2.apply()
+            val editor = prefs!!.edit()
+            editor.clear()
+            editor.apply()
+            val intent = Intent(requireContext(), InicioActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+        ffpu_img_profile.setOnClickListener {
+            saveImg()
         }
         // activity!!.toastLong("sad")
 
-        cargardatos()
-
-        return vista
-    }
-    private fun cargardatos() {
-
-
-
-        var ciudadPais=vista.findViewById<TextView>(R.id.ftvg_txt_ciudad_user)
-        var ratingDriver=vista.findViewById<TextView>(R.id.ftvg_user_txt_rating)
-        var nombreApellidos=vista.findViewById<TextView>(R.id.ftvg_user_text_name)
-        var viajesTotales=vista.findViewById<TextView>(R.id.ftvg_user_text_viajes)
-        var correoDriver=vista.findViewById<TextView>(R.id.ftvg_user_txt_correo)
-        var cupones=vista.findViewById<TextView>(R.id.ftvg_user_txt_cupones)
-        var celular=vista.findViewById<TextView>(R.id.ftvg_user_text_phone)
-        var nombrePerfil=vista.findViewById<TextView>(R.id.ftvg_txt_nombre_user)
-//        var validarbtn=vista.findViewById<Button>(R.id.ftvg_user_button_validar_account)
-
-        //Dar valores a la imagenes
-
-        nombreApellidos.text= getUserName(prefs!!) +" "+ getUserSurname(prefs!!)
-        correoDriver.text= getUserEmail(prefs!!)
-        nombrePerfil.text= getUserName(prefs!!)
-        ciudadPais.text= getcityUser(prefs!!) +", Perú"
-        cupones.text= "0"
-        celular.text= getcellphoneUser(prefs!!)
-        // Log.e("status",""+getAccountActivate(prefs!!)?:false)
-//        try{
-//            if (getAccountActivate(prefs!!)){
-//                validarbtn.visibility=View.GONE
-//            }else{
-//                validarbtn.visibility=View.VISIBLE
-//            }
-//        }catch ( e:Exception){
-//
-//        }
-
-//        validarbtn.setOnClickListener {
-//            var enviarCode: Call<user> = RetrofitClient.getInstance().api.enviarCorreo_validate(
-//                getUserEmail(prefs!!)!!)
-//            enviarCode.enqueue(object : Callback<user> {
-//                override fun onFailure(call: Call<user>, t: Throwable) {
-//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                }
-//
-//                override fun onResponse(call: Call<user>, response: Response<user>) {
-//                    if( response.isSuccessful){
-//                        activity!!.toastLong("Se envio un mensaje a tu correo")
-//
-//                        val manager = activity!!.supportFragmentManager
-//                        manager.beginTransaction().replace(
-//                            R.id.main_layout_change_fragment,
-//                            set_codigo(true, false)
-//                        ).commit()
-//                    }
-//                }
-//            })
-//
-//        }
-
     }
 
-    override fun onClick(v: View?) {
-        when(v!!.id){
-            R.id.ftvg_user_imagen_perfil->{
-                val opciones = arrayOf<CharSequence>("Tomar Foto", "Cargar Imagen")
-                val alertOpciones = AlertDialog.Builder(context!!)
+    fun saveImg(){
+        val opciones = arrayOf<CharSequence>("Tomar Foto", "Cargar Imagen")
+        val alertOpciones = AlertDialog.Builder(requireContext())
 
-                alertOpciones.setTitle("Seleccione una opción:")
-                alertOpciones.setItems(opciones) { dialogInterface, i ->
-                    if (opciones[i] == "Tomar Foto") {
-                        file = null
-                        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                            val builder = StrictMode.VmPolicy.Builder()
-                            StrictMode.setVmPolicy(builder.build())
-                            val directoryPath = Environment.getExternalStorageDirectory().toString() + "/" + "evans" + "/"
-                            val filePath = directoryPath + getUserId_Prefs(prefs!!) + ".jpeg"
-                            val data = File(directoryPath)
+        alertOpciones.setTitle("Seleccione una opción:")
+        alertOpciones.setItems(opciones) { dialogInterface, i ->
+            if (opciones[i] == "Tomar Foto") {
+                file = null
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    val builder = StrictMode.VmPolicy.Builder()
+                    StrictMode.setVmPolicy(builder.build())
+                    val directoryPath = Environment.getExternalStorageDirectory().toString() + "/" + "evans" + "/"
+                    val filePath = directoryPath + getUserId_Prefs(prefs!!) + ".jpeg"
+                    val data = File(directoryPath)
 
-                            if (!data.exists()) {
-                                data.mkdirs()
-                            }
-                            file = File(filePath)
-                            capturePath = filePath // you will process the image from this path if the capture goes well
-                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(filePath)))
-                            startActivityForResult(intent, 20)
-                        } else {
-                            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity!!,
-                                    Manifest.permission.CAMERA)) {
-                                ActivityCompat.requestPermissions(activity!!,
-                                    arrayOf(Manifest.permission.CAMERA),
-                                    20)
-                            }
-                        }
-                    } else {
-                        file = null
-                        ActivityCompat.requestPermissions(activity!!,
-                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            30)
-
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        intent.type = "image/"
-                        startActivityForResult(Intent.createChooser(intent, "Seleccione la Aplicación"), 10)
+                    if (!data.exists()) {
+                        data.mkdirs()
+                    }
+                    file = File(filePath)
+                    capturePath = filePath // you will process the image from this path if the capture goes well
+                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(filePath)))
+                    startActivityForResult(intent, 20)
+                } else {
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                            Manifest.permission.CAMERA)) {
+                        ActivityCompat.requestPermissions(requireActivity(),
+                            arrayOf(Manifest.permission.CAMERA),
+                            20)
                     }
                 }
+            } else {
+                file = null
+                ActivityCompat.requestPermissions(requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    30)
 
-                alertOpciones.show()
-                ActivityCompat.requestPermissions(
-                    activity!!,
-                    arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ),
-                    30
-                )
-                ActivityCompat.requestPermissions(
-                    activity!!,
-                    arrayOf(Manifest.permission.CAMERA),
-                    20
-                )
-            }
-            R.id.ftvg_user_button_guardar->{
-
-                if (file!=null){
-                    guardarFotoEnArchivo()
-                }else{
-                    longToast("Ingrese una imagen por favor")
-                }
-
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                intent.type = "image/"
+                startActivityForResult(Intent.createChooser(intent, "Seleccione la Aplicación"), 10)
             }
         }
+
+        alertOpciones.show()
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ),
+            30
+        )
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.CAMERA),
+            20
+        )
     }
+
+
+
+
     private fun guardarFotoEnArchivo() {
 
         //MediaType.parse("multipart/form-data")
-        Log.e("subir_imagen", file!!.getPath() + "" + file!!.getParent() + "" + file!!.getAbsolutePath() + "" + file!!.getPath() + "")
+
         if (detectar_formato(file!!.getPath()).equals("ninguno")) {
 
         } else {
@@ -234,16 +184,15 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
 
     private fun getPath(uri: Uri?): String {
         val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = activity!!.managedQuery(uri, projection, null, null, null)
-        activity!!.startManagingCursor(cursor)
+        val cursor = requireActivity().managedQuery(uri, projection, null, null, null)
+        requireActivity().startManagingCursor(cursor)
         val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
         return cursor.getString(column_index)
     }
 
     private fun subir_datos(body: MultipartBody.Part) {
-        val progressDoalog: ProgressDialog
-        progressDoalog = ProgressDialog(context)
+        val progressDoalog: ProgressDialog = ProgressDialog(requireContext())
         progressDoalog.max = 100
         progressDoalog.setMessage("Cargando...")
         progressDoalog.setTitle("Subiendo Datos")
@@ -258,23 +207,24 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
                 if (response.isSuccessful()) {
                     Log.e("subir_imagen", response.code().toString() + "" + getUserId_Prefs(prefs!!))
                     progressDoalog.dismiss()
-                    ftvg_user_button_guardar.visibility=View.GONE
-                    activity!!.toastLong("Guardado Correctamente")
+//                    ftvg_user_button_guardar.visibility=View.GONE
+                    activity!!.toastLong("Se subio su nueva imagen de perfil")
                     if (file!!.exists()) {
                         setRutaImagen(prefs!!, file!!.getPath())
                     }
                 } else {
+                    activity!!.toastLong("La imagen no fue cargada para su perfil")
                     Log.e("subir_imagen", response.code().toString() + "")
                     progressDoalog.dismiss()
-                    ftvg_user_button_guardar.visibility=View.GONE
+//                    ftvg_user_button_guardar.visibility=View.GONE
                 }
 
             }
 
             override fun onFailure(call: Call<user>, t: Throwable) {
-                Log.e("subir_imagen", t.message)
+                activity!!.toastLong("Se presentaron problemas con la red")
                 progressDoalog.dismiss()
-                ftvg_user_button_guardar.visibility=View.GONE
+//                ftvg_user_button_guardar.visibility=View.GONE
             }
         })
 
@@ -288,13 +238,13 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
                 -> {
                     doc = data!!.data
                     Log.e("subir_imagen", doc.toString())
-                    imagen.setImageURI(doc)
+                    ffpu_img_profile.setImageURI(doc)
 
-                    ftvg_user_button_guardar.visibility=View.VISIBLE
-                    ftvg_user_button_guardar.setOnClickListener(this)
                     if (doc!=null) {
                         file = File(getPath( doc))
+                        imgSaved()
                     }
+
                 }
                 20 //20 -> Tomar nueva foto
                 ->
@@ -304,14 +254,19 @@ class Fragment_perfil_user : Fragment(),View.OnClickListener {
 
                         val myBitmap = BitmapFactory.decodeFile(file!!.getAbsolutePath())
 
-                        imagen.setImageBitmap(myBitmap)
-                        ftvg_user_button_guardar.visibility=View.VISIBLE
-                        ftvg_user_button_guardar.setOnClickListener(this)
+                        ffpu_img_profile.setImageBitmap(myBitmap)
+                        imgSaved()
                     }
             }
         }
 
     }
-
+    fun imgSaved() {
+        if (file != null) {
+            guardarFotoEnArchivo()
+        } else {
+            longToast("Ingrese una imagen por favor")
+        }
+    }
 
 }

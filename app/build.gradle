@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -101,14 +102,21 @@ dependencies {
     implementation "com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0"
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     //Butternife
     implementation "com.jakewharton:butterknife:$butternifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butternifeVersion"
     //chat view
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha01"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
+    //implementation 'androidx.navigation:navigation-safe-args-gradle-plugin:2.1.0'
     //New Android X dependency is this -
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-rc02"
+    //maps google
+    implementation "com.google.android.gms:play-services-maps:17.0.0"
+
 }

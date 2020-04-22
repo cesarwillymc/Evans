@@ -35,7 +35,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Activities.viajes.rv_viajes" />
+        <activity android:name=".Activities.viajes.ListaViajes" />
         <activity android:name=".Activities.cupon.PagosActivity" />
         <activity android:name=".Activities.cupon.Cupones" />
         <activity android:name=".Activities.cupon.AddCodePromocional" />
@@ -68,6 +68,8 @@
             android:required="false" />
 
         <service android:name=".Utils.Services.cronometro" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAPTlJ_g6cCp5eCwQS_Lw-whyIm-JllzlY"/>
     </application>
 
 </manifest>

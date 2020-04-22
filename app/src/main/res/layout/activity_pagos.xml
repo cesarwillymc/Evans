@@ -103,6 +103,7 @@
                android:layout_marginVertical="8dp"
                android:layout_marginTop="16dp"
                android:background="@color/plomo"
+               android:visibility="gone"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.1"
                app:layout_constraintStart_toStartOf="parent"
@@ -116,6 +117,7 @@
                android:layout_marginTop="8dp"
                android:layout_marginEnd="24dp"
                android:text="Promociones"
+               android:visibility="gone"
                android:textStyle="bold"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.0"
@@ -123,6 +125,7 @@
                app:layout_constraintTop_toBottomOf="@+id/view6" />
 
            <TextView
+               android:visibility="gone"
                android:id="@+id/ap_txt_add_promo"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"

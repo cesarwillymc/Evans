@@ -1,158 +1,96 @@
 package com.evans.technologies.usuario.fragments
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.TypeEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.IntentSender
-import android.content.SharedPreferences
-import android.graphics.Bitmap
+import android.content.*
+import android.graphics.Camera
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.os.Build
 import android.os.Bundle
-
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-
 import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
-import android.widget.Spinner
-import android.widget.SpinnerAdapter
-import android.widget.TextView
+import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.core.os.postDelayed
-
+import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.liveData
+import androidx.lifecycle.observe
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.evans.technologies.usuario.Activities.MainActivity
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
+import com.evans.technologies.usuario.Retrofit.RetrofitClientMaps
+import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.Utils.Adapters.adapter_spinner_pay_tipe
+import com.evans.technologies.usuario.Utils.DirectionsHelper.DirectionsJSONParser
+import com.evans.technologies.usuario.Utils.DirectionsHelper.TaskLoadedCallback
 import com.evans.technologies.usuario.Utils.Services.cronometro
+import com.evans.technologies.usuario.Utils.constans.AppConstants.*
 import com.evans.technologies.usuario.Utils.timeCallback.ComunicateFrag
 import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotifications
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
-import com.evans.technologies.usuario.model.config
-import com.evans.technologies.usuario.model.data
-import com.evans.technologies.usuario.model.getPrice
-import com.evans.technologies.usuario.model.infoDriver
-import com.evans.technologies.usuario.model.user
+import com.evans.technologies.usuario.model.*
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsResponse
-import com.google.android.gms.location.SettingsClient
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.gson.Gson
-import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.api.directions.v5.models.DirectionsResponse
-import com.mapbox.api.directions.v5.models.DirectionsRoute
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.LineString
-import com.mapbox.geojson.Point
-import com.mapbox.geojson.utils.PolylineUtils
-import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.IconFactory
-import com.mapbox.mapboxsdk.annotations.Marker
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
-import com.mapbox.mapboxsdk.camera.CameraPosition
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
-import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
-import com.mapbox.mapboxsdk.location.LocationComponent
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.modes.CameraMode
-import com.mapbox.mapboxsdk.location.modes.RenderMode
-import com.mapbox.mapboxsdk.maps.MapView
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
-import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
-import com.mapbox.mapboxsdk.utils.BitmapUtils
-import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute
-
-import java.io.IOException
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Date
-import java.util.List
-import java.util.Locale
-import java.util.Objects
-
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.evans.technologies.usuario.Utils.*
-import com.evans.technologies.usuario.Utils.constans.AppConstants.*
-import com.mapbox.core.constants.Constants.PRECISION_6
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import kotlinx.android.synthetic.main.dialog_fin_viaje_dialog.*
 import kotlinx.android.synthetic.main.dialog_nuevo_comentario.*
 import kotlinx.android.synthetic.main.dialog_origin_dest_position_marker.*
 import kotlinx.android.synthetic.main.dialog_precio_layout.*
 import kotlinx.android.synthetic.main.dialog_transcurso_viaje_layout.*
 import kotlinx.android.synthetic.main.fragment_mapa_inicio.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendAtomicCancellableCoroutine
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.List
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.math.abs
+import kotlin.math.atan
 
 /**
  * A simple {@link Fragment} subclass.
  */
-class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
-
+@ExperimentalStdlibApi
+class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,TaskLoadedCallback {
+//, PermissionsListener
     val TAG:String = "Mapa Inicio"
-
+    lateinit var  viewModel :viewModelMain
     //Bots
 //    lateinit var bot1:Marker
 //    lateinit var  bot2:Marker
@@ -164,7 +102,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 //    val camera=false
     //Bindeos Mapa principal//////////////////////////////////////////////////////////////////
 
-    lateinit var marcador:ImageView
+//    lateinit var marcador:ImageView
     //Bindeos dialog destinos//////////////////////////////////////////////////////////////////
 
     //  @BindView(R.id.dialog_fin_viaje_spinner)
@@ -177,7 +115,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     lateinit var segundos:String
     //markers
     lateinit var geo:Geocoder
-     var origen:Marker?=null
+     var origen: Marker?=null
      var destino:Marker?=null
     lateinit var fusedLocationProviderClient:FusedLocationProviderClient //Ultima Ubicacion
 //    lateinit var location:Location
@@ -208,22 +146,22 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     */
 
     //Mapbox
-    lateinit var  mapboxMap:MapboxMap
+    //lateinit var  mapboxMap:MapboxMap
     // variables for adding location layer
-    lateinit var  permissionsManager:PermissionsManager
-    lateinit var   locationComponent:LocationComponent
-    lateinit var   currentRoute:DirectionsRoute
-    lateinit var   routeCoordinateList:List<Point>
+//    lateinit var  permissionsManager:PermissionsManager
+//    lateinit var   locationComponent:LocationComponent
+//    lateinit var   currentRoute:DirectionsRoute
+//    lateinit var   routeCoordinateList:List<Point>
 //    lateinit var   routeCoordinateList2:List<Point>
 //    lateinit var   routeCoordinateList3:List<Point>
 //    lateinit var   routeCoordinateList4:List<Point>
-    var   markerLinePointList : ArrayList<Point> = ArrayList<Point>()
+//    var   markerLinePointList : ArrayList<Point> = ArrayList<Point>()
 //    var   pointSource:GeoJsonSource
     var   currentAnimator:Animator?=null
      var   routeIndex:Int=0
     // private GeoJsonSource lineSource;
 
-    var  navigationMapRoute:NavigationMapRoute?=null
+//    var  navigationMapRoute:NavigationMapRoute?=null
 //
 //    lateinit var  geocoder:Geocoder
     //lateinit var  address:List<Address>
@@ -245,15 +183,15 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     lateinit var receiver:BroadcastReceiver
     lateinit var datadriver:SharedPreferences
     lateinit var prefs:SharedPreferences
-    lateinit var iconFactory:IconFactory
+//    lateinit var iconFactory:IconFactory
 //    lateinit var actualiza_cada_cierto_tiempo_Coordenadas:LatLng
 
     lateinit var comunicateFrag:updateListenerNotifications
     var cordenadasDriver_Runable:Runnable?=null
 
 
-    var originPoint :Point?=null
-    var destinationPoint :Point?=null
+    var originLatlng : LatLng?=null
+    var destinationLatlng :LatLng?=null
     var status_btn_origin:Boolean=false
     var status_btn_dest:Boolean=false
     val  imagenes_Spinner= listOf(R.drawable.money,R.drawable.sale)
@@ -262,14 +200,27 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 //        this.id=id;
 //        this.token=token;
 //    }
-
-    @SuppressLint("UseRequireInsteadOfGet")
+    lateinit var googleMap: GoogleMap
+    private var currentPoline:Polyline?=null
+    private var isMoving:Boolean=false
+    private var circleRadius:Int?=null
+    //Bots
+    var v:Float?=null
+    var handler:Handler?=null
+    var startPositionB:LatLng?=null
+    var endPositionB:LatLng?=null
+    var currentPositionB:LatLng?=null
+    var index:Int?=null
+    var next:Int?=null
+    private var botMarker:Marker?=null
+    var drawPathRunnable:Runnable?=null
+    var blackPolilyne:Polyline?=null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Mapbox.getInstance(requireContext() , getString(R.string.access_token))
+        //Mapbox.getInstance(requireContext() , getString(R.string.access_token))
 
         return inflater.inflate(R.layout.fragment_mapa_inicio, container, false)
     }
@@ -277,6 +228,9 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = requireActivity().run {
+            ViewModelProviders.of(this)[viewModelMain::class.java]
+        }
         bottomSheetBehavior= BottomSheetBehavior.from( crear_comentario_layout_dialog )
         datadriver = requireContext().getSharedPreferences("datadriver", Context.MODE_PRIVATE)
         prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
@@ -298,10 +252,11 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
             funcionObtenerPrecio()
         }
 
-        iconFactory = IconFactory.getInstance(requireContext())
+        //iconFactory = IconFactory.getInstance(requireContext())
+        //Maps google
         mapView.onCreate( savedInstanceState )
         mapView.onResume()
-        mapView.getMapAsync( this )
+        mapView.getMapAsync(this)
         dialog_fin_viaje_imgbtn_message.setOnClickListener{
             dialog_fin_viaje_imgbtn_message_notify.visibility = View.GONE
             comunicateFrag.updateNotificatones(true)
@@ -328,7 +283,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                 override fun onResponse( call:Call<user>,  response:Response<user>) {
                     if(response.isSuccessful){
                         setViajeId(datadriver,response.body()!!.viajeId)
-                        //fmi_time.setVisibility(View.VISIBLE);
+                        ////fmi_time.setVisibility(View.VISIBLE);
                         // ejecutarCronometro();
                         search_imagen.visibility = View.VISIBLE
                         setEstadoViews(datadriver,4)
@@ -369,13 +324,13 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
         }
 
-        marcador=view.findViewById(R.id.mapa_marker_center)
+        //marcador=view.findViewById(R.id.mapa_marker_center)
         //bindeos dialog pedido
 
         dodpm_imgbtn_status_dest.setOnClickListener{
             dodpm_imgbtn_status_dest.isSelected = !it.isSelected
             if (dodpm_imgbtn_status_dest.isSelected){
-                val center = mapboxMap.cameraPosition.target
+                val center = googleMap.cameraPosition.target
                 status_btn_dest=true
                 try {
                     adres = geo.getFromLocation(center.latitude,center.longitude,1)  as List<Address>
@@ -389,11 +344,14 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                     Log.e("recoger View",e.message)
                 }
                 setDestino(datadriver,center.latitude.toString(),center.longitude.toString())
-                destino=mapboxMap.addMarker( MarkerOptions()
-                    .setIcon(iconFactory.fromResource(R.drawable.logo22))
-                    .setPosition( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble()))
-                    .title("Destino"))
 
+//                destino=googleMap.addMarker( MarkerOptions()
+//                    .setIcon(iconFactory.fromResource(R.drawable.logo22))
+//                    .setPosition( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble()))
+//                    .title("Destino"))
+                destino=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
+                    .title("Destino")
+                    .position( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble())))
                 if (status_btn_origin){
                     mi_imgbtn_next_step.isEnabled = true
                     mi_imgbtn_next_step.setBackgroundColor(requireActivity().resources.getColor(R.color.black))
@@ -415,7 +373,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         dodpm_imgbtn_status_origin.setOnClickListener{
             dodpm_imgbtn_status_origin.isSelected = !it.isSelected
             if (dodpm_imgbtn_status_origin.isSelected){
-                val center = mapboxMap.cameraPosition.target
+                val center = googleMap.cameraPosition.target
                 status_btn_origin=true
                 try {
                     adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
@@ -428,10 +386,13 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                     Log.e("recoger View",e.message)
                 }
                 setOrigen(datadriver,center.latitude.toString() ,center.longitude.toString())
-                origen=mapboxMap.addMarker( MarkerOptions()
-                    .setIcon(iconFactory.fromResource(R.drawable.logo33))
-                    .setPosition( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble()))
-                    .title("Origen"))
+                origen=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
+                    .title("Origen")
+                    .position( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble())))
+//                origen=mapboxMap.addMarker( MarkerOptions()
+//                    .setIcon(iconFactory.fromResource(R.drawable.logo33))
+//                    .setPosition( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble()))
+//                    .title("Origen"))
                 if (status_btn_dest){
                     mi_imgbtn_next_step.isEnabled = true
 
@@ -537,8 +498,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
             }
-            originPoint=null
-            destinationPoint=null
+            originLatlng=null
+            destinationLatlng=null
         }
         aic_button_comentar_hide.setOnClickListener{
             if (!(getApiWebVersion(prefs).equals(requireContext().getVersionApp()))){
@@ -640,6 +601,16 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
                 }
+            }
+        }
+        mapa_icon_gpsaa.setOnClickListener {
+            val location=this.googleMap.myLocation
+            if (location!=null){
+                val target=LatLng(location.latitude,location.longitude)
+                val builder= CameraPosition.builder()
+                builder.zoom(16f)
+                builder.target(target)
+                this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
             }
         }
         receiver =  object:BroadcastReceiver() {
@@ -855,8 +826,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     private fun deleteOnclickTrip() {
         if (DriverOptions!!!=null)
             DriverOptions!!.remove()
-        originPoint=null
-        destinationPoint=null
+        originLatlng=null
+        destinationLatlng=null
         val dialogClickListener: DialogInterface.OnClickListener =
            DialogInterface.OnClickListener { dialog, which ->
                when(which){
@@ -926,8 +897,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                         if ( !(response.body()!!.isOk)){
                             borrarSharedPreferencesDataDriver(1)
                             primer_estado()
-                            originPoint=null
-                            destinationPoint=null
+                            originLatlng=null
+                            destinationLatlng=null
 
                             setChatJson(datadriver,"nulo")
                          /*   Intent intent = new Intent("subsUnsubs");
@@ -959,33 +930,33 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         super.onAttach(activity)
     }
 
-    private fun  init_bot_driver( ruta:String){
-        Log.e("rutabot",ruta)
-
-        // new LoadGeoJson(mapaInicio.this,ruta).execute();
-        /*mapboxMap.getStyle(new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                DirectionsRoute route=DirectionsRoute.fromJson(ruta);
-                initData(style,FeatureCollection.fromFeature(
-                        Feature.fromGeometry(LineString.fromPolyline(route.geometry(), PRECISION_6))));
-            }
-        });*/
-
-        //
-        //List<Point> routeCoordinateList=PolylineUtils.decode((route.geometry()),6);
-        //initRunnable(routeCoordinateList);
-    }
-    private fun initData( fullyLoadedStyle:Style, @NonNull  featureCollection:FeatureCollection) {
-        if (featureCollection.features() != null) {
-            val lineString = ( featureCollection.features()!![0].geometry()) as LineString
-            routeCoordinateList = lineString.coordinates() as List<Point>
-            initSources(fullyLoadedStyle, featureCollection)
-            initSymbolLayer(fullyLoadedStyle)
-            //initDotLinePath(fullyLoadedStyle);
-            animate()
-        }
-    }
+//    private fun  init_bot_driver( ruta:String){
+//        Log.e("rutabot",ruta)
+//
+//        // new LoadGeoJson(mapaInicio.this,ruta).execute();
+//        /*mapboxMap.getStyle(new Style.OnStyleLoaded() {
+//            @Override
+//            public void onStyleLoaded(@NonNull Style style) {
+//                DirectionsRoute route=DirectionsRoute.fromJson(ruta);
+//                initData(style,FeatureCollection.fromFeature(
+//                        Feature.fromGeometry(LineString.fromPolyline(route.geometry(), PRECISION_6))));
+//            }
+//        });*/
+//
+//        //
+//        //List<Point> routeCoordinateList=PolylineUtils.decode((route.geometry()),6);
+//        //initRunnable(routeCoordinateList);
+//    }
+//    private fun initData( fullyLoadedStyle:Style, @NonNull  featureCollection:FeatureCollection) {
+//        if (featureCollection.features() != null) {
+//            val lineString = ( featureCollection.features()!![0].geometry()) as LineString
+//            routeCoordinateList = lineString.coordinates() as List<Point>
+//            initSources(fullyLoadedStyle, featureCollection)
+//            initSymbolLayer(fullyLoadedStyle)
+//            //initDotLinePath(fullyLoadedStyle);
+//            animate()
+//        }
+//    }
 
     /**
      * Set up the repeat logic for moving the icon along the route.
@@ -1082,39 +1053,39 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         }
 
     }*/
-    private fun  animate() {
-
-        if (getEstadoView(datadriver)!!<3){
-            if ((routeCoordinateList.size - 1 > routeIndex!!)) {
-                var indexPoint:Point = routeCoordinateList.get(routeIndex!!)
-                var newPoint:Point = Point.fromLngLat(indexPoint.longitude(), indexPoint.latitude())
-                currentAnimator = createLatLngAnimator(indexPoint, newPoint)
-                currentAnimator!!.start()
-                routeIndex++
-            }else{
-                mapboxMap.getStyle { style ->
-                    style.removeSource(DOT_SOURCE_ID1)
-                    style.removeLayer("symbol-layer-id")
-                    getRouteString()
-                }
-            }
-        }else{
-            mapboxMap.getStyle { style ->
-                style.removeSource(DOT_SOURCE_ID1)
-                style.removeLayer("symbol-layer-id")
-            }
-        }
-
-    }
-    class PointEvaluator:TypeEvaluator<Point>{
-        override fun evaluate(fraction: Float, startValue: Point?, endValue: Point?): Point {
-            return Point.fromLngLat(
-                startValue!!.longitude() + ((endValue!!.longitude() - startValue.longitude()) * fraction),
-                startValue.latitude() + ((endValue.latitude() - startValue.latitude()) * fraction)
-            )
-        }
-
-    }
+//    private fun  animate() {
+//
+//        if (getEstadoView(datadriver)!!<3){
+//            if ((routeCoordinateList.size - 1 > routeIndex!!)) {
+//                var indexPoint:Point = routeCoordinateList.get(routeIndex!!)
+//                var newPoint:Point = Point.fromLngLat(indexPoint.longitude(), indexPoint.latitude())
+//                currentAnimator = createLatLngAnimator(indexPoint, newPoint)
+//                currentAnimator!!.start()
+//                routeIndex++
+//            }else{
+//                mapboxMap.getStyle { style ->
+//                    style.removeSource(DOT_SOURCE_ID1)
+//                    style.removeLayer("symbol-layer-id")
+//                    getRouteString()
+//                }
+//            }
+//        }else{
+//            mapboxMap.getStyle { style ->
+//                style.removeSource(DOT_SOURCE_ID1)
+//                style.removeLayer("symbol-layer-id")
+//            }
+//        }
+//
+//    }
+//    class PointEvaluator:TypeEvaluator<Point>{
+//        override fun evaluate(fraction: Float, startValue: Point?, endValue: Point?): Point {
+//            return Point.fromLngLat(
+//                startValue!!.longitude() + ((endValue!!.longitude() - startValue.longitude()) * fraction),
+//                startValue.latitude() + ((endValue.latitude() - startValue.latitude()) * fraction)
+//            )
+//        }
+//
+//    }
 //    private static class PointEvaluator implements TypeEvaluator<Point> {
 //
 //        @Override
@@ -1123,57 +1094,57 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 //        }
 //    }
 
-    private fun createLatLngAnimator( currentPosition:Point,  targetPosition:Point):Animator {
-        val latLngAnimator:ValueAnimator = ValueAnimator.ofObject( PointEvaluator(), currentPosition, targetPosition)
-        // latLngAnimator.setDuration((long) TurfMeasurement.distance(currentPosition, targetPosition, "meters"));
-        latLngAnimator.duration = 5000
-
-        latLngAnimator.interpolator = LinearInterpolator()
-        latLngAnimator.addListener(object: AnimatorListenerAdapter() {
-            @Override
-            override fun onAnimationEnd( animation:Animator) {
-                super.onAnimationEnd(animation)
-                animate()
-            }
-        })
-        latLngAnimator.addUpdateListener { animation ->
-            val point:Point =  animation.animatedValue as Point
-
-           // pointSource.setGeoJson(point)
-            markerLinePointList.add(point)
-            // lineSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(markerLinePointList)));
-        }
-
-        return latLngAnimator
-    }
-    private fun  initSources(@NonNull  loadedMapStyle:Style, @NonNull  featureCollection:FeatureCollection) {
-        mapboxMap.getStyle { style ->
-            if (style.getSource(DOT_SOURCE_ID1)==null){
-                loadedMapStyle.addSource(  GeoJsonSource(DOT_SOURCE_ID1, featureCollection))
-            }
-        }
-
-
-        //  loadedMapStyle.addSource(lineSource = new GeoJsonSource(LINE_SOURCE_ID));
-    }
-    private fun initSymbolLayer(@NonNull  loadedMapStyle:Style) {
-        mapboxMap.getStyle { style ->
-            if (style.getLayer("symbol-layer-id")==null){
-                val drawable: Drawable? = ResourcesCompat.getDrawable(resources, R.drawable.ic_directions_car_black_24dp, null)
-                val mBitmap: Bitmap? = BitmapUtils.getBitmapFromDrawable(drawable)
-                loadedMapStyle.addImage("moving-red-marker", mBitmap!!)
-                loadedMapStyle.addLayer( SymbolLayer("symbol-layer-id", DOT_SOURCE_ID1).withProperties(
-                    iconImage("moving-red-marker"),
-                    iconSize(1f),
-                    iconIgnorePlacement(true),
-                    iconAllowOverlap(true)
-                ))
-                //  iconOffset(listOf(5f, 0f) as Array<out Float>),
-
-            }
-        }
-
-    }
+//    private fun createLatLngAnimator( currentPosition:Point,  targetPosition:Point):Animator {
+//        val latLngAnimator:ValueAnimator = ValueAnimator.ofObject( PointEvaluator(), currentPosition, targetPosition)
+//        // latLngAnimator.setDuration((long) TurfMeasurement.distance(currentPosition, targetPosition, "meters"));
+//        latLngAnimator.duration = 5000
+//
+//        latLngAnimator.interpolator = LinearInterpolator()
+//        latLngAnimator.addListener(object: AnimatorListenerAdapter() {
+//            @Override
+//            override fun onAnimationEnd( animation:Animator) {
+//                super.onAnimationEnd(animation)
+//                animate()
+//            }
+//        })
+//        latLngAnimator.addUpdateListener { animation ->
+//            val point:Point =  animation.animatedValue as Point
+//
+//           // pointSource.setGeoJson(point)
+//            markerLinePointList.add(point)
+//            // lineSource.setGeoJson(Feature.fromGeometry(LineString.fromLngLats(markerLinePointList)));
+//        }
+//
+//        return latLngAnimator
+//    }
+//    private fun  initSources(@NonNull  loadedMapStyle:Style, @NonNull  featureCollection:FeatureCollection) {
+//        mapboxMap.getStyle { style ->
+//            if (style.getSource(DOT_SOURCE_ID1)==null){
+//                loadedMapStyle.addSource(  GeoJsonSource(DOT_SOURCE_ID1, featureCollection))
+//            }
+//        }
+//
+//
+//        //  loadedMapStyle.addSource(lineSource = new GeoJsonSource(LINE_SOURCE_ID));
+//    }
+//    private fun initSymbolLayer(@NonNull  loadedMapStyle:Style) {
+//        mapboxMap.getStyle { style ->
+//            if (style.getLayer("symbol-layer-id")==null){
+//                val drawable: Drawable? = ResourcesCompat.getDrawable(resources, R.drawable.ic_directions_car_black_24dp, null)
+//                val mBitmap: Bitmap? = BitmapUtils.getBitmapFromDrawable(drawable)
+//                loadedMapStyle.addImage("moving-red-marker", mBitmap!!)
+//                loadedMapStyle.addLayer( SymbolLayer("symbol-layer-id", DOT_SOURCE_ID1).withProperties(
+//                    iconImage("moving-red-marker"),
+//                    iconSize(1f),
+//                    iconIgnorePlacement(true),
+//                    iconAllowOverlap(true)
+//                ))
+//                //  iconOffset(listOf(5f, 0f) as Array<out Float>),
+//
+//            }
+//        }
+//
+//    }
 
     /**
      * Add the LineLayer for the marker icon's travel route. Adding it under the "road-label" layer, so that the
@@ -1198,7 +1169,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
                     search_imagen.visibility = View.GONE
-                    //fmi_time.setVisibility(View.GONE);
+                    ////fmi_time.setVisibility(View.GONE);
                     val  getInfoDriver = RetrofitClient.getInstance()
                             .api.getInfoDriver(topic.getDriverId())
                     getInfoDriver.enqueue(object: Callback<infoDriver> {
@@ -1224,10 +1195,10 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                                 cargarPosicionDriver()
                                 quinto_estado()
 
-                                mapboxMap.getStyle { style ->
-                                    style.removeSource(DOT_SOURCE_ID1)
-                                    style.removeLayer("symbol-layer-id")
-                                }
+//                                mapboxMap.getStyle { style ->
+//                                    style.removeSource(DOT_SOURCE_ID1)
+//                                    style.removeLayer("symbol-layer-id")
+//                                }
                             }
                             else{
                                 activity!!.toastLong( "El conductor no tiene informacion, se cancelara el viaje")
@@ -1254,8 +1225,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                 comunicateFrag.removeChatConexion()
                 setEstadoViews(datadriver,10)
                 decimo_estado()
-                originPoint=null
-                destinationPoint=null
+                originLatlng=null
+                destinationLatlng=null
             }else if(topic.getResponse() == SEND_NOTIFICATION_VIAJE_CANCELADO){
                 comunicateFrag.removeChatConexion()
                 refConexionDriverCoor.removeEventListener(conexionDriver)
@@ -1269,8 +1240,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                 LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(requireContext());
                 broadcaster.sendBroadcast(intent);*/
                 borrarSharedPreferencesDataDriver(1)
-                originPoint=null
-                destinationPoint=null
+                originLatlng=null
+                destinationLatlng=null
                 primer_estado()
 
             }else{
@@ -1298,9 +1269,9 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                     Log.e("updateCoor","${configuraciones.lat}  ${configuraciones.log}")
                     if (DriverOptions!!!=null)
                         DriverOptions!!.remove()
-                    DriverOptions=mapboxMap.addMarker( MarkerOptions()
-                            .setIcon(iconFactory.fromResource(R.drawable.car64dp))
-                            .setPosition( LatLng(configuraciones.lat,configuraciones.log))
+                    DriverOptions=googleMap.addMarker( MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.car64dp))
+                            .position( LatLng(configuraciones.lat,configuraciones.log))
                             .title("Driver"))
                 }
             }
@@ -1327,121 +1298,177 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         }
     }
 
-    private fun getRouteString(){
-        val origin = Point.fromLngLat( ramdomNum(false).toDouble(),ramdomNum(true).toDouble())
-        val destination = Point.fromLngLat( ramdomNum(false).toDouble(),ramdomNum(true).toDouble())
+//    private fun getRouteString(){
+//        val origin = Point.fromLngLat( ramdomNum(false).toDouble(),ramdomNum(true).toDouble())
+//        val destination = Point.fromLngLat( ramdomNum(false).toDouble(),ramdomNum(true).toDouble())
+//
+//        NavigationRoute.builder(requireContext())
+//                .accessToken(getString(R.string.access_token))
+//                .origin(origin)
+//                .destination(destination)
+//                .build()
+//                .getRoute(object: Callback<DirectionsResponse> {
+//                    @Override
+//                    override fun onResponse( call:Call<DirectionsResponse>,  response:Response<DirectionsResponse>) {
+//                        if (response.isSuccessful){
+//                            if (response.body()!!.routes().size < 1){
+//
+//                                activity!!.toastLong("No se encontro la direccion")
+//                            }else{
+//                                val f1= FeatureCollection.fromFeature(
+//                                        Feature.fromGeometry(LineString.fromPolyline(response.body()!!.routes()[0].geometry()!!, PRECISION_6)))
+//                                // LineString ls1 = ((LineString) f1.features().get(0).geometry());
+//                                mapboxMap.getStyle {style->
+//                                    initData(style,f1)
+//                                }
+//
+//                                Log.e("ruta", "currentRoute: " + response.body()!!.routes().get(0))
+//
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    override fun onFailure( call:Call<DirectionsResponse>,  throwable:Throwable) {
+//                        Log.e(TAG, "Error: " + throwable.message)
+//                    }
+//                })
+//
+//
+//        //button.setVisibility(View.VISIBLE);
+//    }
+//    private fun getRoute( origin:Point,  destination:Point) {
+//        Log.e("origin","$origin")
+//        Log.e("destination","$destination ")
+//        NavigationRoute.builder(requireContext())
+//                .accessToken(getString(R.string.access_token))
+//                .origin(origin)
+//                .destination(destination)
+//                .build()
+//                .getRoute(object: Callback<DirectionsResponse> {
+//                    @Override
+//                    override fun onResponse( call:Call<DirectionsResponse>,  response:Response<DirectionsResponse>) {
+//
+//                        if (response.body()!! == null) {
+//                            Log.e(TAG, "No routes found, make sure you set the right user and access token.")
+//                            return
+//                        } else if (response.body()!!.routes().size < 1) {
+//                            Log.e(TAG, "No routes found")
+//                            return
+//                        }
+//
+//                        Log.d(TAG, "currentRoute"+  PolylineUtils.decode(response.body()!!.routes()[0].geometry()!!,6))
+//                        currentRoute = response.body()!!.routes()[0]
+//                        //new LoadGeoJson(mapaInicio.this).execute()
+//                        Log.d(TAG, "currentRoute: " + response.body()!!)
+//                        Log.d(TAG, "currentRoute: " + response.body()!!.routes()[0])
+//                        Log.d(TAG, "currentRoute"+ response.body()!!.routes()[0].geometry())
+//
+//                        if (navigationMapRoute != null) {
+//                            navigationMapRoute!!.removeRoute()
+//                        } else {
+//                            try{
+//                                navigationMapRoute =  NavigationMapRoute(null, mapView, mapboxMap, R.style.navegation)
+//                            }catch ( e:Exception){
+//
+//                            }
+//
+//                        }
+//                        try{
+//                            navigationMapRoute!!.addRoute(currentRoute)
+//                            mapboxMap.easeCamera(CameraUpdateFactory.newLatLngBounds(
+//                                     LatLngBounds.Builder()
+//                                            .include( LatLng(origin.latitude(), origin.longitude()))
+//                                            .include( LatLng(destination.latitude(), destination.longitude()))
+//                                            .build(), 50), 3)
+//                        }catch ( e:Exception){
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    override fun onFailure( call:Call<DirectionsResponse>,  throwable:Throwable) {
+//                        Log.e(TAG, "Error: " + throwable.message)
+//                    }
+//                })
+//        //button.setVisibility(View.VISIBLE);
+//    }
+//    @SuppressLint("MissingPermission")
 
-        NavigationRoute.builder(requireContext())
-                .accessToken(getString(R.string.access_token))
-                .origin(origin)
-                .destination(destination)
-                .build()
-                .getRoute(object: Callback<DirectionsResponse> {
-                    @Override
-                    override fun onResponse( call:Call<DirectionsResponse>,  response:Response<DirectionsResponse>) {
-                        if (response.isSuccessful){
-                            if (response.body()!!.routes().size < 1){
-
-                                activity!!.toastLong("No se encontro la direccion")
-                            }else{
-                                val f1= FeatureCollection.fromFeature(
-                                        Feature.fromGeometry(LineString.fromPolyline(response.body()!!.routes()[0].geometry()!!, PRECISION_6)))
-                                // LineString ls1 = ((LineString) f1.features().get(0).geometry());
-                                mapboxMap.getStyle {style->
-                                    initData(style,f1)
-                                }
-
-                                Log.e("ruta", "currentRoute: " + response.body()!!.routes().get(0))
-
-                            }
+private  fun getDeviceLocation() {
+    fusedLocationProviderClient.lastLocation
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                var location = task.result
+                if (location != null) {
+                    googleMap.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                location.latitude,
+                                location.longitude
+                            ),
+                            18f
+                        )
+                    )
+                } else {
+                    val locationRequest = LocationRequest.create()
+                    locationRequest.interval = 10000
+                    locationRequest.fastestInterval = 5000
+                    locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    val locationCallback = object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+                            super.onLocationResult(locationResult)
+                            if (locationResult == null) return
+                            location = locationResult.lastLocation
+                            googleMap.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        location!!.latitude,
+                                        location!!.longitude
+                                    ),
+                                    15f
+                                )
+                            )
+                            fusedLocationProviderClient.removeLocationUpdates(this)
                         }
                     }
-
-                    @Override
-                    override fun onFailure( call:Call<DirectionsResponse>,  throwable:Throwable) {
-                        Log.e(TAG, "Error: " + throwable.message)
-                    }
-                })
-
-
-        //button.setVisibility(View.VISIBLE);
-    }
-    private fun getRoute( origin:Point,  destination:Point) {
-        Log.e("origin","$origin")
-        Log.e("destination","$destination ")
-        NavigationRoute.builder(requireContext())
-                .accessToken(getString(R.string.access_token))
-                .origin(origin)
-                .destination(destination)
-                .build()
-                .getRoute(object: Callback<DirectionsResponse> {
-                    @Override
-                    override fun onResponse( call:Call<DirectionsResponse>,  response:Response<DirectionsResponse>) {
-
-                        if (response.body()!! == null) {
-                            Log.e(TAG, "No routes found, make sure you set the right user and access token.")
-                            return
-                        } else if (response.body()!!.routes().size < 1) {
-                            Log.e(TAG, "No routes found")
-                            return
-                        }
-
-                        Log.d(TAG, "currentRoute"+  PolylineUtils.decode(response.body()!!.routes()[0].geometry()!!,6))
-                        currentRoute = response.body()!!.routes()[0]
-                        //new LoadGeoJson(mapaInicio.this).execute()
-                        Log.d(TAG, "currentRoute: " + response.body()!!)
-                        Log.d(TAG, "currentRoute: " + response.body()!!.routes()[0])
-                        Log.d(TAG, "currentRoute"+ response.body()!!.routes()[0].geometry())
-
-                        if (navigationMapRoute != null) {
-                            navigationMapRoute!!.removeRoute()
-                        } else {
-                            try{
-                                navigationMapRoute =  NavigationMapRoute(null, mapView, mapboxMap, R.style.navegation)
-                            }catch ( e:Exception){
-
-                            }
-
-                        }
-                        try{
-                            navigationMapRoute!!.addRoute(currentRoute)
-                            mapboxMap.easeCamera(CameraUpdateFactory.newLatLngBounds(
-                                     LatLngBounds.Builder()
-                                            .include( LatLng(origin.latitude(), origin.longitude()))
-                                            .include( LatLng(destination.latitude(), destination.longitude()))
-                                            .build(), 50), 3)
-                        }catch ( e:Exception){
-
-                        }
-                    }
-
-                    @Override
-                    override fun onFailure( call:Call<DirectionsResponse>,  throwable:Throwable) {
-                        Log.e(TAG, "Error: " + throwable.message)
-                    }
-                })
-        //button.setVisibility(View.VISIBLE);
-    }
-    @SuppressLint("MissingPermission")
-    private fun getDeviceLocation() {
-        try {
-            val lastKnownLocation = mapboxMap.locationComponent.lastKnownLocation
-
-            val log=lastKnownLocation!!.longitude
-            val lat= lastKnownLocation.latitude
-            val position =  CameraPosition.Builder()
-                    .target( com.mapbox.mapboxsdk.geometry.LatLng(lat,log )) // Sets the new camera position
-                    .zoom(15.toDouble())
-                    .build()// Creates a CameraPosition from the builder
-
-            mapboxMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 1000)
-
-        }catch ( e:Exception){
-
-            Log.e("deviceLocation", e.message)
+                    fusedLocationProviderClient.requestLocationUpdates(
+                        locationRequest,
+                        locationCallback,
+                        null
+                    )
+                }
+            } else {
+                try {
+                    Toast.makeText(
+                        context,
+                        "Unable to get last lcoation",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch (e: java.lang.Exception) {
+                }
+            }
         }
-    }
+}
+//    private fun getDeviceLocation() {
+//        try {
+//            val lastKnownLocation = googleMap.locationComponent.lastKnownLocation
+//
+//            val log=lastKnownLocation!!.longitude
+//            val lat= lastKnownLocation.latitude
+//            val position =  CameraPosition.Builder()
+//                    .target( LatLng(lat,log )) // Sets the new camera position
+//                    .zoom(15.toDouble())
+//                    .build()// Creates a CameraPosition from the builder
+//
+//            mapboxMap.animateCamera(CameraUpdateFactory
+//                    .newCameraPosition(position), 1000)
+//
+//        }catch ( e:Exception){
+//
+//            Log.e("deviceLocation", e.message)
+//        }
+//    }
 
     override fun onStart() {
         super.onStart()
@@ -1484,44 +1511,44 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
-        mapboxMap.getStyle { style ->
-            style.removeSource(DOT_SOURCE_ID1)
-            style.removeLayer("symbol-layer-id")
-        }
+//        mapboxMap.getStyle { style ->
+//            style.removeSource(DOT_SOURCE_ID1)
+//            style.removeLayer("symbol-layer-id")
+//        }
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
-    private fun enableLocationComponent( style:Style) {
-
-        // Check if permissions are enabled and if not request
-        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
-
-            // Get an instance of the component
-            locationComponent = mapboxMap.locationComponent
-
-            // Activate with a built LocationComponentActivationOptions object
-            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(requireContext(), style).build())
-
-            // Enable to make component visible
-            locationComponent.isLocationComponentEnabled = true
-
-            // Set the component's camera mode
-            locationComponent.cameraMode = CameraMode.TRACKING
-
-            // Set the component's render mode
-            locationComponent.renderMode = RenderMode.COMPASS
-
-        } else {
-
-            permissionsManager =  PermissionsManager(this)
-
-            permissionsManager.requestLocationPermissions(requireActivity())
-
-        }
-    }
+//    private fun enableLocationComponent( style:Style) {
+//
+//        // Check if permissions are enabled and if not request
+//        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+//
+//            // Get an instance of the component
+//            locationComponent = mapboxMap.locationComponent
+//
+//            // Activate with a built LocationComponentActivationOptions object
+//            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(requireContext(), style).build())
+//
+//            // Enable to make component visible
+//            locationComponent.isLocationComponentEnabled = true
+//
+//            // Set the component's camera mode
+//            locationComponent.cameraMode = CameraMode.TRACKING
+//
+//            // Set the component's render mode
+//            locationComponent.renderMode = RenderMode.COMPASS
+//
+//        } else {
+//
+//            permissionsManager =  PermissionsManager(this)
+//
+//            permissionsManager.requestLocationPermissions(requireActivity())
+//
+//        }
+//    }
     private fun gpsEnable() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         val locationRequest = LocationRequest.create()
@@ -1625,8 +1652,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
                 }else{
+                    requireActivity().toastLong("Seleccione nuevamente el destino")
                     fmi_progressbar.visibility = View.GONE
-                    Toast.makeText(requireContext(),"Seleccione nuevamente el destino",Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -1675,7 +1702,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
             override fun onTick( millisUntilFinished:Long) {
                 setCronometroStop(datadriver,true)
                 segundos=String.format(Locale.getDefault(), "%d", millisUntilFinished / 1000L)
-                fmi_time.text = segundos
+                //fmi_time.text = segundos
                 Log.e("tiempocountDownTimer",segundos)
             }
 
@@ -1690,7 +1717,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                     }else {
                         setEstadoViews(datadriver,3)
                         tercer_estado()
-                        fmi_time.visibility = View.GONE
+                        //fmi_time.visibility = View.GONE
                         val comando=RetrofitClient.getInstance().api.puStatusTrip(getViajeId(datadriver)!!,true,false,false,false)
                         comando.enqueue(object: Callback<user> {
                             @Override
@@ -1718,32 +1745,110 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
         }.start()
     }
-
-    @SuppressLint("MissingPermission")
-    @Override
-    override fun  onMapReady(@NonNull mapboxMap:MapboxMap) {
-
-        this.mapboxMap = mapboxMap
-
+//    @SuppressLint("LogNotTimber")
+//    fun getRetrofitMap(
+//        origin: LatLng?,
+//        dest: LatLng?
+//    ) : ArrayList<LatLng>? {
+//        Log.e("Gson: ", "$origin  $dest" )
+////        emit(Resource.Loading())
+//        var dato  : ArrayList<LatLng>?=null
+//        val llamada: Call<String> =
+//            RetrofitClientMaps.getInstance().api.callMaps(getDirectionsUrl(origin!!, dest!!))
+//        llamada.enqueue(object : Callback<String> {
+//            override fun onResponse(
+//                call: Call<String>,
+//                response: Response<String>
+//            ) {
+//
+//                //Data= g.fromJson(response.body(),Example.class);
+//                //Log.e("Gson: ", response.body())
+//                if (response.isSuccessful) {
+//
+////                    var routes: List<List<HashMap<String,String>>>?=null
+//                    try {
+//                        val jObject = JSONObject(response.body()!!)
+//                        val parser = DirectionsJSONParser()
+//                        val routes: MutableList<MutableList<java.util.HashMap<String, String>>>? = parser.parse(jObject)
+////                        val points= dibujarLineas(routes!!)
+//                        var points: ArrayList<LatLng> = ArrayList()
+//
+//                        for (i in routes!!) {
+//                            //Log.e("result.indices: ", "$i  ${i.size}")
+//                            for (j in i) {
+//                                val lat = j["lat"]!!.toDouble()
+//                                val lng = j["lng"]!!.toDouble()
+//                                val position =
+//                                    LatLng(lat, lng)
+//                                points.add(position)
+//                            }
+//                        }
+//                        dato=points
+////                        emit(Resource.Success(points))
+////                            mapboxMap.easeCamera(CameraUpdateFactory.newLatLngBounds(
+////                                     LatLngBounds.Builder()
+////                                            .include( LatLng(origin.latitude(), origin.longitude()))
+////                                            .include( LatLng(destination.latitude(), destination.longitude()))
+////                                            .build(), 50), 3)
+//                       // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameramove.center,15f))
+//
+//                    } catch (e: Exception) {
+//                        throw e
+////                        emit(Resource.Failure(e))
+//                        Log.e("Gson: ", e.message)
+//                        e.printStackTrace()
+//                    }
+//                } else {
+//                    throw Exception("No se encontraron rutas")
+//                    Toast.makeText(
+//                        context,
+//                        "Error al traer data: " + response.code(),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    return
+//                }
+//            }
+//
+//            override fun onFailure(
+//                call: Call<String>,
+//                t: Throwable
+//            ) {
+//                throw Exception("Error con la red")
+//            }
+//        })
+//        return dato
+//    }
+    override fun onMapReady(p0: GoogleMap?) {
+        this.googleMap=p0!!
+        googleMap.isMyLocationEnabled=true
+        googleMap.uiSettings.isMyLocationButtonEnabled=false
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         geo =  Geocoder(requireContext(), Locale.getDefault())
-        mapboxMap.uiSettings.isCompassEnabled = true
-        mapboxMap.setStyle(getString(R.string.navigation_guidance_day), object: Style.OnStyleLoaded {
-            @Override
-            override fun  onStyleLoaded(@NonNull  style:Style) {
-                enableLocationComponent(style)
-                // addDestinationIconSymbolLayer(style)
-            }
+        googleMap.setOnCameraMoveStartedListener {i->
+            isMoving = true
+//            img_change.visibility = View.GONE
+//            profile_loader.visibility = View.GONE
+//            val mDrawable= requireContext().resources.getDrawable(R.drawable.circle_background_moving, null)
+//            mapa_marker_center.background = mDrawable
+//            resizeLayout(false)
 
-        })
-        mapboxMap.addOnCameraIdleListener(object: MapboxMap.OnCameraIdleListener {
-            @Override
-            override fun onCameraIdle() {
-                var center = mapboxMap.cameraPosition.target
-                if ((center.latitude.toString()!="0.0")&&(center.longitude.toString()!="0.0")){
-                    // new Handler().postDelayed(new Runnable() {
-                    //   @Override
-                    //  public void run() {
+        }
+        googleMap.setOnCameraIdleListener {
+            isMoving = false
+//            img_change.visibility = View.INVISIBLE
+//            profile_loader.visibility = View.VISIBLE
+//            resizeLayout(true)
+            Handler().postDelayed(Runnable {
+                val mDrawable =
+                    requireContext().resources.getDrawable(R.drawable.circle_background, null)
+
+                if (!isMoving) {
+//                    mapa_marker_center.background = mDrawable
+//                    img_change.visibility = View.VISIBLE
+//                    profile_loader.visibility = View.GONE
+
                     try {
+                        val center = googleMap.cameraPosition.target
                         adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
                         val  direccion2= (adres!!.get(0).getAddressLine(0)).split(",")
 
@@ -1756,88 +1861,190 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
                     }catch ( e:IOException) {
                         e.printStackTrace()
                     }
-                    //   }
-                    //},2000);
-
-
                 }
-            }
-        })
-        mapa_icon_gps.setOnClickListener{
-            try {
-                val lastKnownLocation = mapboxMap.locationComponent.lastKnownLocation
-
-                val log=lastKnownLocation!!.longitude
-                val lat= lastKnownLocation!!.latitude
-                val position =  CameraPosition.Builder()
-                    .target( com.mapbox.mapboxsdk.geometry.LatLng(lat,log )) // Sets the new camera position
-                .zoom(15.toDouble())
-                    .build() // Creates a CameraPosition from the builder
-
-                mapboxMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 1000)
-            }catch ( e:Exception){
-
-                Log.e("deviceLocation", e.message)
-                val intent=  Intent(requireContext(), MainActivity::class.java)
-                startActivity(intent)
-            }
+            },1500)
         }
-
+        MapsInitializer.initialize(requireContext())
+        moveMapCamera()
         comprobarestadoViews()
-        if (!getdataNotification_noti(datadriver).equals("nulo")){
-            search_imagen.visibility = View.GONE
-            Log.d("MainActivity22222","ejecuto")
-
-            if (getdataNotification_noti(datadriver)!!.contains("{cronometroFinalizado}")){
-                search_imagen.visibility = View.GONE
-                val comando= RetrofitClient.getInstance().api.puStatusTrip(getViajeId(datadriver)!!,true,false,false,false)
-                comando.enqueue(object: Callback<user> {
-                    @Override
-                    override fun onResponse( call:Call<user>,  response:Response<user>) {
-                    }
-
-                    @Override
-                    override fun onFailure( call:Call<user>,  t:Throwable) {
-                    }
-                })
-
-            }else {
-                ejecutar_tarea_notificaciones_data(getdataNotification_noti(datadriver)!!)
-            }
-        }
-        if (getEstadoView(datadriver)!!>=5){
-            cargarPosicionDriver()
-        }
-      /*
-      *
-        DirectionsRoute ruta2=getRouteString();
-        FeatureCollection f2= FeatureCollection.fromFeature(
-                Feature.fromGeometry(LineString.fromPolyline(ruta2.geometry(), PRECISION_6)));
-        LineString ls2 = ((LineString) f2.features().get(0).geometry());
-        if (ls2 != null) {
-            routeCoordinateList2= ls2.coordinates();
-        }
-        DirectionsRoute ruta3=getRouteString();
-        FeatureCollection f3= FeatureCollection.fromFeature(
-                Feature.fromGeometry(LineString.fromPolyline(ruta3.geometry(), PRECISION_6)));
-        LineString ls3 = ((LineString) f3.features().get(0).geometry());
-        if (ls3 != null) {
-            routeCoordinateList3 = ls3.coordinates();
-        }
-       DirectionsRoute ruta4= getRouteString();
-        FeatureCollection f4= FeatureCollection.fromFeature(
-                Feature.fromGeometry(LineString.fromPolyline(ruta4.geometry(), PRECISION_6)));
-        LineString ls4 = ((LineString) f4.features().get(0).geometry());
-        if (ls4 != null) {
-            routeCoordinateList4 = ls4.coordinates();
-        }
-      * */
-
-
     }
+     private fun moveMapCamera() {
 
+         var center = CameraUpdateFactory.newLatLng( LatLng(-15.834, -70.019))
+        var zoom = CameraUpdateFactory.zoomTo(15f)
 
+        googleMap.moveCamera(center)
+         googleMap.animateCamera(zoom)
+    }
+//    private fun resizeLayout( backToNormalSize:Boolean) {
+//        val params =  mapa_marker_center.layoutParams as FrameLayout.LayoutParams
+//
+//        var vto = mapa_marker_center.viewTreeObserver
+//        vto.addOnGlobalLayoutListener {
+//            mapa_marker_center.viewTreeObserver.removeGlobalOnLayoutListener { this }
+//            circleRadius = mapa_marker_center.measuredWidth
+//        }
+//
+//
+//        if (backToNormalSize) {
+//            params.width = WRAP_CONTENT
+//            params.height = WRAP_CONTENT
+//            params.topMargin = 0
+//
+//        } else {
+//            if(circleRadius!=null){
+//
+//                params.topMargin =  (circleRadius!! * 0.3).toInt()
+//                params.height = circleRadius!! - circleRadius!! / 3
+//                params.width = circleRadius!! - circleRadius!! / 3
+//            }
+//        }
+//
+//        mapa_marker_center.layoutParams = params
+//    }
+//    fun dibujarLineas(result: MutableList<MutableList<java.util.HashMap<String, String>>>):ArrayList<LatLng> {
+//
+//        var points: ArrayList<LatLng> = ArrayList()
+//
+//        for (i in result) {
+//            Log.e("result.indices: ", "$i  ${i.size}")
+//            for (j in i) {
+//                val lat = j["lat"]!!.toDouble()
+//                val lng = j["lng"]!!.toDouble()
+//                val position =
+//                    LatLng(lat, lng)
+//
+//                points.add(position)
+//                Log.e("path.indices: ", position.toString())
+//            }
+//        }
+//        return points
+//    }
+    override fun onTaskDone(vararg values: Any?) {
+        if (currentPoline!=null){
+            currentPoline!!.remove()
+        }
+        currentPoline= googleMap.addPolyline(values[0] as PolylineOptions)
+    }
+//    @SuppressLint("MissingPermission")
+//    @Override
+//    override fun  onMapReady(@NonNull mapboxMap:MapboxMap) {
+//
+//        this.mapboxMap = mapboxMap
+//
+//        geo =  Geocoder(requireContext(), Locale.getDefault())
+//        mapboxMap.uiSettings.isCompassEnabled = true
+//        mapboxMap.setStyle(getString(R.string.navigation_guidance_day), object: Style.OnStyleLoaded {
+//            @Override
+//            override fun  onStyleLoaded(@NonNull  style:Style) {
+//                enableLocationComponent(style)
+//                // addDestinationIconSymbolLayer(style)
+//            }
+//
+//        })
+//        mapboxMap.addOnCameraIdleListener(object: MapboxMap.OnCameraIdleListener {
+//            @Override
+//            override fun onCameraIdle() {
+//                var center = mapboxMap.cameraPosition.target
+//                if ((center.latitude.toString()!="0.0")&&(center.longitude.toString()!="0.0")){
+//                    // new Handler().postDelayed(new Runnable() {
+//                    //   @Override
+//                    //  public void run() {
+//                    try {
+//                        adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
+//                        val  direccion2= (adres!!.get(0).getAddressLine(0)).split(",")
+//
+//                        if (!status_btn_origin){
+//                            dodpm_edtxt_origin.setText(direccion2[0])
+//                        }else{
+//                            dodpm_edtxt_dest.setText(direccion2[0])
+//                        }
+//
+//                    }catch ( e:IOException) {
+//                        e.printStackTrace()
+//                    }
+//                    //   }
+//                    //},2000);
+//
+//
+//                }
+//            }
+//        })
+//        mapa_icon_gps.setOnClickListener{
+//            try {
+//                val lastKnownLocation = mapboxMap.locationComponent.lastKnownLocation
+//
+//                val log=lastKnownLocation!!.longitude
+//                val lat= lastKnownLocation!!.latitude
+//                val position =  CameraPosition.Builder()
+//                    .target( com.mapbox.mapboxsdk.geometry.LatLng(lat,log )) // Sets the new camera position
+//                .zoom(15.toDouble())
+//                    .build() // Creates a CameraPosition from the builder
+//
+//                mapboxMap.animateCamera(CameraUpdateFactory
+//                    .newCameraPosition(position), 1000)
+//            }catch ( e:Exception){
+//
+//                Log.e("deviceLocation", e.message)
+//                val intent=  Intent(requireContext(), MainActivity::class.java)
+//                startActivity(intent)
+//            }
+//        }
+//
+//        comprobarestadoViews()
+//        if (!getdataNotification_noti(datadriver).equals("nulo")){
+//            search_imagen.visibility = View.GONE
+//            Log.d("MainActivity22222","ejecuto")
+//
+//            if (getdataNotification_noti(datadriver)!!.contains("{cronometroFinalizado}")){
+//                search_imagen.visibility = View.GONE
+//                val comando= RetrofitClient.getInstance().api.puStatusTrip(getViajeId(datadriver)!!,true,false,false,false)
+//                comando.enqueue(object: Callback<user> {
+//                    @Override
+//                    override fun onResponse( call:Call<user>,  response:Response<user>) {
+//                    }
+//
+//                    @Override
+//                    override fun onFailure( call:Call<user>,  t:Throwable) {
+//                    }
+//                })
+//
+//            }else {
+//                ejecutar_tarea_notificaciones_data(getdataNotification_noti(datadriver)!!)
+//            }
+//        }
+//        if (getEstadoView(datadriver)!!>=5){
+//            cargarPosicionDriver()
+//        }
+//      /*
+//      *
+//        DirectionsRoute ruta2=getRouteString();
+//        FeatureCollection f2= FeatureCollection.fromFeature(
+//                Feature.fromGeometry(LineString.fromPolyline(ruta2.geometry(), PRECISION_6)));
+//        LineString ls2 = ((LineString) f2.features().get(0).geometry());
+//        if (ls2 != null) {
+//            routeCoordinateList2= ls2.coordinates();
+//        }
+//        DirectionsRoute ruta3=getRouteString();
+//        FeatureCollection f3= FeatureCollection.fromFeature(
+//                Feature.fromGeometry(LineString.fromPolyline(ruta3.geometry(), PRECISION_6)));
+//        LineString ls3 = ((LineString) f3.features().get(0).geometry());
+//        if (ls3 != null) {
+//            routeCoordinateList3 = ls3.coordinates();
+//        }
+//       DirectionsRoute ruta4= getRouteString();
+//        FeatureCollection f4= FeatureCollection.fromFeature(
+//                Feature.fromGeometry(LineString.fromPolyline(ruta4.geometry(), PRECISION_6)));
+//        LineString ls4 = ((LineString) f4.features().get(0).geometry());
+//        if (ls4 != null) {
+//            routeCoordinateList4 = ls4.coordinates();
+//        }
+//      * */
+//
+//
+//    }
+//
+//
 
 
 
@@ -1845,20 +2052,20 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
      * Method is used to interpolate the SymbolLayer icon animation.
      */
 
-    @Override
-    override fun  onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(requireContext(),"This app needs location permissions to show its functionality.", Toast.LENGTH_LONG).show()
-    }
+//    @Override
+//    override fun  onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
+//        Toast.makeText(requireContext(),"This app needs location permissions to show its functionality.", Toast.LENGTH_LONG).show()
+//    }
 
-    @Override
-    override fun  onPermissionResult( granted:Boolean) {
-        if (granted) {
-            enableLocationComponent(mapboxMap.style!!)
-        } else {
-            Toast.makeText(requireContext(), "You didn\\'t grant location permissions.", Toast.LENGTH_LONG).show()
-            //mapView.finish();
-        }
-    }
+//    @Override
+//    override fun  onPermissionResult( granted:Boolean) {
+//        if (granted) {
+//            enableLocationComponent(mapboxMap.style!!)
+//        } else {
+//            Toast.makeText(requireContext(), "You didn\\'t grant location permissions.", Toast.LENGTH_LONG).show()
+//            //mapView.finish();
+//        }
+//    }
     private fun borrarSharedPreferencesDataDriver( estado:Int){
         //limpiarNotify(getActivity());
        // Log.e("estado_delete",getEstadoView(datadriver)+"");
@@ -1867,6 +2074,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         editor.apply()
         setEstadoViews(datadriver,estado)
     }
+
+    @ExperimentalStdlibApi
     @SuppressLint("RestrictedApi")
     private fun primer_estado(){
 
@@ -1881,20 +2090,20 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         if (cordenadasDriver_Runable!=null){
             coordenadasDriver.removeCallbacks(cordenadasDriver_Runable)
         }
-        mapboxMap.getStyle { style ->
-            style.removeSource(DOT_SOURCE_ID1)
-            style.removeLayer("symbol-layer-id")
-        }
-        try{
-            mapboxMap.clear()
-            mapboxMap.removeAnnotations()
-            navigationMapRoute!!.removeRoute()
-            mapboxMap.removeMarker(origen!!)
-            mapboxMap.removeMarker(destino!!)
-
-        }catch ( e:Exception){
-
-        }
+//        mapboxMap.getStyle { style ->
+//            style.removeSource(DOT_SOURCE_ID1)
+//            style.removeLayer("symbol-layer-id")
+//        }
+//        try{
+//            mapboxMap.clear()
+//            mapboxMap.removeAnnotations()
+//            navigationMapRoute!!.removeRoute()
+//            mapboxMap.removeMarker(origen!!)
+//            mapboxMap.removeMarker(destino!!)
+//
+//        }catch ( e:Exception){
+//
+//        }
 
         // dfv_spinner.setVisibility(View.GONE);
         //   dfv_spinner.setEnabled(false);
@@ -1902,14 +2111,14 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         mi_imgbtn_next_step.isEnabled = false
         mi_imgbtn_next_step.setBackgroundColor(Color.GRAY)
         mi_imgbtn_next_step.text = "CALCULAR TARIFA"
-        if (navigationMapRoute!=null){
-            navigationMapRoute!!.removeRoute()
+        if (currentPoline!=null){
+            currentPoline!!.remove()
         }
         if(origen!=null){
-            mapboxMap.removeMarker(origen!!)
+            origen!!.remove()
         }
         if(destino!=null){
-            mapboxMap.removeMarker(destino!!)
+            destino!!.remove()
         }
         dodpm_edtxt_dest.setText("")
         dodpm_edtxt_origin.setText("")
@@ -1924,8 +2133,8 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         fmi_progressbar.visibility = View.GONE
         search_imagen.visibility = View.GONE
         crear_comentario_layout_dialog.visibility = View.GONE
-        marcador.visibility = View.VISIBLE
-        fmi_time.visibility = View.GONE
+        mapa_marker_center.visibility = View.VISIBLE
+        //fmi_time.visibility = View.GONE
         mapa_recoger_cliente.visibility = View.VISIBLE
         mapa_precios.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
@@ -1933,13 +2142,13 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
         aic_button_comentar_hide.visibility = View.GONE
         try{
-            getRouteString()
+            //getRouteString()
         }catch ( e:Exception){
 
         }
         if (DriverOptions!=null)
             DriverOptions!!.remove()
-
+        dibujarlineas()
 
     }
     @SuppressLint("RestrictedApi")
@@ -1948,20 +2157,26 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapa_precios.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.GONE
-        marcador.visibility = View.VISIBLE
+        mapa_marker_center.visibility = View.VISIBLE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
         aic_button_comentar_hide.visibility = View.GONE
        // Log.e("estado 2: ",getOrigenLat(datadriver)+"   "+getOrigenLong(datadriver)+"  "+valor);
     }
     @SuppressLint("RestrictedApi")
     private fun tercer_estado(){
-        mapboxMap.getStyle(object: Style.OnStyleLoaded {
-            @Override
-            override fun onStyleLoaded(@NonNull  style:Style) {
-                style.removeSource(DOT_SOURCE_ID1)
-                style.removeLayer("symbol-layer-id")
-            }
-        })
+//        mapboxMap.getStyle(object: Style.OnStyleLoaded {
+//            @Override
+//            override fun onStyleLoaded(@NonNull  style:Style) {
+//                style.removeSource(DOT_SOURCE_ID1)
+//                style.removeLayer("symbol-layer-id")
+//            }
+//        })
+        if (botMarker!=null){
+            botMarker!!.remove()
+            googleMap.clear()
+            handler!!.removeCallbacks(drawPathRunnable)
+        }
+        dibujarlineas()
         dialog_precio_spinner.isEnabled = true
         dialog_precio_spinner.setSelection(0)
 
@@ -1971,21 +2186,21 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapa_precios.visibility = View.VISIBLE
         dialog_precio_select.isEnabled = true
         search_imagen.visibility = View.GONE
-        fmi_time.visibility = View.GONE
+        //fmi_time.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.GONE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
         aic_button_comentar_hide.visibility = View.GONE
         dialog_precio_text_view_precio.text = "S./ "+ getPriceShared(datadriver)!!
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         dialog_precio_select.text = "PEDIR ECO EVANS"
        // Log.e("estado 3: ",getDestinoLat(datadriver)+"   "+getDestinoLong(datadriver)+"  "+valor)
-        dibujarlineas()
+
     }
     @SuppressLint("RestrictedApi")
     private fun cuarto_estado(){
         dialog_precio_select.isEnabled = false
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         mapa_recoger_cliente.visibility = View.GONE
         mapa_precios.visibility = View.VISIBLE
         transcurso_viaje.visibility = View.GONE
@@ -2000,14 +2215,58 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
 
     }
 
+    @ExperimentalStdlibApi
     private fun dibujarlineas() {
         try {
-            if(originPoint==null||destinationPoint==null){
-                Log.e("lineasMapbox",""+originPoint+"  "+destinationPoint)
-                originPoint = Point.fromLngLat(getOrigenLong(datadriver)!!.toDouble(),getOrigenLat(datadriver)!!.toDouble())
-                destinationPoint = Point.fromLngLat( getDestinoLong(datadriver)!!.toDouble(),getDestinoLat(datadriver)!!.toDouble())
-                getRoute(originPoint!!, destinationPoint!!)
+            var tempO: LatLng?
+            var tempD: LatLng?
+            if (3>getEstadoView(datadriver)!!){
+                val datos=ramdomNumForLat(googleMap.cameraPosition.target)
+                val dato2=ramdomNumForLat(LatLng(-15.834, -70.019))
+                tempO = dato2
+                tempD = datos
+            }else{
+                if (botMarker!=null){
+                    botMarker!!.remove()
+                }
+                if (handler!=null&&drawPathRunnable!=null){
+                    handler!!.removeCallbacks(drawPathRunnable)
+                }
+                originLatlng = LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble())
+                destinationLatlng = LatLng( getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble())
+                tempO=originLatlng
+                tempD=destinationLatlng
             }
+            Log.e("viewModel","$tempO  $tempD")
+            viewModel.getRutaMapa(tempO!!,tempD!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                when(it){
+                    is Resource.Loading->{
+                        Log.e("viewModel","Loaging")
+                    }
+                    is Resource.Success->{
+                        if (3>getEstadoView(datadriver)!!){
+                            Log.e("viewModel",it.data.toString())
+                            Gneratebots(it.data)
+                        }else{
+                            val points=it.data
+                            Log.e("lineasMapbox",points.toString())
+                                var lineOptions: PolylineOptions? = PolylineOptions()
+                                lineOptions!!.addAll(points!!)
+                                lineOptions.width(10f)
+                                lineOptions.color(Color.BLACK)
+                                lineOptions.geodesic(true)
+                                currentPoline=googleMap.addPolyline(lineOptions)
+                                val cameramove= LatLngBounds(originLatlng,destinationLatlng)
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameramove,50))
+                        }
+
+                    }
+                    is Resource.Failure->{
+                        Log.e("viewModel",it.exception.message)
+                    }
+                }
+            })
+
         }catch ( e:Exception){
 
         }
@@ -2020,15 +2279,14 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
             origen!!.remove()
         }
         try {
-            destino=mapboxMap.addMarker( MarkerOptions()
-                    .setIcon(iconFactory.fromResource(R.drawable.logo22))
-                    .setPosition( com.mapbox.mapboxsdk.geometry.LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble()))
-                    .title("Destino"))
+            destino=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
+                .title("Destino")
+                .position( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble())))
 
-            origen=mapboxMap.addMarker( MarkerOptions()
-                    .setIcon(iconFactory.fromResource(R.drawable.logo33))
-                    .setPosition( com.mapbox.mapboxsdk.geometry.LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble()))
-                    .title("Origen"))
+
+            origen=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
+                .title("Origen")
+                .position( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble())))
         }catch ( e:Exception){
          /*   Log.d("entrando","a transacion"+e.getMessage());
             Fragment frg = new mapaInicio(getUserId_Prefs(prefs),getToken(prefs));
@@ -2039,15 +2297,90 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         }
 
     }
+    fun Gneratebots(points:ArrayList<LatLng>){
+//        var polilineanimator= ValueAnimator.ofInt(0,100)
+//        polilineanimator.duration = 2000
+//        polilineanimator.interpolator = LinearInterpolator()
+//        polilineanimator.addUpdateListener {
+//            var percentValue= it.animatedValue as Int
+//            var size = points.size
+//            var newPoints = (size*(percentValue/100.0f)).toInt()
+//            var p= points.subList(0,newPoints)
+//            Log.e("viewModel",1.toString())
+//        }
+//        polilineanimator.start()
+        botMarker= googleMap.addMarker(MarkerOptions().position(points[0])
+            .flat(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.car64dp)))
+        Log.e("viewModel",2.toString())
+        handler= Handler()
+        index=-1
+        next=1
+        drawPathRunnable= object:Runnable {
+            override fun run() {
+                if(index!! < (points.size-1)){
+                    index=index!!+1
+                    next=index!!+1
+                }
+                //else{
+                //                    botMarker!!.remove()
+                //                    handler!!.removeCallbacks(drawPathRunnable)
+                //                    dibujarlineas()
+                //                }
+                if(index!! < (points.size-1)){
+                    startPositionB= points[index!!]
+                    endPositionB= points[next!!]
+                }
+                var animator= ValueAnimator.ofFloat(0f,1f)
+                animator.duration=3000
+                animator.interpolator=LinearInterpolator()
+                animator.addUpdateListener {
+                    if (startPositionB!=null&&endPositionB!=null){
+                        v = it.animatedFraction
+                        val lngB=v!!*endPositionB!!.longitude+(1-v!!) * startPositionB!!.longitude
+                        val latB=v!!*endPositionB!!.latitude+(1-v!!) * startPositionB!!.latitude
+                        var newPosaa = LatLng(latB,lngB)
+                        botMarker!!.position=newPosaa
+                        botMarker!!.setAnchor(0.5F,0.5F)
+                        botMarker!!.rotation= getBearing(startPositionB!!,newPosaa)
+                    }else{
+                        botMarker!!.remove()
+                        handler!!.removeCallbacks(drawPathRunnable)
+                        dibujarlineas()
 
+                    }
+
+
+                }
+                animator.start()
+                handler!!.postDelayed(this,3000)
+            }
+        }
+        handler!!.postDelayed(drawPathRunnable,3000)
+
+    }
+    fun getBearing(startPosition:LatLng,endPosition:LatLng):Float{
+        val lat= abs(startPosition.latitude-endPosition.latitude)
+        val log= abs(startPosition.longitude-endPosition.longitude)
+
+        if (startPosition.latitude<endPosition.latitude&&startPosition.longitude<endPosition.longitude){
+            return Math.toDegrees(atan(log/lat)).toFloat()
+        }else if(startPosition.latitude>=endPosition.latitude&&startPosition.longitude<endPosition.longitude){
+            return (90-Math.toDegrees(atan(log/lat))+90).toFloat()
+        }else if(startPosition.latitude>=endPosition.latitude&&startPosition.longitude>=endPosition.longitude){
+            return (Math.toDegrees(atan(log/lat))+180).toFloat()
+        }else if(startPosition.latitude<endPosition.latitude&&startPosition.longitude>=endPosition.longitude){
+            return (90-Math.toDegrees(atan(log/lat))+270).toFloat()
+        }
+        return -1f
+    }
     @SuppressLint("RestrictedApi")
     private fun quinto_estado(){
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         mapa_recoger_cliente.visibility = View.GONE
         mapa_precios.visibility = View.GONE
         transcurso_viaje.visibility = View.VISIBLE
         fin_viaje.visibility = View.GONE
-        bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         aic_button_comentar_hide.visibility = View.GONE
         dialog_transcurso_destino_txt_name.text = getnameID(datadriver)
         dialog_transcurso_destino_txt_placa.text = getlicenseCarID(datadriver)
@@ -2077,7 +2410,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         dialog_fin_viaje_txt_precio.text = " ${( getPriceShared(datadriver)!!.toDouble()-getPriceSharedDiscount(datadriver)!!.toDouble())} PEN"
         mapa_recoger_cliente.visibility = View.GONE
         mapa_precios.visibility = View.GONE
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.VISIBLE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
@@ -2101,7 +2434,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.VISIBLE
         aic_button_comentar_hide.visibility = View.GONE
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
         dialog_fin_viaje_txt_titulo.text = "Esperando que Inicie el Viaje"
         dialog_fin_viaje_btn_aceptar.text = "Esperando.."
@@ -2135,7 +2468,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         dialog_fin_viaje_txt_titulo.text = "Confirmar terminar Viaje"
         dialog_fin_viaje_btn_aceptar.text = "Terminar Viaje"
         dialog_fin_viaje_btn_aceptar.isEnabled = true
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         // dialog_fin_viaje_imgbtn_delete.setVisibility(View.VISIBLE);
         // dialog_fin_viaje_imgbtn_message.setVisibility(View.GONE);
         dibujarlineas()
@@ -2152,7 +2485,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         fin_viaje.visibility = View.VISIBLE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
         aic_button_comentar_hide.visibility = View.GONE
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         dialog_fin_viaje_txt_origen.text = "Origen: "+getStartAddress(datadriver)!!
         dialog_fin_viaje_txt_destino.text = "Destino: "+getEndAddress(datadriver)!!
         dialog_fin_viaje_txt_titulo.text = "Conductor esperando Pago"
@@ -2163,10 +2496,10 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
     @SuppressLint("RestrictedApi")
     private fun decimo_estado(){
-        if (navigationMapRoute!=null){
-            navigationMapRoute!!.removeRoute()
-            mapboxMap.removeMarker(destino!!)
-            mapboxMap.removeMarker(origen!!)
+        if (currentPoline!=null){
+            currentPoline!!.remove()
+            destino!!.remove()
+            origen!!.remove()
         }
        // Log.e("estado 10: ",getDestinoLat(datadriver)+"   "+getDestinoLong(datadriver)+"  "+valor)
 
@@ -2176,7 +2509,7 @@ class mapaInicio : Fragment(), OnMapReadyCallback, PermissionsListener {
         fin_viaje.visibility = View.GONE
         aic_button_comentar_hide.visibility = View.VISIBLE
         crear_comentario_layout_dialog.visibility = View.VISIBLE
-        marcador.visibility = View.GONE
+        mapa_marker_center.visibility = View.GONE
         bottomSheetBehavior.setState( BottomSheetBehavior.STATE_EXPANDED )
         Log.e("estado_delete","decimo estado")
 

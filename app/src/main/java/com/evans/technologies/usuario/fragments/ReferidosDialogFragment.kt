@@ -42,7 +42,7 @@ class ReferidosDialogFragment:Fragment() {
     ): View? {
 
         //activity!!.setStyle(DialogFragment.STYLE_NORMAL,R.style.fullScreenDialog)
-        prefs = context!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         val view= inflater.inflate(R.layout.referidos_dialog_fragment,container,false)
 
         return view
@@ -65,7 +65,7 @@ class ReferidosDialogFragment:Fragment() {
                     if (response.body()!=null){
                         referido=response.body()!!.referido
                         try{
-                            rdf_txt_codigo.text= referido.key
+                            txt_codigo.text= referido.key
                         }catch (e:Exception){
 
                         }
@@ -80,8 +80,12 @@ class ReferidosDialogFragment:Fragment() {
 
         })
 
-        rdf_txt_codigo.setOnLongClickListener {
-            val mensaje= rdf_txt_codigo.text.toString()
+        txt_codigo.setOnLongClickListener {
+            val mensaje= txt_codigo.text.toString()
+            copyText(mensaje)
+        }
+        rdf_copiar.setOnLongClickListener {
+            val mensaje= txt_codigo.text.toString()
             copyText(mensaje)
         }
 //        rdf_imgbtn_close.setOnClickListener {
@@ -130,10 +134,10 @@ class ReferidosDialogFragment:Fragment() {
     }
 
     private fun copyText(mensaje: String): Boolean {
-        val dato:ClipboardManager= activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val dato:ClipboardManager= requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("text",mensaje)
         dato.setPrimaryClip(clip)
-        activity!!.toastLong("Texto Copiado Correctamente")
+        requireActivity().toastLong("Texto Copiado Correctamente")
         return false
     }
 
@@ -152,7 +156,7 @@ class ReferidosDialogFragment:Fragment() {
     }
 
     private fun checkAppInstalled(paquete: String): Boolean {
-        val pm= context!!.packageManager
+        val pm= requireContext().packageManager
         return try{
             pm.getPackageInfo(paquete,PackageManager.GET_ACTIVITIES)
             true

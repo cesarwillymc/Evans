@@ -31,6 +31,7 @@ import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.fragments.change_password.changepassword
 import com.evans.technologies.usuario.fragments.change_password.correo
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.messaging.FirebaseMessagingService
 import java.io.File
 import java.io.FileOutputStream
@@ -232,6 +233,9 @@ fun setPriceSharedDiscount(dataDriver: SharedPreferences,money:String){
 
 fun getStartAddress(dataDriver: SharedPreferences): String? {
     return dataDriver.getString("startAddress", "")
+}
+fun getNumberDocument(dataDriver: SharedPreferences): String? {
+    return dataDriver.getString("dni", "")
 }
 fun getEndAddress(dataDriver: SharedPreferences): String? {
     return dataDriver.getString("endAddress", "")
@@ -485,21 +489,17 @@ fun ramdomNum(lat:Boolean):String{
 
 
 }
-fun ramdomNumForLat(lat:Boolean,latIni:Double,logInit:Double):String{
-    var num:Double;
-    var df:DecimalFormat =  DecimalFormat("##.#######")
-    df.setRoundingMode(RoundingMode.CEILING)
-    var latFinal=latIni-0.011
-    var logFinal=logInit-0.011
-    num = if (lat){
-        Math.random()*((latIni)-(latFinal))+(latFinal)
-    }else{
-        Math.random()*((logInit)-(logFinal))+(logFinal)
-    }
-    return df.format(num)
+fun ramdomNumForLat(origin:LatLng):LatLng{
+    Log.e("viewModel","${origin.latitude}   ${origin.longitude}")
+    var df =  DecimalFormat("##.#######")
+    df.roundingMode = RoundingMode.CEILING
+    var latFinal=origin.latitude-0.011f
+    var logFinal=origin.longitude-0.011f
+    var lat= Math.random()*((origin.latitude)-(latFinal))+(latFinal)
+    var log= Math.random()*((origin.longitude)-(logFinal))+(logFinal)
 
-
-
+    var newLat=LatLng(df.format(lat).toDouble(),df.format(log).toDouble())
+    return newLat
 }
 fun getAccountActivate(prefs: SharedPreferences):Boolean{
     return prefs.getBoolean("accountActivate",false)

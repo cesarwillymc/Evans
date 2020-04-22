@@ -205,6 +205,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 if (response.isSuccessful){
 
                     data= response.body()!!.user
+
                     FirebaseInstanceId.getInstance().instanceId
                         .addOnCompleteListener(
                             OnCompleteListener {

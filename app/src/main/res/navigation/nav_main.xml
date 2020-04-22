@@ -23,7 +23,7 @@
             app:destination="@id/nav_oferts" />
         <action
             android:id="@+id/nav_trips"
-            app:destination="@id/rv_viajes2" />
+            app:destination="@id/nav_trips" />
         <action
             android:id="@+id/action_nav_travel_to_referidosDialogFragment"
             app:destination="@id/nav_trips_free" />
@@ -39,10 +39,14 @@
         android:label="activity_pagos"
         tools:layout="@layout/activity_pagos" />
     <fragment
-        android:id="@+id/rv_viajes2"
-        android:name="com.evans.technologies.usuario.Activities.viajes.rv_viajes"
+        android:id="@+id/nav_trips"
+        android:name="com.evans.technologies.usuario.Activities.viajes.ListaViajes"
         android:label="activity_rv_viajes"
-        tools:layout="@layout/activity_rv_viajes" />
+        tools:layout="@layout/activity_rv_viajes" >
+        <action
+            android:id="@+id/action_rv_viajes2_to_historial_viaje"
+            app:destination="@id/historial_viaje" />
+    </fragment>
     <fragment
         android:id="@+id/nav_oferts"
         android:name="com.evans.technologies.usuario.Activities.cupon.AddCodePromocional"
@@ -52,4 +56,9 @@
         android:id="@+id/nav_trips_free"
         android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
         android:label="ReferidosDialogFragment" />
+    <fragment
+        android:id="@+id/historial_viaje"
+        android:name="com.evans.technologies.usuario.Activities.viajes.historial_viaje"
+        android:label="fragment_historial_viaje"
+        tools:layout="@layout/fragment_historial_viaje" />
 </navigation>
