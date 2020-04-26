@@ -1,15 +1,16 @@
 package com.evans.technologies.usuario.fragments
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.*
-import android.graphics.Camera
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -19,41 +20,32 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.liveData
-import androidx.lifecycle.observe
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.evans.technologies.usuario.Activities.MainActivity
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
-import com.evans.technologies.usuario.Retrofit.RetrofitClientMaps
 import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.Utils.Adapters.adapter_spinner_pay_tipe
-import com.evans.technologies.usuario.Utils.DirectionsHelper.DirectionsJSONParser
 import com.evans.technologies.usuario.Utils.DirectionsHelper.TaskLoadedCallback
 import com.evans.technologies.usuario.Utils.Services.cronometro
 import com.evans.technologies.usuario.Utils.constans.AppConstants.*
-import com.evans.technologies.usuario.Utils.timeCallback.ComunicateFrag
-import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotifications
+
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
 import com.evans.technologies.usuario.model.*
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -65,10 +57,6 @@ import kotlinx.android.synthetic.main.dialog_origin_dest_position_marker.*
 import kotlinx.android.synthetic.main.dialog_precio_layout.*
 import kotlinx.android.synthetic.main.dialog_transcurso_viaje_layout.*
 import kotlinx.android.synthetic.main.fragment_mapa_inicio.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.suspendAtomicCancellableCoroutine
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,10 +64,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.List
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.math.abs
 import kotlin.math.atan
 
@@ -87,7 +71,7 @@ import kotlin.math.atan
  * A simple {@link Fragment} subclass.
  */
 @ExperimentalStdlibApi
-class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,TaskLoadedCallback {
+class mapaInicio : Fragment() {
 //, PermissionsListener
     val TAG:String = "Mapa Inicio"
     lateinit var  viewModel :viewModelMain
@@ -186,7 +170,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 //    lateinit var iconFactory:IconFactory
 //    lateinit var actualiza_cada_cierto_tiempo_Coordenadas:LatLng
 
-    lateinit var comunicateFrag:updateListenerNotifications
+//    lateinit var comunicateFrag:updateListenerNotifications
     var cordenadasDriver_Runable:Runnable?=null
 
 
@@ -200,9 +184,10 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 //        this.id=id;
 //        this.token=token;
 //    }
-    lateinit var googleMap: GoogleMap
+    var googleMap: GoogleMap?=null
     private var currentPoline:Polyline?=null
     private var isMoving:Boolean=false
+    private var botActive:Boolean=false
     private var circleRadius:Int?=null
     //Bots
     var v:Float?=null
@@ -215,14 +200,21 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
     private var botMarker:Marker?=null
     var drawPathRunnable:Runnable?=null
     var blackPolilyne:Polyline?=null
+
+    private val callback = OnMapReadyCallback { googleMap ->
+        this.googleMap=googleMap
+        Log.e("datos","entro mapa inicio 3")
+        MapaReady()
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //Mapbox.getInstance(requireContext() , getString(R.string.access_token))
+        val view=inflater.inflate(R.layout.fragment_mapa_inicio, container, false)
 
-        return inflater.inflate(R.layout.fragment_mapa_inicio, container, false)
+        return view
     }
 
     @SuppressLint("SetTextI18n")
@@ -231,6 +223,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
         viewModel = requireActivity().run {
             ViewModelProviders.of(this)[viewModelMain::class.java]
         }
+        Log.e("datos","entro mapa inicio")
         bottomSheetBehavior= BottomSheetBehavior.from( crear_comentario_layout_dialog )
         datadriver = requireContext().getSharedPreferences("datadriver", Context.MODE_PRIVATE)
         prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
@@ -247,19 +240,31 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
         }
 
+
+        Log.e("datos","entro mapa inicio 2")
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
         mi_imgbtn_next_step.setOnClickListener{
             fmi_progressbar.visibility = View.VISIBLE
             funcionObtenerPrecio()
         }
-
         //iconFactory = IconFactory.getInstance(requireContext())
         //Maps google
-        mapView.onCreate( savedInstanceState )
-        mapView.onResume()
-        mapView.getMapAsync(this)
+//        Log.e("datos","entro mapa inicio2")
+//        if (mapView!=null){
+//            Log.e("datos","entro mapa inicio2.0")
+//            mapView.onCreate( savedInstanceState )
+//            Log.e("datos","entro mapa inicio2.1")
+//            mapView.onResume()
+//            Log.e("datos","entro mapa inicio2.2")
+
+//            Log.e("datos","entro mapa inicio3")
+//        }
+
         dialog_fin_viaje_imgbtn_message.setOnClickListener{
-            dialog_fin_viaje_imgbtn_message_notify.visibility = View.GONE
-            comunicateFrag.updateNotificatones(true)
+//            dialog_fin_viaje_imgbtn_message_notify.visibility = View.GONE
+//            comunicateFrag.updateNotificatones(true)
+            findNavController().navigate(R.id.action_nav_travel_to_fragment_chat)
         }
         dialog_fin_viaje_imgbtn_delete.setOnClickListener{
             deleteOnclickTrip()
@@ -330,7 +335,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
         dodpm_imgbtn_status_dest.setOnClickListener{
             dodpm_imgbtn_status_dest.isSelected = !it.isSelected
             if (dodpm_imgbtn_status_dest.isSelected){
-                val center = googleMap.cameraPosition.target
+                val center = googleMap!!.cameraPosition.target
                 status_btn_dest=true
                 try {
                     adres = geo.getFromLocation(center.latitude,center.longitude,1)  as List<Address>
@@ -349,7 +354,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 //                    .setIcon(iconFactory.fromResource(R.drawable.logo22))
 //                    .setPosition( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble()))
 //                    .title("Destino"))
-                destino=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
+                destino=googleMap!!.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
                     .title("Destino")
                     .position( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble())))
                 if (status_btn_origin){
@@ -373,7 +378,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
         dodpm_imgbtn_status_origin.setOnClickListener{
             dodpm_imgbtn_status_origin.isSelected = !it.isSelected
             if (dodpm_imgbtn_status_origin.isSelected){
-                val center = googleMap.cameraPosition.target
+                val center = googleMap!!.cameraPosition.target
                 status_btn_origin=true
                 try {
                     adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
@@ -386,7 +391,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                     Log.e("recoger View",e.message)
                 }
                 setOrigen(datadriver,center.latitude.toString() ,center.longitude.toString())
-                origen=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
+                origen=googleMap!!.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
                     .title("Origen")
                     .position( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble())))
 //                origen=mapboxMap.addMarker( MarkerOptions()
@@ -413,11 +418,15 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
         }
         dodpm_edtxt_dest.setOnClickListener{
 
+
+
+
         }
         dodpm_edtxt_origin.setOnClickListener{}
         dialog_transcurso_destino_ib_chat.setOnClickListener{
-            dialog_fin_viaje_imgbtn_message_notify.visibility = View.GONE
-            comunicateFrag.updateNotificatones(true)
+//            dialog_fin_viaje_imgbtn_message_notify.visibility = View.GONE
+//            comunicateFrag.updateNotificatones(true)
+            findNavController().navigate(R.id.action_nav_travel_to_fragment_chat)
         }
         //bindeos dialog precio
 
@@ -444,7 +453,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                     override fun onResponse( call:Call<getPrice>,  response:Response<getPrice>) {
                         Log.e("rating","enviado"+response.code()+"  "+crear_comentario_rating.rating)
                         if (response.isSuccessful){
-                            comunicateFrag.removeChatConexion()
+//                            comunicateFrag.removeChatConexion()
                             if (!(getApiWebVersion(prefs).equals(requireContext().getVersionApp()))){
                                 requireActivity().getViewUpdateVersion(requireContext())
                             }
@@ -505,8 +514,8 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
             if (!(getApiWebVersion(prefs).equals(requireContext().getVersionApp()))){
                 requireActivity().getViewUpdateVersion(requireContext())
             }
-            comunicateFrag.removeChatConexion()
-            crear_comentario_layout_dialog.visibility = View.GONE
+//            comunicateFrag.removeChatConexion()
+//            crear_comentario_layout_dialog.visibility = View.GONE
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             mapa_recoger_cliente.visibility = View.VISIBLE
             aic_button_comentar_hide.visibility = View.GONE
@@ -538,7 +547,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                          if (!(getApiWebVersion(prefs).equals(requireContext().getVersionApp()))){
                              activity!!.getViewUpdateVersion(requireContext())
                          }
-                         comunicateFrag.removeChatConexion()
+//                         comunicateFrag.removeChatConexion()
                          refConexionDriverCoor.removeEventListener(conexionDriver)
                          crear_comentario_layout_dialog.visibility = View.GONE
                          bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
@@ -555,7 +564,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
         } )
 
-        gpsEnable()
+
         dialog_fin_viaje_btn_aceptar.setOnClickListener{
             when(getEstadoView(datadriver)!!){
                 6->{
@@ -604,13 +613,13 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
             }
         }
         mapa_icon_gpsaa.setOnClickListener {
-            val location=this.googleMap.myLocation
+            val location=googleMap!!.myLocation
             if (location!=null){
                 val target=LatLng(location.latitude,location.longitude)
                 val builder= CameraPosition.builder()
                 builder.zoom(16f)
                 builder.target(target)
-                this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
+                googleMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
             }
         }
         receiver =  object:BroadcastReceiver() {
@@ -641,11 +650,11 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
                     }else {
                         try{
-
+                            ejecutar_tarea_notificaciones_data(datassss)
                         }catch ( e:Exception){
 
                         }
-                        ejecutar_tarea_notificaciones_data(datassss)
+
                     }
 
                 } catch ( e:Exception) {
@@ -655,11 +664,9 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
             }
         }
-        ( requireActivity() as MainActivity).updateApi(ComunicateFrag.mapa_inicio {
-            dialog_fin_viaje_imgbtn_message_notify.visibility = View.VISIBLE
-        })
-        // if (segundos!="0")
 
+        // if (segundos!="0")
+        gpsEnable()
         comprobarStatusTrip()
         /*SpinnerAdapter dfv_spinner_customAdapter=new adapter_spinner_pay_tipe(requireContext(),imagenes_Spinner,nombres_Spinner,R.color.white);
         dfv_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -824,7 +831,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
     }
 
     private fun deleteOnclickTrip() {
-        if (DriverOptions!!!=null)
+        if (DriverOptions!=null)
             DriverOptions!!.remove()
         originLatlng=null
         destinationLatlng=null
@@ -838,8 +845,8 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                            override fun onResponse( call:Call<user>,  response:Response<user>) {
                                if (response.isSuccessful){
                                    Log.e("Viaje aceptado",response.message())
-                                   comunicateFrag.removeChatConexion()
-                                   cancel_viaje_noti()
+//                                   comunicateFrag.removeChatConexion()
+//                                   cancel_viaje_noti()
                                }
                                refConexionDriverCoor.removeEventListener(conexionDriver)
                                //Log.e("Viaje aceptado",response.code()+" "+getViajeId(datadriver)+" "+response.message())
@@ -922,11 +929,11 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
     }
 
     override fun onAttach(activity: Activity) {
-        try {
-            comunicateFrag =  requireActivity() as updateListenerNotifications
-        } catch ( e:ClassCastException) {
-            throw  ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
+//        try {
+//            comunicateFrag =  requireActivity() as updateListenerNotifications
+//        } catch ( e:ClassCastException) {
+//            throw  ClassCastException(context.toString() + " must implement OnFragmentInteractionListener")
+//        }
         super.onAttach(activity)
     }
 
@@ -1153,14 +1160,13 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
     private fun ejecutar_tarea_notificaciones_data( datassss:String) {
         Log.e("data_recibida"," mapa inicio"+datassss)
-        val gson =  Gson()
-        var topic:data?=null
+
         try{
 
-            topic = gson.fromJson(datassss, data::class.java)
+            val topic = Gson().fromJson(datassss, data::class.java)
             if (topic.response.contains(SEND_NOTIFICATION_VIAJE_ACEPTADO)){
                 if (getViajeId(datadriver).equals("nulo")){
-                    setDriverId(datadriver,topic.getDriverId())
+                    setDriverId(datadriver,topic.driverId)
                     cancel_viaje_noti()
                 }else{
                     // if (countDownTimer!=null)
@@ -1185,7 +1191,7 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                                 setDriverId(datadriver,topic.driverId)
                                 setEstadoViews(datadriver,5)
                                 llaveChat(datadriver, topic.chatId)
-                                comunicateFrag.createConexionChat()
+                                createConexionChat()
                            /* Intent intent = new Intent("subsUnsubs")
                             intent.putExtra("subs", "chat");
                             intent.putExtra("subsUnsubs",true);
@@ -1222,16 +1228,16 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                 setEstadoViews(datadriver,8)
                 octavo_estado()
             }else if (topic.getResponse().contains(SEND_NOTIFICATION_PAGO_EXITOSO)){
-                comunicateFrag.removeChatConexion()
-                setEstadoViews(datadriver,10)
+//                comunicateFrag.removeChatConexion()
+//                setEstadoViews(datadriver,10)
                 decimo_estado()
                 originLatlng=null
                 destinationLatlng=null
             }else if(topic.getResponse() == SEND_NOTIFICATION_VIAJE_CANCELADO){
-                comunicateFrag.removeChatConexion()
+//                comunicateFrag.removeChatConexion()
                 refConexionDriverCoor.removeEventListener(conexionDriver)
                 Log.e("estado_delete","cancelado estado")
-                if (DriverOptions!!!=null)
+                if (DriverOptions!=null)
                     DriverOptions!!.remove()
                 setChatJson(datadriver,"nulo")
                /* Intent intent = new Intent("subsUnsubs")
@@ -1258,6 +1264,24 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 
     }
 
+    private fun createConexionChat() {
+        viewModel.chatValue.observe(this, androidx.lifecycle.Observer {
+            when(it){
+                is Resource.Success->{
+                    dialog_fin_viaje_imgbtn_message_notify.visibility = View.VISIBLE
+                    val datos = MediaPlayer.create(requireContext(),R.raw.sound)
+                    datos.start()
+                    datos.setOnCompletionListener {
+                        it.release()
+                    }
+                }
+                is Resource.Failure->{
+                    Toast.makeText(requireContext(),it.exception.message,Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
     private fun cargarPosicionDriver() {
         refConexionDriverCoor= FirebaseDatabase.getInstance().reference.child("coordenadaUpdate").child(getDriverId(datadriver)!!)
         conexionDriver=refConexionDriverCoor.addValueEventListener(object: ValueEventListener {
@@ -1267,9 +1291,9 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
                 if(dataSnapshot.exists()){
                     val configuraciones:config = dataSnapshot.getValue( config::class.java)!!
                     Log.e("updateCoor","${configuraciones.lat}  ${configuraciones.log}")
-                    if (DriverOptions!!!=null)
+                    if (DriverOptions!=null)
                         DriverOptions!!.remove()
-                    DriverOptions=googleMap.addMarker( MarkerOptions()
+                    DriverOptions=googleMap!!.addMarker( MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.car64dp))
                             .position( LatLng(configuraciones.lat,configuraciones.log))
                             .title("Driver"))
@@ -1396,20 +1420,23 @@ class mapaInicio : Fragment(), com.google.android.gms.maps.OnMapReadyCallback,Ta
 //    @SuppressLint("MissingPermission")
 
 private  fun getDeviceLocation() {
+
     fusedLocationProviderClient.lastLocation
         .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 var location = task.result
                 if (location != null) {
-                    googleMap.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                location.latitude,
-                                location.longitude
-                            ),
-                            18f
+                    if(googleMap!=null){
+                        googleMap!!.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    location.latitude,
+                                    location.longitude
+                                ),
+                                18f
+                            )
                         )
-                    )
+                    }
                 } else {
                     val locationRequest = LocationRequest.create()
                     locationRequest.interval = 10000
@@ -1420,7 +1447,7 @@ private  fun getDeviceLocation() {
                             super.onLocationResult(locationResult)
                             if (locationResult == null) return
                             location = locationResult.lastLocation
-                            googleMap.moveCamera(
+                            googleMap!!.moveCamera(
                                 CameraUpdateFactory.newLatLngZoom(
                                     LatLng(
                                         location!!.latitude,
@@ -1475,12 +1502,13 @@ private  fun getDeviceLocation() {
         LocalBroadcastManager.getInstance(requireActivity()).registerReceiver((receiver),
              IntentFilter("clase")
         )
-        mapView.onStart()
+//        if (mapView!=null)
+//          mapView.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        //   mapView.onResume()
         //  if (handler != null && runnable != null) {
         //     handler.post(runnable);
         // }
@@ -1488,7 +1516,7 @@ private  fun getDeviceLocation() {
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        //       mapView.onPause()
 
         // if (handler != null && runnable != null) {
         //    handler.removeCallbacksAndMessages(null);
@@ -1498,19 +1526,21 @@ private  fun getDeviceLocation() {
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(receiver)
-        mapView.onStop()
+        //  if (mapView!=null)
+        //    mapView.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (outState!=null){
-            mapView.onSaveInstanceState(outState)
-        }
+        //   if (outState!=null){
+        //     mapView.onSaveInstanceState(outState)
+        //  }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        //  if (mapView!=null)
+        //      mapView.onDestroy()
 //        mapboxMap.getStyle { style ->
 //            style.removeSource(DOT_SOURCE_ID1)
 //            style.removeLayer("symbol-layer-id")
@@ -1519,7 +1549,8 @@ private  fun getDeviceLocation() {
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        //    if (mapView!=null)
+        //    mapView.onLowMemory()
     }
 //    private fun enableLocationComponent( style:Style) {
 //
@@ -1818,63 +1849,14 @@ private  fun getDeviceLocation() {
 //        })
 //        return dato
 //    }
-    override fun onMapReady(p0: GoogleMap?) {
-        this.googleMap=p0!!
-        googleMap.isMyLocationEnabled=true
-        googleMap.uiSettings.isMyLocationButtonEnabled=false
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        geo =  Geocoder(requireContext(), Locale.getDefault())
-        googleMap.setOnCameraMoveStartedListener {i->
-            isMoving = true
-//            img_change.visibility = View.GONE
-//            profile_loader.visibility = View.GONE
-//            val mDrawable= requireContext().resources.getDrawable(R.drawable.circle_background_moving, null)
-//            mapa_marker_center.background = mDrawable
-//            resizeLayout(false)
 
-        }
-        googleMap.setOnCameraIdleListener {
-            isMoving = false
-//            img_change.visibility = View.INVISIBLE
-//            profile_loader.visibility = View.VISIBLE
-//            resizeLayout(true)
-            Handler().postDelayed(Runnable {
-                val mDrawable =
-                    requireContext().resources.getDrawable(R.drawable.circle_background, null)
-
-                if (!isMoving) {
-//                    mapa_marker_center.background = mDrawable
-//                    img_change.visibility = View.VISIBLE
-//                    profile_loader.visibility = View.GONE
-
-                    try {
-                        val center = googleMap.cameraPosition.target
-                        adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
-                        val  direccion2= (adres!!.get(0).getAddressLine(0)).split(",")
-
-                        if (!status_btn_origin){
-                            dodpm_edtxt_origin.setText(direccion2[0])
-                        }else{
-                            dodpm_edtxt_dest.setText(direccion2[0])
-                        }
-
-                    }catch ( e:IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            },1500)
-        }
-        MapsInitializer.initialize(requireContext())
-        moveMapCamera()
-        comprobarestadoViews()
-    }
      private fun moveMapCamera() {
 
          var center = CameraUpdateFactory.newLatLng( LatLng(-15.834, -70.019))
         var zoom = CameraUpdateFactory.zoomTo(15f)
 
-        googleMap.moveCamera(center)
-         googleMap.animateCamera(zoom)
+        googleMap!!.moveCamera(center)
+         googleMap!!.animateCamera(zoom)
     }
 //    private fun resizeLayout( backToNormalSize:Boolean) {
 //        val params =  mapa_marker_center.layoutParams as FrameLayout.LayoutParams
@@ -1920,12 +1902,12 @@ private  fun getDeviceLocation() {
 //        }
 //        return points
 //    }
-    override fun onTaskDone(vararg values: Any?) {
-        if (currentPoline!=null){
-            currentPoline!!.remove()
-        }
-        currentPoline= googleMap.addPolyline(values[0] as PolylineOptions)
-    }
+//    override fun onTaskDone(vararg values: Any?) {
+//        if (currentPoline!=null){
+//            currentPoline!!.remove()
+//        }
+//        currentPoline= googleMap!!.addPolyline(values[0] as PolylineOptions)
+//    }
 //    @SuppressLint("MissingPermission")
 //    @Override
 //    override fun  onMapReady(@NonNull mapboxMap:MapboxMap) {
@@ -2139,7 +2121,7 @@ private  fun getDeviceLocation() {
         mapa_precios.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.GONE
-        bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         aic_button_comentar_hide.visibility = View.GONE
         try{
             //getRouteString()
@@ -2173,7 +2155,7 @@ private  fun getDeviceLocation() {
 //        })
         if (botMarker!=null){
             botMarker!!.remove()
-            googleMap.clear()
+            googleMap!!.clear()
             handler!!.removeCallbacks(drawPathRunnable)
         }
         dibujarlineas()
@@ -2220,8 +2202,8 @@ private  fun getDeviceLocation() {
         try {
             var tempO: LatLng?
             var tempD: LatLng?
-            if (3>getEstadoView(datadriver)!!){
-                val datos=ramdomNumForLat(googleMap.cameraPosition.target)
+            if (3>=getEstadoView(datadriver)!!){
+                val datos=ramdomNumForLat(googleMap!!.cameraPosition.target)
                 val dato2=ramdomNumForLat(LatLng(-15.834, -70.019))
                 tempO = dato2
                 tempD = datos
@@ -2255,9 +2237,9 @@ private  fun getDeviceLocation() {
                                 lineOptions.width(10f)
                                 lineOptions.color(Color.BLACK)
                                 lineOptions.geodesic(true)
-                                currentPoline=googleMap.addPolyline(lineOptions)
+                                currentPoline=googleMap!!.addPolyline(lineOptions)
                                 val cameramove= LatLngBounds(originLatlng,destinationLatlng)
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameramove,50))
+                                googleMap!!.moveCamera(CameraUpdateFactory.newLatLngBounds(cameramove,50))
                         }
 
                     }
@@ -2279,12 +2261,12 @@ private  fun getDeviceLocation() {
             origen!!.remove()
         }
         try {
-            destino=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
+            destino=googleMap!!.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo22))
                 .title("Destino")
                 .position( LatLng(getDestinoLat(datadriver)!!.toDouble(),getDestinoLong(datadriver)!!.toDouble())))
 
 
-            origen=googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
+            origen=googleMap!!.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.logo33))
                 .title("Origen")
                 .position( LatLng(getOrigenLat(datadriver)!!.toDouble(),getOrigenLong(datadriver)!!.toDouble())))
         }catch ( e:Exception){
@@ -2309,7 +2291,8 @@ private  fun getDeviceLocation() {
 //            Log.e("viewModel",1.toString())
 //        }
 //        polilineanimator.start()
-        botMarker= googleMap.addMarker(MarkerOptions().position(points[0])
+        botActive=true
+        botMarker= googleMap!!.addMarker(MarkerOptions().position(points[0])
             .flat(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.car64dp)))
         Log.e("viewModel",2.toString())
         handler= Handler()
@@ -2609,20 +2592,94 @@ private  fun getDeviceLocation() {
 
     }
     fun isOnlineNet():Boolean {
-
-        try {
+        return try {
             val p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.pe")
-
-             val   dato        = p.waitFor()
+            val   dato        = p.waitFor()
             val reachable = (dato == 0)
-            return reachable
-
+            reachable
         } catch ( e:Exception) {
-
             e.printStackTrace()
-            return false
+            false
         }
 
     }
+    fun MapaReady(){
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        googleMap!!.isMyLocationEnabled=true
+        googleMap!!.uiSettings.isMyLocationButtonEnabled=false
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        geo =  Geocoder(requireContext(), Locale.getDefault())
+        googleMap!!.setOnCameraMoveStartedListener {i->
+            isMoving = true
+//            Log.e("googlemap", "start")
+//            when(i){
+//                GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE->{
+//                    Log.e("googlemap", "REASON GESTURE")
+//                }
+//                GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION->{
+//                    Log.e("googlemap", "REASON_API_ANIMATION")
+//                }
+//                GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION->{
+//                    Log.e("googlemap", "REASON_DEVELOPER_ANIMATION")
+//                }
+//            }
+
+//            img_change.visibility = View.GONE
+//            profile_loader.visibility = View.GONE
+//            val mDrawable= requireContext().resources.getDrawable(R.drawable.circle_background_moving, null)
+//            mapa_marker_center.background = mDrawable
+//            resizeLayout(false)
+
+        }
+
+        MapsInitializer.initialize(requireContext())
+        moveMapCamera()
+        comprobarestadoViews()
+        //        if (getEstadoView(datadriver)!!>=5){
+//
+//        }
+        if (getEstadoView(datadriver)!!>4){
+            createConexionChat()
+            cargarPosicionDriver()
+        }else{
+            googleMap!!.setOnCameraIdleListener {
+                isMoving = false
+                Log.e("googlemap", "idle")
+//            img_change.visibility = View.INVISIBLE
+//            profile_loader.visibility = View.VISIBLE
+//            resizeLayout(true)
+                if (!isMoving && (getEstadoView(datadriver)!!<3) && botActive ) {
+//                    mapa_marker_center.background = mDrawable
+//                    img_change.visibility = View.VISIBLE
+//                    profile_loader.visibility = View.GONE
+                    Handler().postDelayed(Runnable {
+                        val mDrawable =
+                            requireContext().resources.getDrawable(R.drawable.circle_background, null)
+                        try {
+                            val center = googleMap!!.cameraPosition.target
+                            adres = geo.getFromLocation(center.latitude,center.longitude,1) as List<Address>
+                            val  direccion2= (adres!!.get(0).getAddressLine(0)).split(",")
+
+                            if (!status_btn_origin){
+                                dodpm_edtxt_origin.setText(direccion2[0])
+                            }else{
+                                dodpm_edtxt_dest.setText(direccion2[0])
+                            }
+
+                        }catch ( e:IOException) {
+                            e.printStackTrace()
+                        }
+
+                    },1000)
+
+                }
+
+            }
+        }
+    }
+
+
+
 
 }

@@ -40,7 +40,7 @@ class correo : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navFragment =
-            context!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         navFragment.edit().clear().apply()
         val b = arguments
         if (b != null) {
@@ -109,6 +109,7 @@ class correo : Fragment() {
 
     }
     fun accountActivate(e1: String) {
+        Log.e("accountActivate",e1)
         progressBar_correo!!.visibility = View.VISIBLE
         val sendCorreo =
             RetrofitClient.getInstance().api.sendEmail(e1);
@@ -121,8 +122,8 @@ class correo : Fragment() {
 
             override fun onResponse(call: Call<user>, response: Response<user>) {
                 Log.e("accountActivate",response.code().toString())
-                when {
-                    response.code()==200 -> {
+                when (response.code()){
+                    200 -> {
                        // setIDrecuperar(navFragment, response.body()!!.user)
                         setNavFragment(navFragment, correo().toString())
                         setCorreoNavFragment(navFragment, e1)
@@ -131,7 +132,7 @@ class correo : Fragment() {
                         bundle.putBoolean("activity" ,true)
                         findNavController().navigate(R.id.action_correo_to_set_codigo,bundle)
                     }
-                    response.code()==202 -> {
+                    202 -> {
                         progressBar_correo!!.visibility = View.GONE
                         activity!!.toast("Correo ya esta siendo usado")
                     }

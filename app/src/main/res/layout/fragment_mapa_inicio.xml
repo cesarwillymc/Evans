@@ -16,9 +16,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
-        <com.google.android.gms.maps.MapView
+        <fragment
             android:id="@+id/mapView"
             android:layout_width="match_parent"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_height="match_parent"/>
         <ImageView
             android:elevation="5dp"

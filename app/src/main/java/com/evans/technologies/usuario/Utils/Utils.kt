@@ -37,6 +37,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.math.RoundingMode
 import java.text.DecimalFormat
+fun getImgUrl(prefs: SharedPreferences): String? {
+    return prefs.getString("getImgUrl", "")
+}
+fun setImgUrl(prefs: SharedPreferences,url:String){
+    val editor = prefs.edit()
+    editor.putString("getImgUrl",url)
+    editor.apply()
+}
 fun getIsReferred(prefs: SharedPreferences): Boolean? {
     return prefs.getBoolean("isreferred", false)
 }
@@ -493,8 +501,8 @@ fun ramdomNumForLat(origin:LatLng):LatLng{
     Log.e("viewModel","${origin.latitude}   ${origin.longitude}")
     var df =  DecimalFormat("##.#######")
     df.roundingMode = RoundingMode.CEILING
-    var latFinal=origin.latitude-0.011f
-    var logFinal=origin.longitude-0.011f
+    var latFinal=origin.latitude-0.011.toDouble()
+    var logFinal=origin.longitude-0.011.toDouble()
     var lat= Math.random()*((origin.latitude)-(latFinal))+(latFinal)
     var log= Math.random()*((origin.longitude)-(logFinal))+(logFinal)
 

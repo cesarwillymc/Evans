@@ -55,7 +55,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         }else {
            Log.e("NotificationReceiver", "the app process is dead"+"\n"+data.getStringExtra("data"));
            Intent launchIntent = context.getPackageManager().
-                   getLaunchIntentForPackage("com.evans.technologies.evansuser");
+                   getLaunchIntentForPackage("com.evans.technologies.usuario");
            launchIntent.setFlags(
                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
            /* try{

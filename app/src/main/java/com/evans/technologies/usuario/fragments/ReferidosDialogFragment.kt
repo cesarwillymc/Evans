@@ -84,7 +84,7 @@ class ReferidosDialogFragment:Fragment() {
             val mensaje= txt_codigo.text.toString()
             copyText(mensaje)
         }
-        rdf_copiar.setOnLongClickListener {
+        rdf_copiar.setOnClickListener {
             val mensaje= txt_codigo.text.toString()
             copyText(mensaje)
         }

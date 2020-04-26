@@ -69,7 +69,7 @@ class Fragment_perfil_user : Fragment() {
 
             if (file.exists()) {
                 try{
-                    val myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath())
+                    val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
                     Glide.with(requireContext()).asBitmap().load(getImageRotate(getRutaImagen(prefs!!)!!,myBitmap))
                         .apply(RequestOptions.circleCropTransform())
                         .into(ffpu_img_profile)
@@ -77,6 +77,10 @@ class Fragment_perfil_user : Fragment() {
 
                 }
             }
+        }else if(getImgUrl(prefs!!)!!.isNotEmpty()){
+            Glide.with(requireContext()).asBitmap().load(getImgUrl(prefs!!))
+                .apply(RequestOptions.circleCropTransform())
+                .into(ffpu_img_profile)
         }
         ffpu_txt_name.text=getUserName(prefs!!)
         ffpu_txt_lastname.text=getUserSurname(prefs!!)

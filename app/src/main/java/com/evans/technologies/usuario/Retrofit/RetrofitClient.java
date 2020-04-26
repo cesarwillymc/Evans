@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-   private static final String BASE_URL = "https://api-rest-evans.herokuapp.com/api/";
-   // private static final String BASE_URL = "https://api-edu-rest.herokuapp.com/api/";
+   //private static final String BASE_URL = "https://api-rest-evans.herokuapp.com/api/";
+    private static final String BASE_URL = "https://api-edu-rest.herokuapp.com/api/";
     //private static final String BASE_URL = "http://192.168.0.5:3000/api/";
     private static RetrofitClient mInstance;
     private Retrofit retrofit;

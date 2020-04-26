@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:passwordToggleEnabled="true">
+        >
 
         <EditText
             android:textIsSelectable="true"
@@ -69,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_password"
-        app:passwordToggleEnabled="true">
+        >
 
         <EditText
             android:id="@+id/c_edtxt_email_confirm"

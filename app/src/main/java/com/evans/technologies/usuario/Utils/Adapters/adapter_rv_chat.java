@@ -27,13 +27,18 @@ public class adapter_rv_chat extends RecyclerView.Adapter< RecyclerView.ViewHold
     SharedPreferences prefs;
     View user;
     View other;
-    public adapter_rv_chat(Context context, int layoutResources_user, int layoutResources_other, ArrayList<chats> chat, OnclickItemListener listen){
+    public adapter_rv_chat(Context context, int layoutResources_user, int layoutResources_other,  OnclickItemListener listen){
         this.context=context;
         this.layoutResources_other=layoutResources_other;
         this.layoutResources_user=layoutResources_user;
-        this.chat=chat;
         this.listen=listen;
         prefs=context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+    }
+    public void setDataChat(ArrayList<chats> chat){
+        this.chat=chat;
+
+        notifyDataSetChanged();
+
     }
     @NonNull
     @Override
@@ -86,7 +91,7 @@ public class adapter_rv_chat extends RecyclerView.Adapter< RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        if(chat.size()>0){
+        if(chat!=null){
             return chat.size();
         }
         return 0;

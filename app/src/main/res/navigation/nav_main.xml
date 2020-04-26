@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_nav_travel_to_referidosDialogFragment"
             app:destination="@id/nav_trips_free" />
+        <action
+            android:id="@+id/action_nav_travel_to_fragment_chat"
+            app:destination="@id/fragment_chat" />
     </fragment>
     <fragment
         android:id="@+id/nav_cuenta"
@@ -37,7 +40,11 @@
         android:id="@+id/nav_wallet"
         android:name="com.evans.technologies.usuario.Activities.cupon.PagosActivity"
         android:label="activity_pagos"
-        tools:layout="@layout/activity_pagos" />
+        tools:layout="@layout/activity_pagos" >
+        <action
+            android:id="@+id/action_nav_wallet_to_cupones"
+            app:destination="@id/cupones" />
+    </fragment>
     <fragment
         android:id="@+id/nav_trips"
         android:name="com.evans.technologies.usuario.Activities.viajes.ListaViajes"
@@ -60,5 +67,19 @@
         android:id="@+id/historial_viaje"
         android:name="com.evans.technologies.usuario.Activities.viajes.historial_viaje"
         android:label="fragment_historial_viaje"
-        tools:layout="@layout/fragment_historial_viaje" />
+        tools:layout="@layout/fragment_historial_viaje" >
+        <argument
+            android:name="id"
+            app:argType="string"
+            android:defaultValue="noexiste" />
+    </fragment>
+    <fragment
+        android:id="@+id/cupones"
+        android:name="com.evans.technologies.usuario.Activities.cupon.Cupones"
+        android:label="activity_cupones"
+        tools:layout="@layout/activity_cupones" />
+    <fragment
+        android:id="@+id/fragment_chat"
+        android:name="com.evans.technologies.usuario.fragments.Fragment_chat"
+        android:label="Fragment_chat" />
 </navigation>

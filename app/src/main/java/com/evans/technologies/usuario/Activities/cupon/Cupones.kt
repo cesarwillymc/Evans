@@ -44,17 +44,16 @@ class Cupones : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
-
+        cuponesData
         ac_rv_cupones!!.layoutManager = LinearLayoutManager(requireContext())
-        adapterRview =
+        val data  =
             adapter_rv_cupon(
                 requireContext(),
                 R.layout.dialog_rv_cupon,
-                "cupon",
-                cupones,
                 click { data, adapterPosition -> })
+        adapterRview= data
         ac_rv_cupones!!.adapter = adapterRview
-        cuponesData
+         data.getData(cupones,"cupon")
         swipeRefresh!!.setOnRefreshListener {
             // Esto se ejecuta cada vez que se realiza el gesto
             cuponesData
@@ -73,7 +72,12 @@ class Cupones : Fragment() {
                         "getCupon",
                         response.code().toString() + "  " + response.message()
                     )
-                    swipeRefresh!!.isRefreshing = false
+                    try{
+                        swipeRefresh!!.isRefreshing = false
+                    }catch (e:Exception){
+
+                    }
+
                     if (response.isSuccessful) {
                         try {
                             cupones.clear()

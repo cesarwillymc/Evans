@@ -64,6 +64,7 @@ class AddCodePromocional() : Fragment() {
         return inflater.inflate(R.layout.activity_add_code_promocional, container, false)
     }
     private fun funcionAumentarCode() {
+        progressBar.visibility=View.VISIBLE
         Log.e("Agregarc", getUserId_Prefs((prefs)!!) + dato)
         val code: Call<getPrice> =
             RetrofitClient.getInstance().api.setCuponUser((getUserId_Prefs((prefs)!!))!!, (dato)!!)
@@ -73,6 +74,7 @@ class AddCodePromocional() : Fragment() {
                 response: Response<getPrice>
             ) {
                 Log.e("Agregarc", "" + response.code())
+                progressBar.visibility=View.GONE
                 if (response.isSuccessful) {
                     activity!!.toastLong("Se agrego el cúpon correctamente")
 //                    startActivity(
@@ -91,6 +93,7 @@ class AddCodePromocional() : Fragment() {
                 call: Call<getPrice>?,
                 t: Throwable
             ) {
+                progressBar.visibility=View.GONE
                 activity!!.toastLong("Intentalo mas tarde")
             }
         })

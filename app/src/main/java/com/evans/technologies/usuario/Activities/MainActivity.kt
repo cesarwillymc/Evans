@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -37,53 +38,54 @@ import com.evans.technologies.usuario.Activities.cupon.PagosActivity
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
 import com.evans.technologies.usuario.Utils.*
-import com.evans.technologies.usuario.Utils.timeCallback.ComunicateFrag
-import com.evans.technologies.usuario.Utils.timeCallback.updateListenerNotifications
-import com.evans.technologies.usuario.fragments.Fragment_chat
-import com.evans.technologies.usuario.fragments.Fragment_perfil_user
-import com.evans.technologies.usuario.fragments.ReferidosDialogFragment
-import com.evans.technologies.usuario.fragments.mapaInicio
 import com.evans.technologies.usuario.model.config
 import com.evans.technologies.usuario.model.infoDriver
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import org.jetbrains.anko.toggleButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
 
-class MainActivity : AppCompatActivity(),
-    CompoundButton.OnCheckedChangeListener , View.OnClickListener, updateListenerNotifications {
+class MainActivity : AppCompatActivity() {
 
 
     //Uidentificar al llamar al obgeto swicht
-    override fun onCheckedChanged(compoundButton: CompoundButton, b: Boolean) {
-        toastLong((b).toString())
-    }
 
     private lateinit var  token:String
     private lateinit var id:String
     private lateinit var prefs: SharedPreferences
     private lateinit var datadriver: SharedPreferences
     var chatSnapshot: DataSnapshot? =null
-    lateinit var comunicateFrag: ComunicateFrag.mapa_inicio
-    lateinit var comunicateFragChat: ComunicateFrag.chat
+//    lateinit var comunicateFrag: ComunicateFrag.mapa_inicio
+//    lateinit var comunicateFragChat: ComunicateFrag.chat
     lateinit var  refConexionDriverCoor: DatabaseReference
 
     lateinit var  conexionDriver: ValueEventListener
     //////////////////////////////////////////////////////////////////////////
     //////AQUI ESTA EL CODIGO GRENERADO POR DEFECTO DE NAVIGATION_DRAWER//////
     //////////////////////////////////////////////////////////////////////////
-
+    private fun fixGoogleMapBugTem(){
+        val googleBug= getSharedPreferences("google_bug_154855417", Context.MODE_PRIVATE)
+        if(!googleBug.contains("fixed")){
+            val corruptedZoomTables= File(filesDir,"ZoomTables.data")
+            corruptedZoomTables.delete()
+            googleBug.edit().putBoolean("fixed",true).apply()
+        }
+    }
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        datadriver = getSharedPreferences("datadriver", Context.MODE_PRIVATE)
+        val headerView = main_nav_view_inicio.getHeaderView(0)
+        setInfoUser(headerView)
         /* try{
              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                  startForegroundService(Intent(this@MainActivity, service_mqtt::class.java))
@@ -95,53 +97,74 @@ class MainActivity : AppCompatActivity(),
          }*/
 
         try{
-            var view = this.getCurrentFocus()
+            val view = this.currentFocus
             view!!.clearFocus()
             if (view != null) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }catch (e:Exception){
             e.printStackTrace()
         }
 
-
+//
         setSupportActionBar(toolbar)
+        fixGoogleMapBugTem()
         //
         val navController = findNavController(R.id.main_layout_change_fragment)
         // Passing each menu ID as a set of Ids because each
 //        // menu should be considered as top level destinations.
 
-        val appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.nav_travel,
-            R.id.nav_cuenta,
-            R.id.nav_wallet
-        ),drawer_layout)
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        hamburguesa.setOnClickListener {
+            try {
+                drawer_layout.openDrawer(Gravity.START)
+            }catch (e:Exception){
+                drawer_layout.closeDrawer(Gravity.END)
+            }
+        }
+//        drawer_layout.toggleButton {
+//            if (isChecked){
+//                drawer_layout.isDrawerOpen(Gravity.START)
+//            }else{
+//                drawer_layout.isDrawerOpen(Gravity.END)
+//            }
+//        }
+//        var status:Boolean=true
+//        val toggle = ActionBarDrawerToggle(
+//            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+//        drawer_layout.addDrawerListener(toggle)
+//        toggle.syncState()
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navController,appBarConfiguration)
         main_nav_view_inicio.setupWithNavController(navController)
-
+//        toggle.setToolbarNavigationClickListener {
+//            Log.e("enytro","sadfsdasd")
+//            if (!status){
+//                onBackPressed()
+//            }
+//        }
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
                 R.id.nav_travel->{
+                    Log.e("entro", "entro aca2")
                     main_nav_view_inicio.visibility=View.VISIBLE
-                    acv_imagebutton_back.visibility=View.GONE
-                    toggle.isDrawerIndicatorEnabled=true
+                    hamburguesa.visibility=View.VISIBLE
+                   // status=true
+                  // acv_imagebutton_back.visibility=View.GONE
                 }
                 else->{
+                    Log.e("entro", "entro aca")
                     main_nav_view_inicio.visibility=View.GONE
-                    acv_imagebutton_back.visibility=View.VISIBLE
-                    toggle.isDrawerIndicatorEnabled=false
+                    hamburguesa.visibility=View.GONE
+                 //   status=false
+                   // acv_imagebutton_back.visibility=View.VISIBLE
                    // toolbar.navigationIcon = null
                 }
             }
         }
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
-        datadriver = getSharedPreferences("datadriver", Context.MODE_PRIVATE);
+
+
         FirebaseDatabase.getInstance().reference.child("settingUser").child(getUserId_Prefs(prefs)!!)
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
@@ -165,17 +188,22 @@ class MainActivity : AppCompatActivity(),
 //        Sfragmentdefault()
 //
         //INFORMACIÓN DEL USUARIO EN EL MENU DE NAVEGACIÓN
-//        val headerView = main_nav_view_inicio.getHeaderView(0)
-        acv_imagebutton_back.setOnClickListener (this)
+
+      //  acv_imagebutton_back.setOnClickListener (this)
         /*setSupportActionBar(toolbar)
         menu_evans.setOnClickListener {
             drawer_layout.closeDrawer(GravityCompat.START)
         }*/
 
+
+
+
+
+
         //HACEMOS LA LLAMADA A SWITCH LAYOUT PARA MOSTRAR EL LOGO DE EVANS
-        val actionBar = getSupportActionBar()
+//        val actionBar = supportActionBar
         // actionBar?.setCustomView(R.layout.switch_layout)
-        actionBar?.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP or ActionBar.DISPLAY_SHOW_CUSTOM)
+       // actionBar?.displayOptions = ActionBar.DISPLAY_HOME_AS_UP or ActionBar.DISPLAY_SHOW_CUSTOM
 
 //        val toggle = ActionBarDrawerToggle(
 //            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -193,7 +221,7 @@ class MainActivity : AppCompatActivity(),
 //            var menu=main_nav_view_inicio.menu
 //            menu.findItem(R.id.nav_trips_free).setVisible(false)
 //        }
-//        setInfoUser(headerView)//Función para mostrar datos personales
+
 //        headerView.nav_header_image_view_profile.setOnClickListener(this)
         /*(applicationContext as mapaInicio).updateApi(object :  updateListenerNotifications{
             override fun updateNotificatones(check: Boolean?) {
@@ -206,85 +234,55 @@ class MainActivity : AppCompatActivity(),
             }
 
         })*/
-        if (!(getDriverId(datadriver).equals(""))){
-            Inicializarchat()
-        }
-        acv_imagebutton_back.setOnClickListener {
-            try {
-                findNavController(R.id.main_layout_change_fragment).navigateUp()
-            }catch (e:Exception){
-                findNavController(R.id.main_layout_change_fragment).navigate(R.id.nav_travel)
-
-            }
-
-        }
-
-    }
-    fun updateApi( listener: ComunicateFrag.mapa_inicio) {
-        comunicateFrag = listener
-    }
-
-    fun updateComuChat( listener: ComunicateFrag.chat) {
-        comunicateFragChat = listener
-    }
-
-    override fun createConexionChat() {
-
-        Inicializarchat()
-    }
-    private fun Inicializarchat(){
-        if (!(getDriverId(datadriver).equals(""))){
-
-            refConexionDriverCoor=
-                FirebaseDatabase.getInstance().getReference().child("chatsFirebase").child(getDriverId(datadriver)!!)
-
-            conexionDriver=refConexionDriverCoor.limitToLast(15).addValueEventListener(object :
-                ValueEventListener {
-                override fun onCancelled(p0: DatabaseError) {
-
-                }
-
-                override fun onDataChange(p0: DataSnapshot) {
-                    if(p0.exists()){
-                        chatSnapshot=p0;
-                        if (!(getLlaveChat(datadriver).equals(""))){
-                            var datos: MediaPlayer = MediaPlayer.create(this@MainActivity,R.raw.sound)
-                            datos.start()
-                            datos.setOnCompletionListener {
-                                it.release()
-                            }
-                        }
-                        if (getClaseMapaInicio(prefs)!!){
-                            comunicateFrag.mensajeGet()
-                        }else if(getClaseChat(prefs)!!){
-                            comunicateFragChat.sendDtaMessage(p0)
-                        }
-                    }
-                }
-
-            })
-
-        }
-    }
-    override fun updateNotificatones(check: Boolean?) {
-        if (check!!){
-            acv_imagebutton_back.visibility= View.VISIBLE
-            val manager = supportFragmentManager
-            manager.beginTransaction().replace(R.id.main_layout_change_fragment, Fragment_chat()).commit()
-            Handler().postDelayed({
-                comunicateFragChat.sendDtaMessage(chatSnapshot?:null)
-            }, 500)
-        }
-    }
-
-    override fun removeChatConexion() {
-        try{
-            refConexionDriverCoor.removeEventListener(conexionDriver)
-        }catch (e:Exception){
-
-        }
+//        if (!(getDriverId(datadriver).equals(""))){
+//            Inicializarchat()
+//        }
+//        acv_imagebutton_back.setOnClickListener {
+//            try {
+//                findNavController(R.id.main_layout_change_fragment).navigateUp()
+//            }catch (e:Exception){
+//                findNavController(R.id.main_layout_change_fragment).navigate(R.id.nav_travel)
+//
+//            }
+//
+//        }
 
     }
+
+
+//    fun updateApi( listener: ComunicateFrag.mapa_inicio) {
+//        comunicateFrag = listener
+//    }
+//
+//    fun updateComuChat( listener: ComunicateFrag.chat) {
+//        comunicateFragChat = listener
+//    }
+
+//    override fun createConexionChat() {
+//
+//        Inicializarchat()
+//    }
+
+//    override fun updateNotificatones(check: Boolean?) {
+//        if (check!!){
+////            acv_imagebutton_back.visibility= View.VISIBLE
+//            val manager = supportFragmentManager
+//            manager.beginTransaction().replace(R.id.main_layout_change_fragment, Fragment_chat()).commit()
+//            Handler().postDelayed({
+//                comunicateFragChat.sendDtaMessage(chatSnapshot?:null)
+//            }, 500)
+//        }
+//    }
+
+//    override fun removeChatConexion() {
+//        try{
+//            refConexionDriverCoor.removeEventListener(conexionDriver)
+//        }catch (e:Exception){
+//
+//        }
+//
+//    }
+
     fun updateVersion(){
         FirebaseDatabase.getInstance().reference.child("settinsApp").child("user").addValueEventListener(
             object : ValueEventListener {
@@ -331,14 +329,14 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    override fun onClick(v: View) {
-        when(v.id){
-            R.id.acv_imagebutton_back -> {
-                if (acv_imagebutton_back.visibility== View.VISIBLE){
-                    acv_imagebutton_back.visibility= View.GONE
-                 //   Sfragmentdefault()
-                }
-            }
+//    override fun onClick(v: View) {
+//        when(v.id){
+//            R.id.acv_imagebutton_back -> {
+////                if (acv_imagebutton_back.visibility== View.VISIBLE){
+////                    acv_imagebutton_back.visibility= View.GONE
+////                 //   Sfragmentdefault()
+////                }
+//            }
 //            R.id.nav_header_image_view_profile->{
 //                var menu=main_nav_view_inicio.menu
 //                drawer_layout.closeDrawer(GravityCompat.START)
@@ -348,8 +346,8 @@ class MainActivity : AppCompatActivity(),
 //
 //            }
 
-        }
-    }
+//        }
+//    }
 
 //    override fun onDestroy() {
 //        // stopService(Intent(this@MainActivity, service_mqtt::class.java))
@@ -379,11 +377,7 @@ class MainActivity : AppCompatActivity(),
         }
         return false
     }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
+
 
     /////////////////////////////////////////////////////////////////////
     //////////////////////Fragmentos del menu de navegación//////////////
@@ -486,7 +480,10 @@ class MainActivity : AppCompatActivity(),
 //            Log.e("error",E.message)
 //        }
 //    }
-
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
     private fun logOut(){
         val intent = Intent(this, InicioActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -500,22 +497,22 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setInfoUser(headerView: View) {
-
-        var nombres = getUserName(prefs)
-        var apellidos = getUserSurname(prefs)
+        Log.e("datatext", "${getUserSurname(prefs) }  datos")
+        Log.e("imagen", "${getImgUrl(prefs)}  ruta = ${getRutaImagen(prefs)}")
+        val nombres = getUserName(prefs)
+        val apellidos = getUserSurname(prefs)
 
         if (!TextUtils.isEmpty(nombres) && !TextUtils.isEmpty(apellidos)){
             headerView.header_nav_text_view_nombre?.text = nombres
             headerView.header_nav_text_view_apellido?.text = apellidos
         }
-        Log.e("imagen", getRutaImagen(prefs));
-        if (!getRutaImagen(prefs).equals("nulo")){
-            var file: File = File(getRutaImagen(prefs))
 
+        if (!getRutaImagen(prefs).equals("nulo")){
+            Log.e("datatext", "entra a primara imagen")
+            val file = File(getRutaImagen(prefs))
             if (file.exists()) {
                 try{
-                    val myBitmap = BitmapFactory.decodeFile(getRutaImagen(prefs))
-                    Glide.with(application).asBitmap().load(getImageRotate(getRutaImagen(prefs)!!,myBitmap))
+                    Glide.with(this@MainActivity).load(file)
                         .apply(RequestOptions.circleCropTransform())
                         .into(headerView.nav_header_image_view_profile)
                 }catch (e:Exception){
@@ -523,9 +520,17 @@ class MainActivity : AppCompatActivity(),
                 }
 
             }
+        }else{
+//            Glide.with(this@MainActivity).load(getImgUrl(prefs))
+//                .into(headerView.nav_header_image_view_profile)
+            if(getImgUrl(prefs)!=""){
+                Glide.with(this@MainActivity).load(getImgUrl(prefs))
+                    .apply(RequestOptions.circleCropTransform()).into(headerView.nav_header_image_view_profile)
+            }
+
         }
         Log.e("datatext", getUserName(prefs))
-        Log.e("datatext", getUserSurname(prefs))
+
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {

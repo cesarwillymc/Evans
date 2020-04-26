@@ -5,6 +5,7 @@ package com.evans.technologies.usuario.Retrofit
 import com.evans.technologies.usuario.model.*
 import com.evans.technologies.usuario.model.ResponsesApi.LoginResponse
 import com.evans.technologies.usuario.model.ResponsesApi.RegisterResponse
+import com.evans.technologies.usuario.model.modelTrip.trip
 import com.evans.technologies.usuario.model.user
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,7 +14,15 @@ import retrofit2.http.*
 
 interface Api {
 
-
+    @GET("user/getOneTavelsInfo/{id} ")
+    fun getHistorialTripById(
+        @Path("id") id:String
+    ): Call<trip>
+    @GET("user/getTravels/{id} ")
+    fun getHistorialAll(
+        @Path("id") id:String,
+        @Header("desde") desde:Int
+    ): Call<trip>
     @FormUrlEncoded
     @POST("sendEmail")
     fun sendEmail(
