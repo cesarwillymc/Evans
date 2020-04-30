@@ -13,7 +13,11 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface Api {
-
+    @POST("")
+    fun equalsPassword(
+        @Path("pass") pass:String,
+        @Header("authorization") authorization:String
+    ):Call<trip>
     @GET("user/getOneTavelsInfo/{id} ")
     fun getHistorialTripById(
         @Path("id") id:String
@@ -70,7 +74,6 @@ interface Api {
     @POST("user/reset/change/{id}")
     fun sendContraseña_recuperar(
         @Path("id") id:String,
-        @Field("token") token: String,
         @Field("password") password: String
     ): Call<user>
 

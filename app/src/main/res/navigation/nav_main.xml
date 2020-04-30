@@ -35,7 +35,11 @@
         android:id="@+id/nav_cuenta"
         android:name="com.evans.technologies.usuario.fragments.Fragment_perfil_user"
         android:label="fragment_perfil_user"
-        tools:layout="@layout/fragment_perfil_user" />
+        tools:layout="@layout/fragment_perfil_user" >
+        <action
+            android:id="@+id/action_nav_cuenta_to_passActual"
+            app:destination="@id/passActual" />
+    </fragment>
     <fragment
         android:id="@+id/nav_wallet"
         android:name="com.evans.technologies.usuario.Activities.cupon.PagosActivity"
@@ -44,6 +48,9 @@
         <action
             android:id="@+id/action_nav_wallet_to_cupones"
             app:destination="@id/cupones" />
+        <action
+            android:id="@+id/action_nav_wallet_to_evansWallet"
+            app:destination="@id/evansWallet" />
     </fragment>
     <fragment
         android:id="@+id/nav_trips"
@@ -82,4 +89,32 @@
         android:id="@+id/fragment_chat"
         android:name="com.evans.technologies.usuario.fragments.Fragment_chat"
         android:label="Fragment_chat" />
+    <fragment
+        android:id="@+id/changepassword2"
+        android:name="com.evans.technologies.usuario.fragments.change_password.changepassword"
+        android:label="fragment_changepassword"
+        tools:layout="@layout/fragment_changepassword" >
+        <argument
+            android:name="id"
+            app:argType="string"
+            android:defaultValue="null" />
+        <argument
+            android:name="isAuth"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/evansWallet"
+        android:name="com.evans.technologies.usuario.Activities.cupon.evansWallet"
+        android:label="fragment_evans_wallet"
+        tools:layout="@layout/fragment_evans_wallet" />
+    <fragment
+        android:id="@+id/passActual"
+        android:name="com.evans.technologies.usuario.fragments.change_password.passActual"
+        android:label="fragment_pass_actual"
+        tools:layout="@layout/fragment_pass_actual" >
+        <action
+            android:id="@+id/action_passActual_to_changepassword2"
+            app:destination="@id/changepassword2" />
+    </fragment>
 </navigation>

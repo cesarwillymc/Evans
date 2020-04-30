@@ -1,65 +1,66 @@
-package com.evans.technologies.usuario.fragments.auth
+package com.evans.technologies.usuario.fragments.change_password
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.evans.technologies.usuario.Activities.MainActivity
-import com.evans.technologies.usuario.Activities.recuperar_contra
+
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
 import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.model.ResponsesApi.LoginResponse
+import com.evans.technologies.usuario.model.data
 import com.evans.technologies.usuario.model.user
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_setcontrasenia.*
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.jar.Manifest
 
-class LoginFragment : Fragment(), View.OnClickListener {
-
+/**
+ * A simple [Fragment] subclass.
+ */
+class setcontrasenia : Fragment(), View.OnClickListener {
     private lateinit var prefs: SharedPreferences
     private lateinit var navFragment: SharedPreferences
+    private lateinit var correo: String
     lateinit var data: user
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.activity_login, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_setcontrasenia, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (setcontraseniaArgs.fromBundle(requireArguments()).correo!!.isNotEmpty()){
+            this.correo= setcontraseniaArgs.fromBundle(requireArguments()).correo!!
+        }
         navFragment= requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         navFragment.edit().clear().apply()
         prefs =requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
-        setCredentialIfExist()
 
-        login_button_registrar.isEnabled=true
-        login_button_logeo.setOnClickListener(this)
-        login_button_registrar.setOnClickListener(this)
-        al_txt_olvidaste.setOnClickListener(this)
-        ActivityCompat.requestPermissions(requireActivity(),
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            30)
+
+        fsc_btn_next_signin.setOnClickListener(this)
+        fsc_txt_forgot.setOnClickListener(this)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -67,57 +68,44 @@ class LoginFragment : Fragment(), View.OnClickListener {
     @SuppressLint("MissingPermission", "HardwareIds")
     private fun userLogin() {
 
-        if (!login_edit_text_usuario.userValido())
+        if (!fsc_edtxt_contarseña.passwordvalido())
         {
-            login_edit_text_usuario.error = "Complete el campo con un correo"
-            login_edit_text_usuario.requestFocus()
-            login_progressbar.visibility= View.GONE
-            login_button_logeo.isEnabled=true
-            login_button_registrar.isEnabled=true
+            fsc_edtxt_contarseña.error = "Contraseña no valida"
+            fsc_edtxt_contarseña.requestFocus()
+            progressBar.visibility= View.GONE
+            fsc_edtxt_contarseña.isEnabled=true
+            fsc_edtxt_contarseña.isEnabled=true
             return
         }
-        if (!login_edit_text_contraseña.passwordvalido())
-        {
-            login_edit_text_contraseña.error = "Contraseña no valida"
-            login_edit_text_contraseña.requestFocus()
-            login_progressbar.visibility= View.GONE
-            login_button_logeo.isEnabled=true
-            login_button_registrar.isEnabled=true
-            return
-        }
-        login_progressbar.visibility= View.VISIBLE
-        login_button_logeo.isEnabled=false
-        login_button_registrar.isEnabled=false
+        progressBar.visibility= View.VISIBLE
+        fsc_btn_next_signin.isEnabled=false
         val call = RetrofitClient
             .getInstance()
             .api
-            .loginUser(login_edit_text_usuario.text.toString(), login_edit_text_contraseña.text.toString())
+            .loginUser(correo, fsc_edtxt_contarseña.text.toString())
         //  val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         //telephonyManager.getDeviceId()
         call.enqueue(object: Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                Log.e("datosenviados",login_edit_text_usuario.text.toString() +"  "+ login_edit_text_contraseña.text.toString())
+                Log.e("datosenviados",correo +"  "+ fsc_edtxt_contarseña.text.toString())
 
                 when(response.code()){
                     200->{
                         goToMain(response.body()!!.user.id, response.body()!!.user.token)
                     }
                     400->{
-                        login_button_logeo.isEnabled=true
-                        login_button_registrar.isEnabled=true
-                        login_progressbar.visibility= View.GONE
+                        fsc_btn_next_signin.isEnabled=true
+                        progressBar.visibility= View.GONE
                         activity!!.toastLong("Email o contraseña incorrectos")
                     }
                     500->{
-                        login_button_logeo.isEnabled=true
-                        login_button_registrar.isEnabled=true
-                        login_progressbar.visibility= View.GONE
+                        fsc_btn_next_signin.isEnabled=true
+                        progressBar.visibility= View.GONE
                         activity!!.toastLong("Error al realizar la petición.")
                     }
                     404->{
-                        login_button_logeo.isEnabled=true
-                        login_button_registrar.isEnabled=true
-                        login_progressbar.visibility= View.GONE
+                        fsc_btn_next_signin.isEnabled=true
+                        progressBar.visibility= View.GONE
                         activity!!.toastLong("El usuario no existe.")
                     }
                 }
@@ -133,15 +121,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
                  }else{
                      login_button_logeo.isEnabled=true
                      login_button_registrar.isEnabled=true
-                     login_progressbar.visibility=View.GONE
+                     progressBar.visibility=View.GONE
                      activity!!.toastLong(response.body()!!.getMessage()+response.code()+"  ")
                  }*/
 
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                login_button_logeo.isEnabled=true
-                login_button_registrar.isEnabled=true
-                login_progressbar.visibility= View.GONE
+
+                fsc_btn_next_signin.isEnabled=true
+                progressBar.visibility= View.GONE
                 activity!!.toastLong("Revise su conexion a internet")
             }
         })
@@ -157,13 +145,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when(v.id){
-            R.id.login_button_registrar -> {
-               // findNavController().navigate(R.id.action_loginFragment_to_correo)
-//                login_button_registrar.isEnabled=false
-//                startActivity(Intent(activity!!, RegisterFragment::class.java))
-//                login_button_registrar.isEnabled=true
-            }
-            R.id.login_button_logeo -> {
+            R.id.fsc_btn_next_signin -> {
                 try{
                     var view = requireActivity().currentFocus
                     requireView().clearFocus()
@@ -177,11 +159,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
                 userLogin()
             }
-            R.id.al_txt_olvidaste->{
+            R.id.fsc_txt_forgot->{
                 val bundle= Bundle()
                 bundle.putBoolean( "sendRecuperarContraseña",true)
 
-            //    findNavController().navigate(R.id.action_loginFragment_to_correo)
+                findNavController().navigate(R.id.action_setcontrasenia_to_correo,bundle)
 //                startActivity(Intent(activity!!,
 //                    recuperar_contra::class.java))
             }
@@ -195,9 +177,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         getInfo.enqueue(object: Callback<LoginResponse> {
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                login_button_logeo.isEnabled=true
-                login_button_registrar.isEnabled=true
-                login_progressbar.visibility= View.GONE
+                fsc_btn_next_signin.isEnabled=true
+                progressBar.visibility= View.GONE
                 activity!!.toastLong("Revise su conexion a internet")
             }
 
@@ -234,17 +215,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
                                                 if (data_prueba.exists()){
                                                     setImgUrl(prefs,"https://evans-img.s3.us-east-2.amazonaws.com/"+data.imageProfile)
                                                     setRutaImagen(prefs,data_prueba.path)
-                                                    login_button_logeo.isEnabled=true
-                                                    login_button_registrar.isEnabled=true
-                                                    login_progressbar.visibility= View.GONE
+                                                    fsc_btn_next_signin.isEnabled=true
+                                                    progressBar.visibility= View.GONE
                                                     startActivity<MainActivity>("tokensend" to token)
                                                     activity!!.finish()
                                                 }else if (!data.imageProfile.contains("null") )
                                                     guardar_foto("https://evans-img.s3.us-east-2.amazonaws.com/"+data.imageProfile)
                                                 else{
-                                                    login_button_logeo.isEnabled=true
-                                                    login_button_registrar.isEnabled=true
-                                                    login_progressbar.visibility= View.GONE
+                                                    fsc_btn_next_signin.isEnabled=true
+                                                    progressBar.visibility= View.GONE
                                                     startActivity<MainActivity>("tokensend" to token)
                                                     activity!!.finish()
                                                 }
@@ -252,26 +231,23 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
                                         }
                                         override fun onFailure(call: Call<user>, t: Throwable) {
-                                            login_button_logeo.isEnabled=true
-                                            login_button_registrar.isEnabled=true
-                                            login_progressbar.visibility= View.GONE
+                                            fsc_btn_next_signin.isEnabled=true
+                                            progressBar.visibility= View.GONE
                                             activity!!.toastLong("Revise su conexion a internet")
                                         }
                                     })
 
                                 }else{
-                                    login_button_logeo.isEnabled=true
-                                    login_button_registrar.isEnabled=true
-                                    login_progressbar.visibility= View.GONE
+                                    fsc_btn_next_signin.isEnabled=true
+                                    progressBar.visibility= View.GONE
                                     activity!!.toastLong("Error al obtener Instancia ${task.result}")
                                     Log.e("Hola", "${task.result} getInstanceId failed ${task.exception}")
                                 }
                             }
                         )
                 }else{
-                    login_button_logeo.isEnabled=true
-                    login_button_registrar.isEnabled=true
-                    login_progressbar.visibility= View.GONE
+                    fsc_btn_next_signin.isEnabled=true
+                    progressBar.visibility= View.GONE
                     activity!!.toastLong("Revise su conexion a internet")
                     return
                 }
@@ -283,14 +259,14 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setCredentialIfExist(){
-        val email = getUserEmail(prefs)
-        val password = getUserPassword(prefs)
-        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
-            login_edit_text_usuario.setText(email)
-            login_edit_text_contraseña.setText(password)
-        }
-    }
+//    private fun setCredentialIfExist(){
+//        val email = getUserEmail(prefs)
+//        val password = getUserPassword(prefs)
+//        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
+//            login_edit_text_usuario.setText(email)
+//            fsc_btn_next_signin.setText(password)
+//        }
+//    }
     fun guardar_foto(url:String){
         setImgUrl(prefs,url)
         Glide.with(requireActivity())
@@ -323,9 +299,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         setRutaImagen(prefs,archivo.path)
                         Log.e("imagen","guardado")
                     }
-                    login_button_logeo.isEnabled=true
-                    login_button_registrar.isEnabled=true
-                    login_progressbar.visibility= View.GONE
+                    fsc_btn_next_signin.isEnabled=true
+                    progressBar.visibility= View.GONE
                     activity!!.toastLong("guardado correctamente")
                     startActivity<MainActivity>()
 
@@ -352,9 +327,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
         editor.putString("city",city)
         editor.putString("cellphone",cellphone)
         editor.putString("dni",dni)
-        editor.putString("password", login_edit_text_contraseña.text.toString())
+        editor.putString("password", fsc_btn_next_signin.text.toString())
         editor.putBoolean("isreferred", referred)
         editor.apply()
     }
 
 }
+
+

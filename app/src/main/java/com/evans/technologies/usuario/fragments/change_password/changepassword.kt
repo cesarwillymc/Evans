@@ -35,11 +35,14 @@ class changepassword : Fragment() {
 
     var p1: String? = null
     var p2: String? = null
+    private var isAuth=true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navFragment =
-            context!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
-
+            requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+        changepasswordArgs.fromBundle(requireArguments()).id
+        isAuth=changepasswordArgs.fromBundle(requireArguments()).isAuth
+        val id= changepasswordArgs.fromBundle(requireArguments()).id
         fcp_btn_confirm!!.setOnClickListener {
             p1 = fcp_edtxt_pw1!!.text.toString().trim { it <= ' ' }
             p2 = fcp_edtxt_pw2!!.text.toString().trim { it <= ' ' }
@@ -47,8 +50,7 @@ class changepassword : Fragment() {
                 progressBar_pass!!.visibility = View.VISIBLE
                 val sendCorreo = RetrofitClient.getInstance().api
                     .sendContraseña_recuperar(
-                        getIDrecuperar(navFragment)!!,
-                        gettokenrecuperar(navFragment)!!,
+                       id,
                         p1!!
                     )
                 sendCorreo.enqueue(object : Callback<user?> {
@@ -61,7 +63,12 @@ class changepassword : Fragment() {
                             progressBar_pass!!.visibility = View.GONE
                             activity!!.toastLong("La contraseña se cambio")
                             navFragment.edit().clear().apply()
-                            findNavController().navigate(R.id.action_changepassword_to_loginFragment)
+
+                           if(isAuth) {
+                               findNavController().navigate(R.id.action_changepassword_to_inicioFragment)
+                           }else{
+                               findNavController().navigate(R.id.nav_cuenta)
+                           }
                         } else {
                             progressBar_pass!!.visibility = View.GONE
                             activity!!.toast("Contraseña no valida")

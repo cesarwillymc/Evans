@@ -24,6 +24,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.evans.technologies.usuario.Activities.InicioActivity
@@ -101,6 +102,9 @@ class Fragment_perfil_user : Fragment() {
         ffpu_img_profile.setOnClickListener {
             saveImg()
         }
+        linearLayout3.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_cuenta_to_passActual)
+        }
         // activity!!.toastLong("sad")
 
     }
@@ -162,6 +166,7 @@ class Fragment_perfil_user : Fragment() {
             arrayOf(Manifest.permission.CAMERA),
             20
         )
+
     }
 
 

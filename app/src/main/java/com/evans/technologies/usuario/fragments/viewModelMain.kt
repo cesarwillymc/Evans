@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.evans.technologies.usuario.Utils.getDriverId
 import com.evans.technologies.usuario.Utils.getUserId_Prefs
 import com.evans.technologies.usuario.Utils.timeCallback.ArchLifecycleApp.Companion.getContextApp
 import com.evans.technologies.usuario.model.modelTrip.HistorialAll
@@ -83,10 +84,10 @@ class viewModelMain:ViewModel(),CoroutineScope{
         emit(Resource.Failure(e))
        }
     }
-    val chatValue = liveData(Dispatchers.IO) {
+    var chatValue = liveData(Dispatchers.IO) {
         emit(Resource.Loading())
         try {
-            network.chatConexion( getUserId_Prefs(dataDriver)!!).collect {
+            network.chatConexion( getDriverId(dataDriver)!!).collect {
                 emit(it)
             }
         }catch (e:Exception){

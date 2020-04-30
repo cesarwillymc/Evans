@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="34dp"
                 android:layout_marginEnd="11dp"
-                android:text="Creación de tu cuenta"
+                android:text="La facilidad de viajar en tus manos"
                 android:textColor="#000000"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +95,7 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:ems="10"
-                android:hint="Email"
+                android:hint="ejemplo@ejemplo.com"
                 android:inputType="textEmailAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:ems="10"
-                android:hint="Número de celular"
+                android:hint="Número de teléfono movil"
                 android:inputType="phone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,31 +157,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/register_text_layout2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.488"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/register_text_layout"
-                app:passwordToggleEnabled="true">
-
-                <EditText
-                    android:id="@+id/register_edit_text_verificar_contraseña"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Confirma tu Contraseña"
-                    android:inputType="textPassword" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
 
             <Button
                 android:id="@+id/register_button_registrar"
@@ -193,7 +168,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/colorPrimaryDark"
-                android:text="Registrarme"
+                android:text="Siguiente"
                 android:textColor="@android:color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -218,7 +193,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:clickable="true"
-                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:text="Al continuar, confirmo que leí y acepto los terminos y condiciones y la politica de privacidad"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -231,7 +208,7 @@
                 android:layout_margin="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/register_text_layout2">
+                app:layout_constraintTop_toBottomOf="@+id/register_text_layout">
 
                 <EditText
                     android:id="@+id/register_code_referencial"

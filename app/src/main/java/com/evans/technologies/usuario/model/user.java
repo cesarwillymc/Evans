@@ -4,9 +4,16 @@ public class user {
 
     private String id;
     String token,message,viajeId,mensaje;
-    Boolean success,imgUpdate,imgActivation,accountActivate,isReferred;
+    Boolean success,imgUpdate,imgActivation,accountActivate,isReferred,emailexist;
     private String name, surname, email, city, cellphone, numDocument, imageProfile,user,darMensaje,price,pricediscount;
 
+    public Boolean getEmailexist() {
+        return emailexist;
+    }
+
+    public void setEmailexist(Boolean emailexist) {
+        this.emailexist = emailexist;
+    }
 
     public String getMensaje() {
         return mensaje;

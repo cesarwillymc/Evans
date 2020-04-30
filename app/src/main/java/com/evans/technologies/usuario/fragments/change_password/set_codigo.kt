@@ -36,9 +36,9 @@ class set_codigo(var validar: Boolean=false,var actividad: Boolean=false) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navFragment =
-            context!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         prefs =
-            context!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
 
         val b = arguments
         if (b != null) {
@@ -166,7 +166,8 @@ class set_codigo(var validar: Boolean=false,var actividad: Boolean=false) :
                     progressBar_codigo!!.visibility = View.GONE
                     setNavFragment((navFragment)!!, set_codigo(true, false).toString())
                     settokenrecuperar((navFragment)!!, (code)!!)
-                    findNavController().navigate(R.id.action_set_codigo_to_changepassword)
+
+                    findNavController().navigate(  set_codigoDirections.actionSetCodigoToChangepassword(id))
                 } else {
                     progressBar_codigo!!.visibility = View.GONE
                     activity!!.toast("El codigo no es valido")

@@ -82,10 +82,14 @@ public class adapter_rv_chat extends RecyclerView.Adapter< RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (chat.get(position).getIdUserChat().equals(getUserId_Prefs(prefs))) {
+        try{
+            if (chat.get(position).getIdUserChat().equals(getUserId_Prefs(prefs))) {
+                return 1;
+            }else {
+                return 2;
+            }
+        }catch (Exception e){
             return 1;
-        }else {
-            return 2;
         }
     }
 

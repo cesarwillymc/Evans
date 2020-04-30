@@ -40,13 +40,13 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navFragment = activity!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+        navFragment = requireActivity().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         /*   checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
                prueba=isChecked
            }*/
         register_button_registrar.setOnClickListener(this@RegisterFragment)
-        txt_view_terminos.text = Html.fromHtml("Al continuar, confirmo que lei y acepto los " +
-                "<a href='www.google.com.pe'>Terminos y condiciones</a>"+" y la "+"<a href='www.google.com.pe'>Politica de privacidad</a>")
+//        txt_view_terminos.text = Html.fromHtml("Al continuar, confirmo que lei y acepto los " +
+//                "<a href='www.google.com.pe'>Terminos y condiciones</a>"+" y la "+"<a href='www.google.com.pe'>Politica de privacidad</a>")
         txt_view_terminos.setOnClickListener(this)
         register_edit_text_correo.setText(getCorreoNavFragment(navFragment)!!.toString())
     }
@@ -64,7 +64,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         val celphone = register_edit_text_celular.text.toString().trim()
         val city = register_edit_text_ciudad.text.toString().trim()
         val password = register_edit_text_contraseña.text.toString().trim()
-        val passwordconfirm = register_edit_text_verificar_contraseña.text.toString().trim()
+        //val passwordconfirm = register_edit_text_verificar_contraseña.text.toString().trim()
         val code= register_code_referencial.text.toString().trim()
         if (name.isEmpty())
         {
@@ -118,17 +118,17 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             register_edit_text_contraseña.requestFocus()
             return
         }
-        if (passwordconfirm.length<=8 || !(passwordconfirm.equals(password)))
-        {
-            register_edit_text_verificar_contraseña.error = "Contraseñas diferentes."
-            register_edit_text_verificar_contraseña.requestFocus()
-            return
-        }
+//        if (passwordconfirm.length<=8 || !(passwordconfirm.equals(password)))
+//        {
+//            register_edit_text_verificar_contraseña.error = "Contraseñas diferentes."
+//            register_edit_text_verificar_contraseña.requestFocus()
+//            return
+//        }
         register_progressbar.visibility= View.VISIBLE
         val call = RetrofitClient
             .getInstance()
             .api
-            .createUser(name, surname, dni, email, celphone, city, password, passwordconfirm)
+            .createUser(name, surname, dni, email, celphone, city, password,password)
 
         call.enqueue(object: Callback<RegisterResponse> {
 
@@ -193,11 +193,11 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         when(v.id){
             R.id.register_button_registrar-> {
                 try{
-                    var view = activity!!.currentFocus
-                    view!!.clearFocus()
+                    var view = requireActivity().currentFocus
+                    requireView().clearFocus()
                     if (view != null) {
-                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
                     }
                 }catch (e:Exception){
 
@@ -217,7 +217,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     fun Sfragmentdefault() {
         try{
             txt_view_terminos.isEnabled=false
-            val manager = activity!!.supportFragmentManager
+            val manager = requireActivity().supportFragmentManager
             manager.beginTransaction().replace(R.id.frame, set_codigo(true,true)).commit()
         }catch (E:Exception){
             Log.e("error",E.message)

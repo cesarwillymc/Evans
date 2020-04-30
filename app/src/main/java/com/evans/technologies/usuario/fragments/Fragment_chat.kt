@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +60,6 @@ class Fragment_chat : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         dataDriver = requireContext().getSharedPreferences("datadriver", Context.MODE_PRIVATE)
-        escucharChat()
 
 
         ffc_btn_enviar_msg!!.setOnClickListener(this)
@@ -86,7 +86,7 @@ class Fragment_chat : Fragment(),
             })
         adapterRview = chatAdapter
         ffc_rv_lista_chats!!.adapter = adapterRview
-
+        escucharChat()
     }
 
     private fun escucharChat() {
@@ -98,9 +98,10 @@ class Fragment_chat : Fragment(),
                         val android = dato.getValue(chats::class.java)!!
                         mensajes.add(android)
                     }
+                    Log.e("chats",mensajes.toString())
                     chatAdapter.setDataChat(mensajes)
                     try {
-                        ffc_rv_lista_chats!!.smoothScrollToPosition(adapterRview!!.itemCount - 1)
+                       // ffc_rv_lista_chats!!.smoothScrollToPosition(adapterRview!!.itemCount - 1)
                     } catch (e: Exception) {
                     }
                 }

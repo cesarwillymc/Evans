@@ -2158,7 +2158,7 @@ private  fun getDeviceLocation() {
             googleMap!!.clear()
             handler!!.removeCallbacks(drawPathRunnable)
         }
-        dibujarlineas()
+
         dialog_precio_spinner.isEnabled = true
         dialog_precio_spinner.setSelection(0)
 
@@ -2171,13 +2171,13 @@ private  fun getDeviceLocation() {
         //fmi_time.visibility = View.GONE
         transcurso_viaje.visibility = View.GONE
         fin_viaje.visibility = View.GONE
-        bottomSheetBehavior.setState( BottomSheetBehavior.STATE_HIDDEN )
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         aic_button_comentar_hide.visibility = View.GONE
         dialog_precio_text_view_precio.text = "S./ "+ getPriceShared(datadriver)!!
         mapa_marker_center.visibility = View.GONE
         dialog_precio_select.text = "PEDIR ECO EVANS"
        // Log.e("estado 3: ",getDestinoLat(datadriver)+"   "+getDestinoLong(datadriver)+"  "+valor)
-
+        dibujarlineas()
     }
     @SuppressLint("RestrictedApi")
     private fun cuarto_estado(){
@@ -2202,7 +2202,7 @@ private  fun getDeviceLocation() {
         try {
             var tempO: LatLng?
             var tempD: LatLng?
-            if (3>=getEstadoView(datadriver)!!){
+            if (3>getEstadoView(datadriver)!!){
                 val datos=ramdomNumForLat(googleMap!!.cameraPosition.target)
                 val dato2=ramdomNumForLat(LatLng(-15.834, -70.019))
                 tempO = dato2

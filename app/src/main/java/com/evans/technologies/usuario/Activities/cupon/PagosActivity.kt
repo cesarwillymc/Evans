@@ -57,6 +57,10 @@ class PagosActivity : Fragment() {
         adapterclass.getData(tipepays, "metodopay")
 
         ap_rv_metodos_pay!!.adapter = adapterRview
+
+        cuponinfo.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_wallet_to_evansWallet)
+        }
     }
 
 

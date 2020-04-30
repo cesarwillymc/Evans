@@ -122,22 +122,32 @@
                android:layout_marginTop="24dp"
                android:layout_marginEnd="24dp"
                android:orientation="horizontal"
+               android:weightSum="10"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/textView13">
 
                <ImageView
-                   android:layout_width="50dp"
+                   android:layout_width="0dp"
+                   android:layout_weight="1.5"
                    android:layout_height="50dp"
                    android:layout_marginHorizontal="24dp"
                    android:src="@drawable/sale" />
 
                <TextView
                    android:textColor="@color/black"
-                   android:layout_width="wrap_content"
+                   android:layout_weight="7"
+                   android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_gravity="center"
                    android:text="Cupones" />
+               <ImageView
+                   android:id="@+id/cuponinfo"
+                   android:layout_width="0dp"
+                   android:src="@drawable/ic_info"
+                   android:layout_gravity="center|end"
+                   android:layout_weight="1.5"
+                   android:layout_height="wrap_content"/>
            </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

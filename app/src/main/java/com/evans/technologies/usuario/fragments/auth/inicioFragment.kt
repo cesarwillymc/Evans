@@ -29,7 +29,7 @@ class inicioFragment : Fragment() {
             findNavController().navigate(R.id.action_inicioFragment_to_correo)
         }
         fi_btn_signin.setOnClickListener {
-            findNavController().navigate(R.id.action_inicioFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_inicioFragment_to_correo)
         }
     }
 
