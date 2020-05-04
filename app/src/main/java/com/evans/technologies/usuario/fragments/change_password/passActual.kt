@@ -2,6 +2,7 @@ package com.evans.technologies.usuario.fragments.change_password
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -42,20 +43,27 @@ class passActual : Fragment() {
     }
 
     private fun verificarcontraseña(token:String,pass: String) {
+        progressBar3.visibility=View.VISIBLE
         if(pass.isEmpty()){
             pass_Actual.error="Esta vacio"
             return
         }
         RetrofitClient.getInstance().api.equalsPassword(pass,token).enqueue(object: Callback<trip> {
             override fun onFailure(call: Call<trip>, t: Throwable) {
+                progressBar3.visibility=View.GONE
+                Log.e("passChange",t.message)
                 Toast.makeText(requireContext(),"Error de red",Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<trip>, response: Response<trip>) {
+                Log.e("passChange",response.code().toString())
                if (response.isSuccessful){
+
+                   progressBar3.visibility=View.GONE
                    val dato=passActualDirections.actionPassActualToChangepassword2(token,false)
                     findNavController().navigate(dato)
                }else{
+                   progressBar3.visibility=View.GONE
                    Toast.makeText(requireContext(),"Contraseña incorrecta",Toast.LENGTH_LONG).show()
                }
             }

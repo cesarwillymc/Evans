@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/black"
+    app:cardCornerRadius="20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:text="evansWallet"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="10dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Monto disponible en tu cuenta Evans."
+            android:textColor="@color/white"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/dew_txt_wallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PEN 3.00"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginVertical="5dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="5dp"
+            android:background="@drawable/border_layout"
+            android:gravity="center"/>
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="10dp"/>
+        <TextView
+            android:id="@+id/dew_txt_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:gravity="start"
+            android:text="¿Como funciona evans wallet?"
+            android:paddingBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_nav_wallet_to_evansWallet"
             app:destination="@id/evansWallet" />
+        <action
+            android:id="@+id/action_nav_wallet_to_efectivoInfo"
+            app:destination="@id/efectivoInfo" />
     </fragment>
     <fragment
         android:id="@+id/nav_trips"
@@ -69,7 +72,11 @@
     <fragment
         android:id="@+id/nav_trips_free"
         android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
-        android:label="ReferidosDialogFragment" />
+        android:label="ReferidosDialogFragment" >
+        <action
+            android:id="@+id/action_nav_trips_free_to_referidosInfo"
+            app:destination="@id/referidosInfo" />
+    </fragment>
     <fragment
         android:id="@+id/historial_viaje"
         android:name="com.evans.technologies.usuario.Activities.viajes.historial_viaje"
@@ -117,4 +124,14 @@
             android:id="@+id/action_passActual_to_changepassword2"
             app:destination="@id/changepassword2" />
     </fragment>
+    <fragment
+        android:id="@+id/efectivoInfo"
+        android:name="com.evans.technologies.usuario.Activities.cupon.EfectivoInfo"
+        android:label="fragment_efectivo_info"
+        tools:layout="@layout/fragment_efectivo_info" />
+    <fragment
+        android:id="@+id/referidosInfo"
+        android:name="com.evans.technologies.usuario.Activities.cupon.ReferidosInfo"
+        android:label="fragment_referidos_info"
+        tools:layout="@layout/fragment_referidos_info" />
 </navigation>

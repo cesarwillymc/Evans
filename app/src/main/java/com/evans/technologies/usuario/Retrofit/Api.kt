@@ -13,13 +13,18 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface Api {
-    @POST("")
+    @FormUrlEncoded
+    @POST("user/validate/password/{id}")
     fun equalsPassword(
-        @Path("pass") pass:String,
-        @Header("authorization") authorization:String
+        @Field("password") pass:String,
+        @Path("id") id:String
     ):Call<trip>
     @GET("user/getOneTavelsInfo/{id} ")
     fun getHistorialTripById(
+        @Path("id") id:String
+    ): Call<trip>
+    @GET("user/{id}")
+    fun getMoneyEvansWallet(
         @Path("id") id:String
     ): Call<trip>
     @GET("user/getTravels/{id} ")

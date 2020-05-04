@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
 import com.evans.technologies.usuario.Utils.getIsReferred
@@ -109,6 +110,9 @@ class ReferidosDialogFragment:Fragment() {
             }
 
 
+        }
+        rdf_info.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_trips_free_to_referidosInfo)
         }
     }
     private fun registrarCode(dato: String) {
