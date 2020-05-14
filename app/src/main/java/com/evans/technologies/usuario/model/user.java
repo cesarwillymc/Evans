@@ -2,13 +2,22 @@ package com.evans.technologies.usuario.model;
 
 public class user {
 
-    private String id;
+    private String id,codeEvans;
     String token,message,viajeId,mensaje;
     Boolean success,imgUpdate,imgActivation,accountActivate,isReferred,emailexist;
     private String name, surname, email, city, cellphone, numDocument, imageProfile,user,darMensaje,price,pricediscount;
 
     public Boolean getEmailexist() {
         return emailexist;
+    }
+
+
+    public String getCodeEvans() {
+        return codeEvans;
+    }
+
+    public void setCodeEvans(String codeEvans) {
+        this.codeEvans = codeEvans;
     }
 
     public void setEmailexist(Boolean emailexist) {

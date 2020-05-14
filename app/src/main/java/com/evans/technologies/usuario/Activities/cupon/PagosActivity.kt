@@ -53,7 +53,7 @@ class PagosActivity : Fragment() {
             override fun onResponse(call: Call<trip>, response: Response<trip>) {
                 Log.e("evansW",response.code().toString())
                 if(response.isSuccessful){
-                    //dew_txt_wallet.text=""
+                    dew_txt_wallet.text= "PEN ${response.body()!!.ewallet.value}"
                 }else{
 
                 }

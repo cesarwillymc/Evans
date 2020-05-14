@@ -228,8 +228,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                                                 saveOnPreferences(id,token,Firebasetoken,
                                                     data.email?:"Desconocido",data.accountActivate?:false,data.name?:"Non",
                                                     data.surname?:"Desc", data.city?:"Puno",
-                                                    data.celphone?:"999999999", data.numDocument,data.isReferred?:false)
-                                                var data_prueba= File("/storage/emulated/0/evans/evans"+ getUserId_Prefs(prefs) +".jpg")
+                                                    data.celphone?:"999999999", data.numDocument,data.isReferred?:false,data.codeEvans)
+                                                val data_prueba= File("/storage/emulated/0/evans/evans"+ getUserId_Prefs(prefs) +".jpg")
                                                 Log.e("imagen",data.imageProfile)
                                                 if (data_prueba.exists()){
                                                     setImgUrl(prefs,"https://evans-img.s3.us-east-2.amazonaws.com/"+data.imageProfile)
@@ -340,7 +340,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             })
 
     }
-    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String,referred:Boolean){
+    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String,referred:Boolean,code:String){
         val editor = prefs.edit()
         editor.putString("id",id)
         editor.putString("token",token)
@@ -352,6 +352,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         editor.putString("city",city)
         editor.putString("cellphone",cellphone)
         editor.putString("dni",dni)
+        editor.putString("codeEvans",code)
         editor.putString("password", login_edit_text_contraseña.text.toString())
         editor.putBoolean("isreferred", referred)
         editor.apply()

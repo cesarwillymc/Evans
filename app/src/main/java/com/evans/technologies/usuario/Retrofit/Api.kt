@@ -23,7 +23,7 @@ interface Api {
     fun getHistorialTripById(
         @Path("id") id:String
     ): Call<trip>
-    @GET("user/{id}")
+    @GET("user/getEwallet/{id}")
     fun getMoneyEvansWallet(
         @Path("id") id:String
     ): Call<trip>
@@ -47,8 +47,13 @@ interface Api {
     @PUT("user/userPutReferido/{id}")
     fun putReferido(
         @Path("id") id:String,
-        @Field("key") key:String
+        @Field("key") key:String,
+        @Field("refer") code:String="user"
     ): Call<String>
+    @GET("user/getEwallet/{id}")
+    fun getEwallet(
+        @Path("id") id:String
+    ):Call<String>
     @GET("user/getCodigoReferido/{driverId} ")
     fun getCodeReferido(
         @Path("driverId") driverId:String

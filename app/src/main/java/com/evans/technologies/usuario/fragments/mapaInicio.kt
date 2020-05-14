@@ -2493,7 +2493,7 @@ private  fun getDeviceLocation() {
         aic_button_comentar_hide.visibility = View.VISIBLE
         crear_comentario_layout_dialog.visibility = View.VISIBLE
         mapa_marker_center.visibility = View.GONE
-        bottomSheetBehavior.setState( BottomSheetBehavior.STATE_EXPANDED )
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         Log.e("estado_delete","decimo estado")
 
 

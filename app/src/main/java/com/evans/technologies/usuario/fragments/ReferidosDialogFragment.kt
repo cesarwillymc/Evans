@@ -13,10 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
-import com.evans.technologies.usuario.Utils.getIsReferred
-import com.evans.technologies.usuario.Utils.getUserId_Prefs
-import com.evans.technologies.usuario.Utils.setReferido
-import com.evans.technologies.usuario.Utils.toastLong
+import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.model.Referido
 import com.evans.technologies.usuario.model.infoDriver
 import kotlinx.android.synthetic.main.referidos_dialog_fragment.*
@@ -54,32 +51,32 @@ class ReferidosDialogFragment:Fragment() {
         if(getIsReferred(prefs)!!){
             rdf_cons.visibility=View.GONE
         }
-
-        var getReferido= RetrofitClient.getInstance().api.getCodeReferido(getUserId_Prefs(prefs)!!)
-        getReferido.enqueue(object : Callback<infoDriver> {
-            override fun onFailure(call: Call<infoDriver>, t: Throwable) {
-                Log.e("error", t.message)
-                Toast.makeText(context,"No se pudo referir, revise su conexion",Toast.LENGTH_LONG).show()
-            }
-            override fun onResponse(call: Call<infoDriver>, response: Response<infoDriver>) {
-                if ( (response.isSuccessful)){
-                    if (response.body()!=null){
-                        referido=response.body()!!.referido
-                        try{
-                            txt_codigo.text= referido.key
-                        }catch (e:Exception){
-
-                        }
-                    }else{
-                        Toast.makeText(context,"No se pudo traer correctamente los datos, null",Toast.LENGTH_LONG).show()
-                    }
-                }else{
-                    Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",Toast.LENGTH_LONG).show()
-                }
-
-            }
-
-        })
+        txt_codigo.text=getCodeEvans(prefs)
+//        var getReferido= RetrofitClient.getInstance().api.getCodeReferido(getUserId_Prefs(prefs)!!)
+//        getReferido.enqueue(object : Callback<infoDriver> {
+//            override fun onFailure(call: Call<infoDriver>, t: Throwable) {
+//                Log.e("error", t.message)
+//                Toast.makeText(context,"No se pudo referir, revise su conexion",Toast.LENGTH_LONG).show()
+//            }
+//            override fun onResponse(call: Call<infoDriver>, response: Response<infoDriver>) {
+//                if ( (response.isSuccessful)){
+//                    if (response.body()!=null){
+//                        referido=response.body()!!.referido
+//                        try{
+//                            = referido.key
+//                        }catch (e:Exception){
+//
+//                        }
+//                    }else{
+//                        Toast.makeText(context,"No se pudo traer correctamente los datos, null",Toast.LENGTH_LONG).show()
+//                    }
+//                }else{
+//                    Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",Toast.LENGTH_LONG).show()
+//                }
+//
+//            }
+//
+//        })
 
         txt_codigo.setOnLongClickListener {
             val mensaje= txt_codigo.text.toString()

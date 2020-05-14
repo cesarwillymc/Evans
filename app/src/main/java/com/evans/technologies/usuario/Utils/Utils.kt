@@ -32,11 +32,43 @@ import com.evans.technologies.usuario.fragments.change_password.changepassword
 import com.evans.technologies.usuario.fragments.change_password.correo
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessagingService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.RoundingMode
 import java.text.DecimalFormat
+
+
+object Coroutines{
+    fun main(work: suspend (()->Unit)) =
+        CoroutineScope(Dispatchers.IO).launch {
+            work()
+        }
+}
+
+fun View.snackbar(message:String){
+    Snackbar.make(this,message,Snackbar.LENGTH_LONG).also { snackbar ->
+        snackbar.setAction("Ok"){
+            snackbar.dismiss()
+        }.show()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 fun getImgUrl(prefs: SharedPreferences): String? {
     return prefs.getString("getImgUrl", "")
 }
@@ -55,6 +87,9 @@ fun setReferido(prefs: SharedPreferences,refirio:Boolean){
 }
 fun getCorreoNavFragment(prefs: SharedPreferences): String? {
     return prefs.getString("setCorreoNavFragment", "")
+}
+fun getCodeEvans(prefs: SharedPreferences): String? {
+    return prefs.getString("codeEvans", "")
 }
 fun setCorreoNavFragment(prefs: SharedPreferences,refirio:String){
     val editor = prefs.edit()

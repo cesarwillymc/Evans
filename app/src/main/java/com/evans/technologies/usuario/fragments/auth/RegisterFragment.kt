@@ -129,18 +129,14 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             .getInstance()
             .api
             .createUser(name, surname, dni, email, celphone, city, password,password)
-
         call.enqueue(object: Callback<RegisterResponse> {
-
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-
+                Log.e("Error","Registro ${response.body()}")
                 when(response.code()){
                     200->{
-
                         idnav=response.body()!!.user
                         Log.e("idrecuperado",response.body()!!.user?:"no recibe nada"+"")
                         registrarCode(code)
-
                         activity!!.toastLong("Se registro exitosamente")
                     }
                     400->{
@@ -183,6 +179,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
             }
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                Log.e("Error","Registro ${t.message}")
                 register_progressbar.visibility= View.GONE
                 activity!!.toastLong("Revise su conexion a internet")
             }
@@ -234,13 +231,16 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                         rdf_cons.visibility=View.GONE
                         Toast.makeText(context,"Refirio correctamente..", Toast.LENGTH_LONG).show()
                     }else{
+
                         Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",
                             Toast.LENGTH_LONG).show()
+                        findNavController().navigate(R.id.action_registerFragment_to_inicioFragment)
                     }
 
                 }
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     Toast.makeText(context,"No se pudo referir, revise su conexion", Toast.LENGTH_LONG).show()
+                    findNavController().navigate(R.id.action_registerFragment_to_inicioFragment)
                 }
 
             })
