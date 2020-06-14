@@ -7,8 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".fragments.auth.RegisterFragment">
 
-
+    <include
+        android:id="@+id/register_progressbar"
+        layout="@layout/progressbar_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <ScrollView
+        android:layout_margin="5dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -31,7 +41,7 @@
             <TextView
                 android:id="@+id/ftvg_txt_nombre_user"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="11dp"
                 android:text="La facilidad de viajar en tus manos"
                 android:textColor="#000000"
@@ -45,13 +55,13 @@
                 android:id="@+id/register_edit_text_nombre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
+                android:textColorHint="#5C5C5C"
+                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Nombres"
                 android:inputType="text"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
-                app:layout_constraintHorizontal_bias="0.488"
+                app:layout_constraintHorizontal_bias="0.58"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/register_edit_text_correo" />
 
@@ -60,8 +70,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginEnd="32dp"
+                android:textColorHint="#5C5C5C"
+                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Apellidos"
                 android:inputType="text"
@@ -74,11 +84,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginTop="16dp"
                 android:ems="10"
+                android:textColorHint="#5C5C5C"
                 android:hint="Número de documento"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,10 +99,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:textColorHint="#5C5C5C"
+                android:layout_marginTop="16dp"
+                android:editable="false"
                 android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:hint="ejemplo@ejemplo.com"
                 android:inputType="textEmailAddress"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -106,9 +116,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:textColorHint="#5C5C5C"
+                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Número de teléfono movil"
                 android:inputType="phone"
@@ -121,10 +130,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="32dp"
+                android:textColorHint="#5C5C5C"
+                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Ciudad"
                 android:inputType="text"
@@ -138,20 +145,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                app:hintTextColor="@color/black"
+                android:layout_marginTop="16dp"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/register_edit_text_ciudad"
                 app:passwordToggleEnabled="true">
 
                 <EditText
+                    android:textColorHint="#5C5C5C"
                     android:id="@+id/register_edit_text_contraseña"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:ems="10"
+
                     android:hint="Contraseña"
                     android:inputType="textPassword" />
 
@@ -163,13 +172,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:textAllCaps="false"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Siguiente"
+                android:textSize="18sp"
                 android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -177,14 +187,12 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/register_text_layout3">
+                app:layout_constraintTop_toBottomOf="@+id/register_code_referencial">
 
 
                 <TextView
@@ -193,31 +201,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:clickable="true"
-                    android:textColor="@color/black"
                     android:text="Al continuar, confirmo que leí y acepto los terminos y condiciones y la politica de privacidad"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textColor="#4E4E4E"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/register_text_layout3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/register_text_layout">
+
 
                 <EditText
+                    android:textColorHint="#5C5C5C"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/register_text_layout"
                     android:id="@+id/register_code_referencial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Código de referencia(Opcional)" />
 
-            </com.google.android.material.textfield.TextInputLayout>
 
 
             <androidx.constraintlayout.widget.Guideline
@@ -239,16 +242,5 @@
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="731dp" />
 
-    <include
-        android:id="@+id/register_progressbar"
-        layout="@layout/progressbar_login"
-        android:layout_width="match_parent"
-
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,8 +8,7 @@
     <fragment
         android:id="@+id/inicioFragment"
         android:name="com.evans.technologies.usuario.fragments.auth.inicioFragment"
-        android:label="fragment_inicio"
-        tools:layout="@layout/fragment_inicio" >
+        tools:layout="@layout/fragment_inicio">
         <action
             android:id="@+id/action_inicioFragment_to_correo"
             app:destination="@id/correo" />
@@ -17,8 +16,7 @@
     <fragment
         android:id="@+id/correo"
         android:name="com.evans.technologies.usuario.fragments.change_password.correo"
-        android:label="fragment_correo"
-        tools:layout="@layout/fragment_correo" >
+        tools:layout="@layout/fragment_correo">
         <action
             android:id="@+id/action_correo_to_set_codigo"
             app:destination="@id/set_codigo" />
@@ -29,8 +27,7 @@
     <fragment
         android:id="@+id/set_codigo"
         android:name="com.evans.technologies.usuario.fragments.change_password.set_codigo"
-        android:label="fragment_set_codigo"
-        tools:layout="@layout/fragment_set_codigo" >
+        tools:layout="@layout/fragment_set_codigo">
         <action
             android:id="@+id/action_set_codigo_to_registerFragment"
             app:destination="@id/registerFragment" />
@@ -41,8 +38,7 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.evans.technologies.usuario.fragments.auth.RegisterFragment"
-        android:label="activity_register"
-        tools:layout="@layout/activity_register" >
+        tools:layout="@layout/activity_register">
         <action
             android:id="@+id/action_registerFragment_to_inicioFragment"
             app:destination="@id/inicioFragment" />
@@ -50,25 +46,23 @@
     <fragment
         android:id="@+id/changepassword"
         android:name="com.evans.technologies.usuario.fragments.change_password.changepassword"
-        android:label="fragment_changepassword"
-        tools:layout="@layout/fragment_changepassword" >
+        tools:layout="@layout/fragment_changepassword">
         <argument
             android:name="id"
-            app:argType="string"
-            android:defaultValue="null" />
+            android:defaultValue="null"
+            app:argType="string" />
         <action
             android:id="@+id/action_changepassword_to_inicioFragment"
             app:destination="@id/inicioFragment" />
         <argument
             android:name="isAuth"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/setcontrasenia"
         android:name="com.evans.technologies.usuario.fragments.change_password.setcontrasenia"
-        android:label="fragment_setcontrasenia"
-        tools:layout="@layout/fragment_setcontrasenia" >
+        tools:layout="@layout/fragment_setcontrasenia">
         <action
             android:id="@+id/action_setcontrasenia_to_correo"
             app:destination="@id/correo" />

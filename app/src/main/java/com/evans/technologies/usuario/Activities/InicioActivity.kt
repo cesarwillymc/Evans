@@ -14,6 +14,8 @@ class InicioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inicio)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
          val  navFragment= getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         navFragment.edit().clear().apply()
         navController= findNavController(R.id.ai_frag)
