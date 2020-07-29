@@ -47,8 +47,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.auth.RegisterFragment" />
-        <activity android:name=".fragments.auth.LoginFragment" />
+
         <activity
             android:name=".Activities.MainActivity"
             android:configChanges="orientation"

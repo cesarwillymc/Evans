@@ -47,7 +47,7 @@
     <string name="navigation_guidance_night" translatable="false">mapbox://styles/mapbox/navigation-guidance-night-v4</string>
     <string name="navigation_running" translatable="false">navigation_running</string>
     <string name="navigation_view_instance_state" translatable="false">navigation_view_instance_state</string>
-    <string name="access_token">sk.eyJ1Ijoic3VwcG9ydGV2YW5zIiwiYSI6ImNrNGcyM2JnYzB1aXozbW83cWhqZ2l0enMifQ.6qXlLzej2U7OXyRAmX7t0w</string>
+    <string name="access_token"></string>
     <string name="evans_name">Somos Evans</string>
     <string name="evans_descripcion">Tu servicio de calidad y seguridad</string>
     <string name="default_notification_channel_id">notificacion_chats</string>

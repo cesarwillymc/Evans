@@ -518,6 +518,8 @@ fun setApiWebVersion(prefs: SharedPreferences,version:String){
     editor.putString("getApiWebVersion",version)
     editor.apply()
 }
+//AIzaSyBdIjp0e-pvzlNzej27mE|AAAAAAA|fpg0TCC-w-xgs    google key
+//Mapbox KEY sk.eyJ1Ijoic3VwcG9ydGV2YW5zIiwiYSI6ImNrNGcyM2JnYzB1|AAAAAAA|aXozbW83cWhqZ2l0enMifQ.6qXlLzej2U7OXyRAmX7t0w
 fun Activity.getViewUpdateVersion(context:Context){
     var dialogClickListener: DialogInterface.OnClickListener  =  DialogInterface.OnClickListener { dialog, which ->
         when (which) {
