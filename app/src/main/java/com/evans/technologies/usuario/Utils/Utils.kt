@@ -31,11 +31,52 @@ import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.fragments.change_password.changepassword
 import com.evans.technologies.usuario.fragments.change_password.correo
 import com.evans.technologies.usuario.fragments.change_password.set_codigo
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessagingService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.math.RoundingMode
 import java.text.DecimalFormat
+
+
+object Coroutines{
+    fun main(work: suspend (()->Unit)) =
+        CoroutineScope(Dispatchers.IO).launch {
+            work()
+        }
+}
+
+fun View.snackbar(message:String){
+    Snackbar.make(this,message,Snackbar.LENGTH_LONG).also { snackbar ->
+        snackbar.setAction("Ok"){
+            snackbar.dismiss()
+        }.show()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+fun getImgUrl(prefs: SharedPreferences): String? {
+    return prefs.getString("getImgUrl", "")
+}
+fun setImgUrl(prefs: SharedPreferences,url:String){
+    val editor = prefs.edit()
+    editor.putString("getImgUrl",url)
+    editor.apply()
+}
 fun getIsReferred(prefs: SharedPreferences): Boolean? {
     return prefs.getBoolean("isreferred", false)
 }
@@ -46,6 +87,9 @@ fun setReferido(prefs: SharedPreferences,refirio:Boolean){
 }
 fun getCorreoNavFragment(prefs: SharedPreferences): String? {
     return prefs.getString("setCorreoNavFragment", "")
+}
+fun getCodeEvans(prefs: SharedPreferences): String? {
+    return prefs.getString("codeEvans", "")
 }
 fun setCorreoNavFragment(prefs: SharedPreferences,refirio:String){
     val editor = prefs.edit()
@@ -232,6 +276,9 @@ fun setPriceSharedDiscount(dataDriver: SharedPreferences,money:String){
 
 fun getStartAddress(dataDriver: SharedPreferences): String? {
     return dataDriver.getString("startAddress", "")
+}
+fun getNumberDocument(dataDriver: SharedPreferences): String? {
+    return dataDriver.getString("dni", "")
 }
 fun getEndAddress(dataDriver: SharedPreferences): String? {
     return dataDriver.getString("endAddress", "")
@@ -485,21 +532,17 @@ fun ramdomNum(lat:Boolean):String{
 
 
 }
-fun ramdomNumForLat(lat:Boolean,latIni:Double,logInit:Double):String{
-    var num:Double;
-    var df:DecimalFormat =  DecimalFormat("##.#######")
-    df.setRoundingMode(RoundingMode.CEILING)
-    var latFinal=latIni-0.011
-    var logFinal=logInit-0.011
-    num = if (lat){
-        Math.random()*((latIni)-(latFinal))+(latFinal)
-    }else{
-        Math.random()*((logInit)-(logFinal))+(logFinal)
-    }
-    return df.format(num)
+fun ramdomNumForLat(origin:LatLng):LatLng{
+    Log.e("viewModel","${origin.latitude}   ${origin.longitude}")
+    var df =  DecimalFormat("##.#######")
+    df.roundingMode = RoundingMode.CEILING
+    var latFinal=origin.latitude-0.011.toDouble()
+    var logFinal=origin.longitude-0.011.toDouble()
+    var lat= Math.random()*((origin.latitude)-(latFinal))+(latFinal)
+    var log= Math.random()*((origin.longitude)-(logFinal))+(logFinal)
 
-
-
+    var newLat=LatLng(df.format(lat).toDouble(),df.format(log).toDouble())
+    return newLat
 }
 fun getAccountActivate(prefs: SharedPreferences):Boolean{
     return prefs.getBoolean("accountActivate",false)

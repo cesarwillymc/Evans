@@ -5,14 +5,14 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
     tools:context=".Activities.InicioActivity">
-    <include layout="@layout/toolbarwhite"/>
+    <include layout="@layout/toolbarwhite"
+         />
 
    <fragment
        android:id="@+id/ai_frag"
        android:name="androidx.navigation.fragment.NavHostFragment"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       app:layout_behavior="@string/appbar_scrolling_view_behavior"
        app:defaultNavHost="true"
        app:navGraph="@navigation/nav_auth"
        />

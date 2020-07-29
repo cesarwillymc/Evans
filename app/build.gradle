@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -29,6 +30,13 @@ android {
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+    }
+// To inline the bytecode built with JVM target 1.8 into
+// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
+
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 ext {
@@ -76,6 +84,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
     //Material edit text
@@ -91,14 +102,21 @@ dependencies {
     implementation "com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0"
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     //Butternife
     implementation "com.jakewharton:butterknife:$butternifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butternifeVersion"
     //chat view
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha01"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
+    //implementation 'androidx.navigation:navigation-safe-args-gradle-plugin:2.1.0'
     //New Android X dependency is this -
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-rc02"
+    //maps google
+    implementation "com.google.android.gms:play-services-maps:17.0.0"
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
 }

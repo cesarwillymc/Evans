@@ -1,69 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.cupon.PagosActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Métodos de pago"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
-            <!-- <ImageView
-                 android:id="@+id/menu_evans"
-                 android:layout_width="45dp"
-                 android:layout_height="45dp"
-                 android:layout_gravity="left"
-                 app:srcCompat="@drawable/ic_menu_black_24dp"/>-->
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="17dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/evanswhite"/>
-            <ImageButton
-                android:id="@+id/ap_imagebutton_back"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="#000"
-                android:layout_gravity="start"
-                android:visibility="visible"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                />
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-   <androidx.core.widget.NestedScrollView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-       <androidx.constraintlayout.widget.ConstraintLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           >
-
-           <TextView
-               android:id="@+id/textView4"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginStart="24dp"
-               android:layout_marginTop="16dp"
-               android:text="Métodos de pago"
-               android:textStyle="bold"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintHorizontal_bias="0.0"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toTopOf="parent" />
-
-           <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
                android:id="@+id/ap_rv_metodos_pay"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -76,6 +34,7 @@
                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
            <TextView
+
                android:textStyle="bold"
                android:textColor="@color/blue"
                android:id="@+id/ap_txt_add_pagos"
@@ -108,6 +67,7 @@
                android:layout_marginVertical="8dp"
                android:layout_marginTop="16dp"
                android:background="@color/plomo"
+               android:visibility="gone"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.1"
                app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +81,7 @@
                android:layout_marginTop="8dp"
                android:layout_marginEnd="24dp"
                android:text="Promociones"
+               android:visibility="gone"
                android:textStyle="bold"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.0"
@@ -128,6 +89,7 @@
                app:layout_constraintTop_toBottomOf="@+id/view6" />
 
            <TextView
+               android:visibility="gone"
                android:id="@+id/ap_txt_add_promo"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -143,6 +105,7 @@
                app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
            <TextView
+               android:textColor="@color/black"
                android:id="@+id/textView13"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -150,6 +113,7 @@
                android:layout_marginTop="24dp"
                android:layout_marginEnd="24dp"
                android:text="Cupones"
+               android:textSize="18sp"
                android:textStyle="bold"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.0"
@@ -163,25 +127,135 @@
                android:layout_marginTop="24dp"
                android:layout_marginEnd="24dp"
                android:orientation="horizontal"
+               android:weightSum="10"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/textView13">
 
                <ImageView
-                   android:layout_width="50dp"
+                   android:layout_width="0dp"
+                   android:layout_weight="1.5"
                    android:layout_height="50dp"
                    android:layout_marginHorizontal="24dp"
                    android:src="@drawable/sale" />
 
                <TextView
                    android:textColor="@color/black"
-                   android:layout_width="wrap_content"
+                   android:layout_weight="7"
+                   android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_gravity="center"
                    android:text="Cupones" />
+               <ImageView
+                   android:id="@+id/cuponinfo"
+                   android:layout_width="0dp"
+                   android:src="@drawable/ic_info"
+                   android:layout_gravity="center|end"
+                   android:layout_weight="1.5"
+                   android:layout_height="wrap_content"/>
            </LinearLayout>
 
-       </androidx.constraintlayout.widget.ConstraintLayout>
-   </androidx.core.widget.NestedScrollView>
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="eWallet"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:background="@drawable/borde_evans_walley"
+        android:id="@+id/include"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toBottomOf="@+id/textView17"
+         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:text="evansWallet"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@color/white"/>
+            <!--
+
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="10dp"
+            -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Monto disponible en tu cuenta Evans."
+                android:textColor="@color/white"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/dew_txt_wallet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PEN 3.00"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:layout_marginVertical="5dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="5dp"
+                android:background="@drawable/border_layout"
+                android:gravity="center"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@color/white"/>
+            <TextView
+                android:id="@+id/dew_txt_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:text="¿Como funciona evans wallet?"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

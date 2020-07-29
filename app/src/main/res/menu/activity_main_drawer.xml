@@ -44,12 +44,14 @@
     <group
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
-        <!-- se crea el icono para acceder al fragment de mapa -->
-        <item
+        <!-- se crea el icono para acceder al fragment de mapa
+
+         <item
             android:id="@+id/nav_travel"
 
             android:icon="@android:drawable/ic_dialog_map"
-            android:title="!Buscar evans¡" />
+            android:title="!Buscar evans¡" />-->
+
         <item
             android:id="@+id/nav_cuenta"
             android:icon="@drawable/perfil"
@@ -75,19 +77,20 @@
 
     <group
         android:id="@+id/menu_bottom"
-        android:checkableBehavior="none">
+        android:checkableBehavior="none"
+        android:enabled="false">
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
-            android:title="Compartir" />
+            android:title="Configuracion" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_directions_run_black_24dp"
-            android:title="Cerrar sesión" />
+            android:title="Ayuda" />
         <item
             android:id="@+id/nav_exit"
             android:icon="@drawable/exit"
-            android:title="Salir" />
+            android:title="Genera ganancias conduciendo" />
 
     </group>
 

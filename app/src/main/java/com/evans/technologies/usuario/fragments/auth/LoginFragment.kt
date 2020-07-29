@@ -48,16 +48,16 @@ class LoginFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.activity_login, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        navFragment= context!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+        navFragment= requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         navFragment.edit().clear().apply()
-        prefs =context!!. getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        prefs =requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         setCredentialIfExist()
 
         login_button_registrar.isEnabled=true
         login_button_logeo.setOnClickListener(this)
         login_button_registrar.setOnClickListener(this)
         al_txt_olvidaste.setOnClickListener(this)
-        ActivityCompat.requestPermissions(activity!!,
+        ActivityCompat.requestPermissions(requireActivity(),
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             30)
         super.onViewCreated(view, savedInstanceState)
@@ -158,17 +158,17 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when(v.id){
             R.id.login_button_registrar -> {
-                findNavController().navigate(R.id.action_loginFragment_to_correo)
+               // findNavController().navigate(R.id.action_loginFragment_to_correo)
 //                login_button_registrar.isEnabled=false
 //                startActivity(Intent(activity!!, RegisterFragment::class.java))
 //                login_button_registrar.isEnabled=true
             }
             R.id.login_button_logeo -> {
                 try{
-                    var view = activity!!.currentFocus
-                    view!!.clearFocus()
+                    var view = requireActivity().currentFocus
+                    requireView().clearFocus()
                     if (view != null) {
-                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(view.windowToken, 0)
                     }
                 }catch (e:Exception){
@@ -181,7 +181,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 val bundle= Bundle()
                 bundle.putBoolean( "sendRecuperarContraseña",true)
 
-                findNavController().navigate(R.id.action_loginFragment_to_correo)
+            //    findNavController().navigate(R.id.action_loginFragment_to_correo)
 //                startActivity(Intent(activity!!,
 //                    recuperar_contra::class.java))
             }
@@ -205,6 +205,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 if (response.isSuccessful){
 
                     data= response.body()!!.user
+
                     FirebaseInstanceId.getInstance().instanceId
                         .addOnCompleteListener(
                             OnCompleteListener {
@@ -227,16 +228,18 @@ class LoginFragment : Fragment(), View.OnClickListener {
                                                 saveOnPreferences(id,token,Firebasetoken,
                                                     data.email?:"Desconocido",data.accountActivate?:false,data.name?:"Non",
                                                     data.surname?:"Desc", data.city?:"Puno",
-                                                    data.celphone?:"999999999", data.numDocument,data.isReferred)
-                                                var data_prueba= File("/storage/emulated/0/evans/evans"+ getUserId_Prefs(prefs) +".jpg")
+                                                    data.celphone?:"999999999", data.numDocument,data.isReferred?:false,data.codeEvans)
+                                                val data_prueba= File("/storage/emulated/0/evans/evans"+ getUserId_Prefs(prefs) +".jpg")
+                                                Log.e("imagen",data.imageProfile)
                                                 if (data_prueba.exists()){
+                                                    setImgUrl(prefs,"https://evans-img.s3.us-east-2.amazonaws.com/"+data.imageProfile)
                                                     setRutaImagen(prefs,data_prueba.path)
                                                     login_button_logeo.isEnabled=true
                                                     login_button_registrar.isEnabled=true
                                                     login_progressbar.visibility= View.GONE
                                                     startActivity<MainActivity>("tokensend" to token)
                                                     activity!!.finish()
-                                                }else if (data.imageProfile!=null&&!(data.imageProfile.equals("nulo")))
+                                                }else if (!data.imageProfile.contains("null") )
                                                     guardar_foto("https://evans-img.s3.us-east-2.amazonaws.com/"+data.imageProfile)
                                                 else{
                                                     login_button_logeo.isEnabled=true
@@ -289,7 +292,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
         }
     }
     fun guardar_foto(url:String){
-        Glide.with(activity!!)
+        setImgUrl(prefs,url)
+        Glide.with(requireActivity())
             .asBitmap()
             .load(url)
             // .fitCenter()
@@ -336,7 +340,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             })
 
     }
-    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String,referred:Boolean){
+    private fun saveOnPreferences(id: String, token: String,accesToken:String,email:String, accountActivate:Boolean, name:String, surname:String, city:String, cellphone:String, dni:String,referred:Boolean,code:String){
         val editor = prefs.edit()
         editor.putString("id",id)
         editor.putString("token",token)
@@ -348,6 +352,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         editor.putString("city",city)
         editor.putString("cellphone",cellphone)
         editor.putString("dni",dni)
+        editor.putString("codeEvans",code)
         editor.putString("password", login_edit_text_contraseña.text.toString())
         editor.putBoolean("isreferred", referred)
         editor.apply()

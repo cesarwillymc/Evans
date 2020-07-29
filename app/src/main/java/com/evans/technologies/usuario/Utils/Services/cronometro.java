@@ -54,7 +54,7 @@ public class cronometro extends Service {
 
                                 setEstadoViews(datadriver,3);
                                 Intent launchIntent = context.getPackageManager().
-                                        getLaunchIntentForPackage("com.evans.technologies.evansuser");
+                                        getLaunchIntentForPackage("com.evans.technologies.usuario");
                                 launchIntent.setFlags(
                                         Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 

@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#E7E6E6"
-    android:alpha="0.7"
-    >
+    android:background="#FDBDBDBD"
+    android:alpha="0.7">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true"
+        android:layout_marginHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:foregroundGravity="center"
+        android:layout_marginVertical="50dp"
+        android:layout_height="100dp"
+
         >
 
-        <ProgressBar
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
 
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Procesando información..."
-            android:textColor="@color/colorPrimary"
-            android:layout_gravity="center"/>
+            android:layout_height="match_parent">
+            <ProgressBar
+                android:layout_width="45dp"
+                android:layout_margin="5dp"
+                android:layout_height="45dp"
+                />
 
-    </LinearLayout>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:textSize="23dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Procesando información..."
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

@@ -12,16 +12,19 @@
     app:defaultNavHost="true"
         app:navGraph="@navigation/nav_main"-->
 
-    <LinearLayout
+    <fragment
         android:id="@+id/main_layout_change_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </LinearLayout>
+    </fragment>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

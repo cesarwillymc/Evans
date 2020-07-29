@@ -5,6 +5,7 @@ package com.evans.technologies.usuario.Retrofit
 import com.evans.technologies.usuario.model.*
 import com.evans.technologies.usuario.model.ResponsesApi.LoginResponse
 import com.evans.technologies.usuario.model.ResponsesApi.RegisterResponse
+import com.evans.technologies.usuario.model.modelTrip.trip
 import com.evans.technologies.usuario.model.user
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -12,8 +13,25 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface Api {
-
-
+    @FormUrlEncoded
+    @POST("user/validate/password/{id}")
+    fun equalsPassword(
+        @Field("password") pass:String,
+        @Path("id") id:String
+    ):Call<trip>
+    @GET("user/getOneTavelsInfo/{id} ")
+    fun getHistorialTripById(
+        @Path("id") id:String
+    ): Call<trip>
+    @GET("user/getEwallet/{id}")
+    fun getMoneyEvansWallet(
+        @Path("id") id:String
+    ): Call<trip>
+    @GET("user/getTravels/{id} ")
+    fun getHistorialAll(
+        @Path("id") id:String,
+        @Header("desde") desde:Int
+    ): Call<trip>
     @FormUrlEncoded
     @POST("sendEmail")
     fun sendEmail(
@@ -29,8 +47,13 @@ interface Api {
     @PUT("user/userPutReferido/{id}")
     fun putReferido(
         @Path("id") id:String,
-        @Field("key") key:String
+        @Field("key") key:String,
+        @Field("refer") code:String="user"
     ): Call<String>
+    @GET("user/getEwallet/{id}")
+    fun getEwallet(
+        @Path("id") id:String
+    ):Call<String>
     @GET("user/getCodigoReferido/{driverId} ")
     fun getCodeReferido(
         @Path("driverId") driverId:String
@@ -61,7 +84,6 @@ interface Api {
     @POST("user/reset/change/{id}")
     fun sendContraseña_recuperar(
         @Path("id") id:String,
-        @Field("token") token: String,
         @Field("password") password: String
     ): Call<user>
 

@@ -2,11 +2,87 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:background="@drawable/bordeb_cuerpow"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+
+    <TextView
+        android:id="@+id/dhv_txt_fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="11/07/1998"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dhv_txt_hora"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="10.16 pm"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintStart_toEndOf="@+id/dhv_txt_fecha"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dhv_txt_origen"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="De: Jr el puerto 2015"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dhv_txt_fecha" />
+
+    <TextView
+        android:id="@+id/dhv_txt_destino"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:text="A: Laykakota 236"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dhv_txt_origen" />
+
+    <TextView
+        android:id="@+id/dhv_txt_estado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Estado: Cancelado"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dhv_txt_destino" />
+
+    <TextView
+        android:id="@+id/dhv_txt_detalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Ver detalles >>"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textSizeviajes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dhv_txt_estado" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--
+<ImageView
         android:id="@+id/dhv_img_mapa"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -103,7 +179,4 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/dhv_txt_fecha"
-        app:layout_constraintTop_toTopOf="@+id/view" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="@+id/view" />-->

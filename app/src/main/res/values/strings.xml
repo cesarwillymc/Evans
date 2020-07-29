@@ -56,4 +56,12 @@
     <string name="text_introduce_codigo">Por motivos de seguridad es necesario introducir el código de verificación. Puedes encontrar tu código de verificación en el correo anteriormente introducido.</string>
     <string name="text_introduce_correo">Por motivos de seguridad es necesario introducir su correo de acceso para comprobar su identidad y luego enviar un código de verificación y validación para el correcto cambio de contraseña</string>
     <string name="text_introduce_password">Por la seguridad de tu cuenta, recomendamos cambiar tu contraseña con una que te sea fácil de recordar y que sea seguro tambien se cuidadoso con tu cuenta.</string>
+    <string name="title_activity_examensadsadasd">examensadsadasd</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="siguiente">Siguiente</string>
 </resources>

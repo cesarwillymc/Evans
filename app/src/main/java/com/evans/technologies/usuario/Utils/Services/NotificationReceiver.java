@@ -12,7 +12,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.evans.technologies.usuario.Activities.MainActivity;
 
 import static com.evans.technologies.usuario.Utils.UtilsKt.getClaseMapaInicio;
+import static com.evans.technologies.usuario.Utils.UtilsKt.getEstadoView;
 import static com.evans.technologies.usuario.Utils.UtilsKt.getPrimerplano;
+import static com.evans.technologies.usuario.Utils.UtilsKt.setEstadoViews;
 import static com.evans.technologies.usuario.Utils.UtilsKt.setdataNotification_noti;
 
 
@@ -46,16 +48,14 @@ public class NotificationReceiver extends BroadcastReceiver {
                 broadcaster.sendBroadcast(data);
             }else{
                 Log.e("LifecycleObserver", "is open");
+                int dato = getEstadoView(dataDriver)+1;
+                setEstadoViews(dataDriver,dato);
                 setdataNotification_noti(dataDriver,data.getStringExtra("data"),"");
-                Intent launchIntent=new Intent(context, MainActivity.class);
-                launchIntent.setFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                context.startActivity(launchIntent);
             }
         }else {
            Log.e("NotificationReceiver", "the app process is dead"+"\n"+data.getStringExtra("data"));
            Intent launchIntent = context.getPackageManager().
-                   getLaunchIntentForPackage("com.evans.technologies.evansuser");
+                   getLaunchIntentForPackage("com.evans.technologies.usuario");
            launchIntent.setFlags(
                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
            /* try{

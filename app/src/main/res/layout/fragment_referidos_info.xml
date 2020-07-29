@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".Activities.cupon.ReferidosInfo">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:layout_margin="15dp"
+        android:text="Funcionamiento de las invitaciones" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginHorizontal="15dp"
+        android:text="Cada vez que un usuario de Evans se registra con tu codigo de invitacion, obtienes un bono en tu billetera evansWallet. (El monto puede variar segun tu ubicacion). \n\n El montopor referenciar a un pasajero es de hasta PEN 1.00 y por referenciar a un conductor es de hasta  PEN 1.50. (El monto puede variar segun tu ubicacion) \n\n Puede apreciar los bonos que se te brindan por cada invitaion en tu billetera evansWallet desde tu aplicacion Evans."
+        />
+
+</LinearLayout>

@@ -9,12 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.evans.technologies.usuario.R
 import com.evans.technologies.usuario.Retrofit.RetrofitClient
-import com.evans.technologies.usuario.Utils.getIsReferred
-import com.evans.technologies.usuario.Utils.getUserId_Prefs
-import com.evans.technologies.usuario.Utils.setReferido
-import com.evans.technologies.usuario.Utils.toastLong
+import com.evans.technologies.usuario.Utils.*
 import com.evans.technologies.usuario.model.Referido
 import com.evans.technologies.usuario.model.infoDriver
 import kotlinx.android.synthetic.main.referidos_dialog_fragment.*
@@ -23,16 +22,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 
-class ReferidosDialogFragment:DialogFragment() {
+class ReferidosDialogFragment:Fragment() {
     val facebook="com.facebook.katana"
     val twitter="com.twitter.android"
     val instagram="com.instagram.android"
     val whatsapp="com.whatsapp"
     lateinit var referido: Referido
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL,R.style.fullScreenDialog)
-    }
+
     private lateinit var prefs: SharedPreferences
     //open dialog
     //val dialog= ReferidosDialogFragment()
@@ -42,7 +38,9 @@ class ReferidosDialogFragment:DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        prefs = context!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+
+        //activity!!.setStyle(DialogFragment.STYLE_NORMAL,R.style.fullScreenDialog)
+        prefs = requireContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         val view= inflater.inflate(R.layout.referidos_dialog_fragment,container,false)
 
         return view
@@ -53,40 +51,44 @@ class ReferidosDialogFragment:DialogFragment() {
         if(getIsReferred(prefs)!!){
             rdf_cons.visibility=View.GONE
         }
+        txt_codigo.text=getCodeEvans(prefs)
+//        var getReferido= RetrofitClient.getInstance().api.getCodeReferido(getUserId_Prefs(prefs)!!)
+//        getReferido.enqueue(object : Callback<infoDriver> {
+//            override fun onFailure(call: Call<infoDriver>, t: Throwable) {
+//                Log.e("error", t.message)
+//                Toast.makeText(context,"No se pudo referir, revise su conexion",Toast.LENGTH_LONG).show()
+//            }
+//            override fun onResponse(call: Call<infoDriver>, response: Response<infoDriver>) {
+//                if ( (response.isSuccessful)){
+//                    if (response.body()!=null){
+//                        referido=response.body()!!.referido
+//                        try{
+//                            = referido.key
+//                        }catch (e:Exception){
+//
+//                        }
+//                    }else{
+//                        Toast.makeText(context,"No se pudo traer correctamente los datos, null",Toast.LENGTH_LONG).show()
+//                    }
+//                }else{
+//                    Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",Toast.LENGTH_LONG).show()
+//                }
+//
+//            }
+//
+//        })
 
-        var getReferido= RetrofitClient.getInstance().api.getCodeReferido(getUserId_Prefs(prefs)!!)
-        getReferido.enqueue(object : Callback<infoDriver> {
-            override fun onFailure(call: Call<infoDriver>, t: Throwable) {
-                Log.e("error", t.message)
-                Toast.makeText(context,"No se pudo referir, revise su conexion",Toast.LENGTH_LONG).show()
-            }
-            override fun onResponse(call: Call<infoDriver>, response: Response<infoDriver>) {
-                if ( (response.isSuccessful)){
-                    if (response.body()!=null){
-                        referido=response.body()!!.referido
-                        try{
-                            rdf_txt_codigo.text= referido.key
-                        }catch (e:Exception){
-
-                        }
-                    }else{
-                        Toast.makeText(context,"No se pudo traer correctamente los datos, null",Toast.LENGTH_LONG).show()
-                    }
-                }else{
-                    Toast.makeText(context,"No se pudo referir, revise su conexion ${response.code()}",Toast.LENGTH_LONG).show()
-                }
-
-            }
-
-        })
-
-        rdf_txt_codigo.setOnLongClickListener {
-            val mensaje= rdf_txt_codigo.text.toString()
+        txt_codigo.setOnLongClickListener {
+            val mensaje= txt_codigo.text.toString()
             copyText(mensaje)
         }
-        rdf_imgbtn_close.setOnClickListener {
-            this.dismiss()
+        rdf_copiar.setOnClickListener {
+            val mensaje= txt_codigo.text.toString()
+            copyText(mensaje)
         }
+//        rdf_imgbtn_close.setOnClickListener {
+//            this.dismiss()
+//        }
         rdf_imgbtn_facebook.setOnClickListener {
             sharingtoSocialMedia(facebook)
         }
@@ -105,6 +107,9 @@ class ReferidosDialogFragment:DialogFragment() {
             }
 
 
+        }
+        rdf_info.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_trips_free_to_referidosInfo)
         }
     }
     private fun registrarCode(dato: String) {
@@ -130,10 +135,10 @@ class ReferidosDialogFragment:DialogFragment() {
     }
 
     private fun copyText(mensaje: String): Boolean {
-        val dato:ClipboardManager= activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val dato:ClipboardManager= requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("text",mensaje)
         dato.setPrimaryClip(clip)
-        activity!!.toastLong("Texto Copiado Correctamente")
+        requireActivity().toastLong("Texto Copiado Correctamente")
         return false
     }
 
@@ -152,7 +157,7 @@ class ReferidosDialogFragment:DialogFragment() {
     }
 
     private fun checkAppInstalled(paquete: String): Boolean {
-        val pm= context!!.packageManager
+        val pm= requireContext().packageManager
         return try{
             pm.getPackageInfo(paquete,PackageManager.GET_ACTIVITIES)
             true

@@ -40,7 +40,7 @@ class correo : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navFragment =
-            context!!.getSharedPreferences("navFragment", Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences("navFragment", Context.MODE_PRIVATE)
         navFragment.edit().clear().apply()
         val b = arguments
         if (b != null) {
@@ -48,8 +48,7 @@ class correo : Fragment() {
         }
         fc_btn_correo_ic!!.setOnClickListener {
             val e1 = c_edtxt_email!!.text.toString().trim()
-            val e2 = c_edtxt_email_confirm!!.text.toString().trim()
-            if (comprobarcampos(e1,e2)) {
+            if (comprobarcampos(e1)) {
                 Log.e("accountActivate",sendRecuperarContraseña.toString())
                 if(sendRecuperarContraseña){
                     recuperarContraseña(e1)
@@ -109,6 +108,7 @@ class correo : Fragment() {
 
     }
     fun accountActivate(e1: String) {
+        Log.e("accountActivate",e1)
         progressBar_correo!!.visibility = View.VISIBLE
         val sendCorreo =
             RetrofitClient.getInstance().api.sendEmail(e1);
@@ -120,18 +120,25 @@ class correo : Fragment() {
             }
 
             override fun onResponse(call: Call<user>, response: Response<user>) {
-                Log.e("accountActivate",response.code().toString())
-                when {
-                    response.code()==200 -> {
+
+                when (response.code()){
+                    200 -> {
+                        Log.e("accountActivate","${response.body()!!.emailexist} response")
+                        if (response.body()!!.emailexist){
+                            val dato=correoDirections.actionCorreoToSetcontrasenia(e1)
+                            findNavController().navigate(dato)
+                        }else{
+                            setNavFragment(navFragment, correo().toString())
+                            setCorreoNavFragment(navFragment, e1)
+                            val bundle= Bundle()
+                            bundle.putBoolean( "validar_account",true)
+                            bundle.putBoolean("activity" ,true)
+                            findNavController().navigate(R.id.action_correo_to_set_codigo,bundle)
+                        }
                        // setIDrecuperar(navFragment, response.body()!!.user)
-                        setNavFragment(navFragment, correo().toString())
-                        setCorreoNavFragment(navFragment, e1)
-                        val bundle= Bundle()
-                        bundle.putBoolean( "validar_account",true)
-                        bundle.putBoolean("activity" ,true)
-                        findNavController().navigate(R.id.action_correo_to_set_codigo,bundle)
+
                     }
-                    response.code()==202 -> {
+                    202 -> {
                         progressBar_correo!!.visibility = View.GONE
                         activity!!.toast("Correo ya esta siendo usado")
                     }
@@ -145,23 +152,13 @@ class correo : Fragment() {
         })
 
     }
-    private fun comprobarcampos(e1: String, e2: String): Boolean {
-        if (e1!!.isEmpty() || e2!!.isEmpty()) {
+    private fun comprobarcampos(e1: String): Boolean {
+        if (e1!!.isEmpty() ) {
             c_edtxt_email!!.error = "Campos vacios"
-            c_edtxt_email_confirm!!.error = "Campos vacios"
             return false
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(e1).matches()) {
             c_edtxt_email!!.error = "No es un correo valido"
-            return false
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(e2).matches()) {
-            c_edtxt_email_confirm!!.error = "No es un correo valido"
-            return false
-        }
-        if (e1 != e2) {
-            c_edtxt_email!!.error = "Los correos no coinciden"
-            c_edtxt_email_confirm!!.error = "Los correos no coinciden"
             return false
         }
         return true

@@ -22,14 +22,21 @@ public class adapter_rv_cupon extends RecyclerView.Adapter<adapter_rv_cupon.sugg
     ArrayList<DataCupon> sugerenciasLocales;
     click listen;
     String tipe;
-    public adapter_rv_cupon(Context context, int layoutresource, String tipe, ArrayList<DataCupon> sugerenciasLocales, click listen) {
+    public adapter_rv_cupon(Context context, int layoutresource, click listen) {
         this.context = context;
         this.layoutresources = layoutresource;
-        this.sugerenciasLocales = sugerenciasLocales;
-        this.listen = listen;
-        this.tipe=tipe;
-    }
 
+        this.listen = listen;
+
+    }
+    public void getData(ArrayList<DataCupon> datas,String tipe){
+        this.tipe=tipe;
+        if (sugerenciasLocales!=null)
+            sugerenciasLocales.clear();
+        this.sugerenciasLocales = datas;
+        notifyDataSetChanged();
+
+    }
     @NonNull
     @Override
     public suggestions onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,7 +51,7 @@ public class adapter_rv_cupon extends RecyclerView.Adapter<adapter_rv_cupon.sugg
 
     @Override
     public int getItemCount() {
-        if (sugerenciasLocales.size()>0) {
+        if (sugerenciasLocales!=null) {
             return sugerenciasLocales.size();
         }
         return 0;

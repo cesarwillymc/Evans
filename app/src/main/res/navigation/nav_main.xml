@@ -3,50 +3,135 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/mapaInicio">
+    app:startDestination="@id/nav_travel">
 
     <fragment
-        android:id="@+id/mapaInicio"
+        android:id="@+id/nav_travel"
         android:name="com.evans.technologies.usuario.fragments.mapaInicio"
-        android:label="mapaInicio" >
+        android:label="nav_travel">
         <action
             android:id="@+id/action_mapaInicio_to_fragment_perfil_user"
-            app:destination="@id/fragment_perfil_user" />
-        <action
-            android:id="@+id/action_mapaInicio_to_pagosActivity"
-            app:destination="@id/pagosActivity" />
+            app:destination="@id/nav_cuenta" />
         <action
             android:id="@+id/action_mapaInicio_to_referidosDialogFragment"
-            app:destination="@id/referidosDialogFragment" />
+            app:destination="@id/nav_trips_free" />
         <action
-            android:id="@+id/action_mapaInicio_to_addCodePromocional"
-            app:destination="@id/addCodePromocional" />
+            android:id="@+id/action_nav_travel_to_pagosActivity"
+            app:destination="@id/nav_wallet" />
         <action
-            android:id="@+id/action_mapaInicio_to_rv_viajes"
-            app:destination="@id/rv_viajes" />
+            android:id="@+id/action_nav_travel_to_addCodePromocional"
+            app:destination="@id/nav_oferts" />
+        <action
+            android:id="@+id/nav_trips"
+            app:destination="@id/nav_trips" />
+        <action
+            android:id="@+id/action_nav_travel_to_referidosDialogFragment"
+            app:destination="@id/nav_trips_free" />
+        <action
+            android:id="@+id/action_nav_travel_to_fragment_chat"
+            app:destination="@id/fragment_chat" />
     </fragment>
     <fragment
-        android:id="@+id/fragment_perfil_user"
+        android:id="@+id/nav_cuenta"
         android:name="com.evans.technologies.usuario.fragments.Fragment_perfil_user"
         android:label="fragment_perfil_user"
-        tools:layout="@layout/fragment_perfil_user" />
-    <activity
-        android:id="@+id/pagosActivity"
+        tools:layout="@layout/fragment_perfil_user" >
+        <action
+            android:id="@+id/action_nav_cuenta_to_passActual"
+            app:destination="@id/passActual" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_wallet"
         android:name="com.evans.technologies.usuario.Activities.cupon.PagosActivity"
         android:label="activity_pagos"
-        tools:layout="@layout/activity_pagos" />
+        tools:layout="@layout/activity_pagos" >
+        <action
+            android:id="@+id/action_nav_wallet_to_cupones"
+            app:destination="@id/cupones" />
+        <action
+            android:id="@+id/action_nav_wallet_to_evansWallet"
+            app:destination="@id/evansWallet" />
+        <action
+            android:id="@+id/action_nav_wallet_to_efectivoInfo"
+            app:destination="@id/efectivoInfo" />
+    </fragment>
     <fragment
-        android:id="@+id/referidosDialogFragment"
-        android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
-        android:label="ReferidosDialogFragment" />
-    <activity
-        android:id="@+id/addCodePromocional"
+        android:id="@+id/nav_trips"
+        android:name="com.evans.technologies.usuario.Activities.viajes.ListaViajes"
+        android:label="activity_rv_viajes"
+        tools:layout="@layout/activity_rv_viajes" >
+        <action
+            android:id="@+id/action_rv_viajes2_to_historial_viaje"
+            app:destination="@id/historial_viaje" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_oferts"
         android:name="com.evans.technologies.usuario.Activities.cupon.AddCodePromocional"
         android:label="activity_add_code_promocional"
         tools:layout="@layout/activity_add_code_promocional" />
-    <activity
-        android:id="@+id/rv_viajes"
-        android:name="com.evans.technologies.usuario.Activities.viajes.rv_viajes"
-        android:label="activity_rv_viajes"
-        tools:layout="@layout/activity_rv_viajes" />
+    <fragment
+        android:id="@+id/nav_trips_free"
+        android:name="com.evans.technologies.usuario.fragments.ReferidosDialogFragment"
+        android:label="ReferidosDialogFragment" >
+        <action
+            android:id="@+id/action_nav_trips_free_to_referidosInfo"
+            app:destination="@id/referidosInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/historial_viaje"
+        android:name="com.evans.technologies.usuario.Activities.viajes.historial_viaje"
+        android:label="fragment_historial_viaje"
+        tools:layout="@layout/fragment_historial_viaje" >
+        <argument
+            android:name="id"
+            app:argType="string"
+            android:defaultValue="noexiste" />
+    </fragment>
+    <fragment
+        android:id="@+id/cupones"
+        android:name="com.evans.technologies.usuario.Activities.cupon.Cupones"
+        android:label="activity_cupones"
+        tools:layout="@layout/activity_cupones" />
+    <fragment
+        android:id="@+id/fragment_chat"
+        android:name="com.evans.technologies.usuario.fragments.Fragment_chat"
+        android:label="Fragment_chat" />
+    <fragment
+        android:id="@+id/changepassword2"
+        android:name="com.evans.technologies.usuario.fragments.change_password.changepassword"
+        android:label="fragment_changepassword"
+        tools:layout="@layout/fragment_changepassword" >
+        <argument
+            android:name="id"
+            app:argType="string"
+            android:defaultValue="null" />
+        <argument
+            android:name="isAuth"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/evansWallet"
+        android:name="com.evans.technologies.usuario.Activities.cupon.evansWallet"
+        android:label="fragment_evans_wallet"
+        tools:layout="@layout/fragment_evans_wallet" />
+    <fragment
+        android:id="@+id/passActual"
+        android:name="com.evans.technologies.usuario.fragments.change_password.passActual"
+        android:label="fragment_pass_actual"
+        tools:layout="@layout/fragment_pass_actual" >
+        <action
+            android:id="@+id/action_passActual_to_changepassword2"
+            app:destination="@id/changepassword2" />
+    </fragment>
+    <fragment
+        android:id="@+id/efectivoInfo"
+        android:name="com.evans.technologies.usuario.Activities.cupon.EfectivoInfo"
+        android:label="fragment_efectivo_info"
+        tools:layout="@layout/fragment_efectivo_info" />
+    <fragment
+        android:id="@+id/referidosInfo"
+        android:name="com.evans.technologies.usuario.Activities.cupon.ReferidosInfo"
+        android:label="fragment_referidos_info"
+        tools:layout="@layout/fragment_referidos_info" />
 </navigation>

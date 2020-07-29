@@ -10,13 +10,16 @@ import android.widget.TextView;
 
 import com.evans.technologies.usuario.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class adapter_spinner_pay_tipe extends BaseAdapter {
     Context context;
-    int images[];
-    String[] fruit;
+    List<Integer> images;
+    List<String> fruit;
     LayoutInflater inflter;
     int color;
-    public adapter_spinner_pay_tipe(Context applicationContext, int[] flags, String[] fruit, int color) {
+    public adapter_spinner_pay_tipe(Context applicationContext, List<Integer> flags, List<String> fruit, int color) {
         this.context = applicationContext;
         this.images = flags;
         this.fruit = fruit;
@@ -26,7 +29,7 @@ public class adapter_spinner_pay_tipe extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return images.length;
+        return images.size();
     }
 
     @Override
@@ -44,8 +47,8 @@ public class adapter_spinner_pay_tipe extends BaseAdapter {
         view = inflter.inflate(R.layout.dialog_spinner, null);
         ImageView icon = (ImageView) view.findViewById(R.id.imageView);
         TextView names = (TextView) view.findViewById(R.id.textView);
-        icon.setImageResource(images[i]);
-        names.setText(fruit[i]);
+        icon.setImageResource(images.get(i));
+        names.setText(fruit.get(i));
        // names.setTextColor(context.getColor(color));
         return view;
     }
